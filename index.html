@@ -96,7 +96,6 @@
         }
         .ended {
             opacity: 0.5;
-            pointer-events: none;
         }
         .floating-btn {
             position: fixed;
@@ -176,8 +175,8 @@
             },
             '엑스포음악분수': {
                 name: "엑스포음악분수",
-                date: "2024-1-10",
-                endDate: "2024-1-12",
+                date: "2024-01-10",
+                endDate: "2024-01-12",
                 venue: "세종문화회관",
                 cast: "아티스트 리스트 2",
                 duration: "180분 (인터미션: 15분)",
@@ -199,53 +198,69 @@
             const showContainer = document.getElementById('showContainer');
             showContainer.innerHTML = ''; // 기존 내용을 초기화
 
-            // 공연 정보를 날짜 기준으로 정렬 (종료된 공연도 최신순으로)
-            const sortedShows = Object.values(shows).sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return dateB - dateA; // 최신 공연이 위로
+            const today = new Date();
+
+            // 종료되지 않은 공연 (날짜 가까운 순으로 정렬)
+            const upcomingShows = Object.values(shows).filter(show => !isEnded(show.date, show.endDate)).sort((a, b) => {
+                return new Date(a.date) - new Date(b.date); // 가까운 공연이 위로
             });
 
-            sortedShows.forEach(show => {
-                const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
-
-                const showElement = document.createElement('a');
-                showElement.href = url;
-                showElement.classList.add('show');
-                if (isEnded(show.date, show.endDate)) showElement.classList.add('ended');
-                
-                // 포스터 이미지
-                const poster = document.createElement('img');
-                poster.src = show.image;
-                poster.alt = `${show.name} 포스터`;
-                
-                // 공연 정보
-                const info = document.createElement('div');
-                info.classList.add('show-info');
-                
-                const title = document.createElement('h3');
-                title.textContent = show.name;
-                
-                const date = document.createElement('p');
-                date.textContent = `${show.date} ~ ${show.endDate}`;
-
-                info.appendChild(title);
-                info.appendChild(date);
-                
-                // 공연 날짜
-                const showDate = document.createElement('div');
-                showDate.classList.add('show-date');
-                
-                const dateText = document.createElement('p');
-                dateText.textContent = `${show.date} ~ ${show.endDate}`;
-                showDate.appendChild(dateText);
-                
-                showElement.appendChild(poster);
-                showElement.appendChild(info);
-                showElement.appendChild(showDate);
-                
-                showContainer.appendChild(showElement);
+            // 종료된 공연 (최신 종료 순으로 정렬)
+            const endedShows = Object.values(shows).filter(show => isEnded(show.date, show.endDate)).sort((a, b) => {
+                return new Date(b.endDate || b.date) - new Date(a.endDate || a.date); // 종료된 공연이 최신순으로
             });
+
+            // 종료되지 않은 공연 출력
+            upcomingShows.forEach(show => {
+                createShowElement(showContainer, show);
+            });
+
+            // 종료된 공연 출력
+            endedShows.forEach(show => {
+                createShowElement(showContainer, show);
+            });
+        }
+
+        // 공연 항목을 생성하는 함수
+        function createShowElement(container, show) {
+            const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
+
+            const showElement = document.createElement('a');
+            showElement.href = url;
+            showElement.classList.add('show');
+            if (isEnded(show.date, show.endDate)) showElement.classList.add('ended');
+            
+            // 포스터 이미지
+            const poster = document.createElement('img');
+            poster.src = show.image;
+            poster.alt = `${show.name} 포스터`;
+            
+            // 공연 정보
+            const info = document.createElement('div');
+            info.classList.add('show-info');
+            
+            const title = document.createElement('h3');
+            title.textContent = show.name;
+            
+            const date = document.createElement('p');
+            date.textContent = `${show.date} ~ ${show.endDate}`;
+
+            info.appendChild(title);
+            info.appendChild(date);
+            
+            // 공연 날짜
+            const showDate = document.createElement('div');
+            showDate.classList.add('show-date');
+            
+            const dateText = document.createElement('p');
+            dateText.textContent = `${show.date} ~ ${show.endDate}`;
+            showDate.appendChild(dateText);
+            
+            showElement.appendChild(poster);
+            showElement.appendChild(info);
+            showElement.appendChild(showDate);
+            
+            container.appendChild(showElement);
         }
 
         // 갤러리 모드 렌더링 함수
