@@ -30,21 +30,22 @@
             cursor: pointer;
         }
         .container {
-            max-width: 800px;
+            display: flex;
+            max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .show-info {
+            flex: 1;
+            padding-right: 20px;
+        }
         .show-image {
-            width: 100%;
+            width: 300px;
             height: auto;
             border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .show-info {
-            margin-bottom: 20px;
         }
         .show-info h2 {
             margin: 0;
@@ -59,6 +60,16 @@
             font-weight: bold;
             color: #ff5733; /* D-Day 강조 색상 */
         }
+        .gallery {
+            margin-top: 20px;
+        }
+        .gallery img {
+            width: 100%;
+            max-width: 300px;
+            margin-right: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -67,15 +78,25 @@
         <h1 id="showTitle">공연 세부 정보</h1>
     </div>
     <div class="container">
-        <img id="showImage" class="show-image" src="" alt="공연 이미지">
         <div class="show-info">
             <h2 id="showName">공연명</h2>
-            <p><strong>날짜:</strong> <span id="showDate">2024년 10월 25일</span></p>
-            <p><strong>시간:</strong> <span id="showTime">19:00</span></p>
+            <p><strong>일시:</strong> <span id="showDate">2024년 10월 25일</span></p>
             <p><strong>장소:</strong> <span id="showVenue">예술의 전당</span></p>
+            <p><strong>출연:</strong> <span id="showCast">아티스트 리스트</span></p>
+            <p><strong>관람 시간:</strong> <span id="showDuration">155분 (인터미션: 20분)</span></p>
             <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
             <p><span class="countdown" id="countdown">D-11</span></p>
         </div>
+        <img id="showImage" class="show-image" src="" alt="공연 이미지">
+    </div>
+
+    <div class="gallery">
+        <h3>작품 이미지</h3>
+        <img src="image1.jpg" alt="작품 이미지 1">
+        <img src="image2.jpg" alt="작품 이미지 2">
+        <img src="image3.jpg" alt="작품 이미지 3">
+        <img src="image4.jpg" alt="작품 이미지 4">
+        <!-- 추가 이미지가 필요한 경우 여기에 추가 -->
     </div>
 
     <script>
@@ -84,24 +105,27 @@
             '도마동축제': {
                 name: "도마동축제",
                 date: "2024년 10월 25일",
-                time: "19:00",
                 venue: "예술의 전당",
+                cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
+                duration: "155분 (인터미션: 20분)",
                 description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
                 image: "도마동축제.jpg"
             },
             '공연명-2': {
                 name: "공연명 2",
                 date: "2024년 11월 10일",
-                time: "20:00",
                 venue: "세종문화회관",
+                cast: "아티스트 리스트 2",
+                duration: "180분 (인터미션: 15분)",
                 description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
                 image: "poster2.jpg"
             },
             '공연명-3': {
                 name: "공연명 3",
                 date: "2024년 12월 5일",
-                time: "18:30",
                 venue: "국립극장",
+                cast: "아티스트 리스트 3",
+                duration: "120분 (인터미션: 10분)",
                 description: "공연 3에 대한 설명이 여기에 들어갑니다. 관객과의 소통을 중요시합니다.",
                 image: "poster3.jpg"
             }
@@ -117,14 +141,15 @@
             document.getElementById('showImage').src = showInfo.image;
             document.getElementById('showName').textContent = showInfo.name;
             document.getElementById('showDate').textContent = showInfo.date;
-            document.getElementById('showTime').textContent = showInfo.time;
             document.getElementById('showVenue').textContent = showInfo.venue;
+            document.getElementById('showCast').textContent = showInfo.cast;
+            document.getElementById('showDuration').textContent = showInfo.duration;
             document.getElementById('showDescription').textContent = showInfo.description;
 
             // D-Day 계산
             const today = new Date();
             const showDate = new Date(showInfo.date);
-            const timeDiff = showDate - today;
+            const timeDiff = showDate.getTime() - today.getTime();
             const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // 남은 일 수 계산
 
             if (daysLeft === 0) {
