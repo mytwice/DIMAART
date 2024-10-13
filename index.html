@@ -150,24 +150,48 @@
     <a href="https://mytwice.github.io/DIMAART/newpage.html" target="_blank" class="floating-btn">+</a>
 
     <script>
-        // 공연 정보 리스트 (URL은 공연명을 이용해 자동으로 생성)
-        const shows = [
-            { name: "한화이글스홈개막전", date: "2024-10-25", poster: "한화이글스.jpg" },
-            { name: "도마동축제", date: "2024-11-10", poster: "도마동축제.jpg" },
-            { name: "엑스포음악분수", date: "2024-09-15", poster: "엑스포음악분수.jpg" },
-            { name: "공연명 4", date: "2024-08-05", poster: "poster4.jpg" }
-        ];
-
-        // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
-        function generateUrl(showName) {
-            return showName.replace(/\s+/g, '-');
-        }
+        // 공연 정보 리스트
+        const shows = {
+            '도마동축제': {
+                name: "도마동축제",
+                date: "2024-10-25",
+                endDate: "2024-10-30",
+                venue: "예술의 전당",
+                cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나...",
+                duration: "155분 (인터미션: 20분)",
+                description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
+                image: "도마동축제.jpg",
+                gallery: ["image1.jpg", "image2.jpg"]
+            },
+            '한화이글스홈개막전': {
+                name: "한화이글스홈개막전",
+                date: "2024-11-10",
+                endDate: "2024-11-10",
+                venue: "세종문화회관",
+                cast: "아티스트 리스트 2",
+                duration: "180분 (인터미션: 15분)",
+                description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
+                image: "한화이글스.jpg",
+                gallery: []
+            },
+            '엑스포음악분수': {
+                name: "엑스포음악분수",
+                date: "2024-11-10",
+                endDate: "2024-1-10",
+                venue: "세종문화회관",
+                cast: "아티스트 리스트 2",
+                duration: "180분 (인터미션: 15분)",
+                description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
+                image: "엑스포음악분수.jpg",
+                gallery: []
+            }
+        };
 
         // 공연이 종료되었는지 확인하는 함수
-        function isEnded(date) {
+        function isEnded(date, endDate) {
             const today = new Date();
-            const showDate = new Date(date);
-            return showDate < today;
+            const showEndDate = new Date(endDate || date);
+            return showEndDate < today;
         }
 
         // 공연 목록을 동적으로 생성하는 함수
@@ -176,24 +200,23 @@
             showContainer.innerHTML = ''; // 기존 내용을 초기화
 
             // 공연 정보를 날짜 기준으로 정렬 (종료된 공연도 최신순으로)
-            const sortedShows = shows.sort((a, b) => {
+            const sortedShows = Object.values(shows).sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
                 return dateB - dateA; // 최신 공연이 위로
             });
 
-            // 종료된 공연을 투명하게 처리하고 상단에 배치
             sortedShows.forEach(show => {
                 const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
-                
+
                 const showElement = document.createElement('a');
                 showElement.href = url;
                 showElement.classList.add('show');
-                if (isEnded(show.date)) showElement.classList.add('ended');
+                if (isEnded(show.date, show.endDate)) showElement.classList.add('ended');
                 
                 // 포스터 이미지
                 const poster = document.createElement('img');
-                poster.src = show.poster;
+                poster.src = show.image;
                 poster.alt = `${show.name} 포스터`;
                 
                 // 공연 정보
@@ -204,7 +227,7 @@
                 title.textContent = show.name;
                 
                 const date = document.createElement('p');
-                date.textContent = show.date;
+                date.textContent = `${show.date} ~ ${show.endDate}`;
 
                 info.appendChild(title);
                 info.appendChild(date);
@@ -214,7 +237,7 @@
                 showDate.classList.add('show-date');
                 
                 const dateText = document.createElement('p');
-                dateText.textContent = show.date;
+                dateText.textContent = `${show.date} ~ ${show.endDate}`;
                 showDate.appendChild(dateText);
                 
                 showElement.appendChild(poster);
@@ -231,24 +254,28 @@
             showContainer.innerHTML = ''; // 기존 내용을 초기화
             showContainer.className = 'show-gallery'; // 클래스 변경
             
-            shows.forEach(show => {
+            Object.values(shows).forEach(show => {
                 const galleryItem = document.createElement('div');
                 galleryItem.classList.add('gallery-item');
-                if (isEnded(show.date)) galleryItem.classList.add('ended');
+                if (isEnded(show.date, show.endDate)) galleryItem.classList.add('ended');
         
-                // Create anchor element for the gallery item
                 const link = document.createElement('a');
                 link.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
                 link.classList.add('gallery-link');
         
                 const img = document.createElement('img');
-                img.src = show.poster;
+                img.src = show.image;
                 img.alt = `${show.name} 포스터`;
         
-                link.appendChild(img); // Add image to link
-                galleryItem.appendChild(link); // Add link to gallery item
-                showContainer.appendChild(galleryItem); // Add gallery item to container
+                link.appendChild(img); 
+                galleryItem.appendChild(link); 
+                showContainer.appendChild(galleryItem);
             });
+        }
+
+        // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
+        function generateUrl(showName) {
+            return showName.replace(/\s+/g, '-');
         }
 
         // 페이지 로딩 시 리스트 모드로 공연 목록 생성
