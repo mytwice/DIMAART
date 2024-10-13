@@ -93,7 +93,7 @@
                 date: "2024년 10월 25일",
                 time: "19:00",
                 venue: "예술의 전당",
-                description: "공연 1에 대한 설명이 여기에 들어갑니다.",
+                description: "도마동축제에 대한 설명이 여기에 들어갑니다.",
                 image: "도마동축제.jpg"
             },
             '공연명-2': {
@@ -116,8 +116,8 @@
 
         // URL에서 공연명 추출 및 공연 정보 로드
         const urlPath = window.location.pathname.split('/').pop();
-        const showKey = urlPath; // '공연명-1', '공연명-2', 등
-        const showInfo = shows[showKey];
+        const showKey = decodeURIComponent(urlPath); // URL에서 공연명 가져오기 (decodeURIComponent 사용)
+        const showInfo = shows[showKey]; // shows 객체에서 공연 정보 가져오기
 
         if (showInfo) {
             // 공연 정보 표시
