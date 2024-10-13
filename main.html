@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>DIMA ART</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           margin: 0;
+           padding: 0;
+           background-color: #f0f0f0;
+       }
+       .header {
+           background-color: #333;
+           color: white;
+           padding: 20px;
+           text-align: center;
+       }
+       .container {
+           max-width: 1200px;
+           margin: 20px auto;
+           padding: 0 20px;
+       }
+       .show-list {
+           display: flex;
+           flex-direction: column;
+           gap: 20px;
+       }
+       .show {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           background-color: white;
+           padding: 15px;
+           border-radius: 8px;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+           text-decoration: none;
+           color: inherit;
+       }
+       .show:hover {
+           box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+           cursor: pointer;
+       }
+       .show img {
+           width: 100px;
+           height: 150px;
+           object-fit: cover;
+           border-radius: 8px;
+       }
+       .show-info {
+           flex: 1;
+           margin-left: 20px;
+       }
+       .show-info h3 {
+           margin: 0;
+           font-size: 1.2em;
+           color: #333;
+       }
+       .show-info p {
+           margin: 5px 0;
+           color: #666;
+       }
+       .show-date {
+           text-align: right;
+           color: #666;
+       }
+       @media (max-width: 768px) {
+           .show {
+               flex-direction: column;
+               text-align: center;
+           }
+           .show img {
+               margin-bottom: 10px;
+           }
+           .show-info {
+               margin-left: 0;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="header">
+       <h1>공연 리스트</h1>
+   </div>
+   <div class="container">
+       <div class="show-list" id="showList">
+           <!-- JavaScript가 공연 목록을 자동으로 생성 -->
+       </div>
+   </div>
+   <script>
+       // 공연 정보 리스트 (URL은 공연명을 이용해 자동으로 생성)
+       const shows = [
+           { name: "공연명 1", date: "2024년 10월 25일", poster: "poster1.jpg" },
+           { name: "공연명 2", date: "2024년 11월 10일", poster: "poster2.jpg" },
+           { name: "공연명 3", date: "2024년 12월 5일", poster: "poster3.jpg" },
+           { name: "공연명 3", date: "2024년 12월 5일", poster: "poster3.jpg" },
+           { name: "공연명 35", date: "2024년 12월 5일", poster: "poster3.jpg" },
+           { name: "공연명 37", date: "2024년 12월 5일", poster: "poster3.jpg" },
+       ];
+       // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
+       function generateUrl(showName) {
+           return showName.replace(/'s+/g, '-');
+       }
+       // 공연 목록을 동적으로 생성하는 함수
+       function loadShows() {
+           const showList = document.getElementById('showList');
+           shows.forEach(show => {
+               const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
+               
+               const showElement = document.createElement('a');
+               showElement.href = url;
+               showElement.classList.add('show');
+               
+               // 포스터 이미지
+               const poster = document.createElement('img');
+               poster.src = show.poster;
+               poster.alt = `${show.name} 포스터`;
+               
+               // 공연 정보
+               const info = document.createElement('div');
+               info.classList.add('show-info');
+               
+               const title = document.createElement('h3');
+               title.textContent = show.name;
+               
+               const date = document.createElement('p');
+               date.textContent = show.date;
+               info.appendChild(title);
+               info.appendChild(date);
+               
+               // 공연 날짜
+               const showDate = document.createElement('div');
+               showDate.classList.add('show-date');
+               
+               const dateText = document.createElement('p');
+               dateText.textContent = show.date;
+               showDate.appendChild(dateText);
+               
+               showElement.appendChild(poster);
+               showElement.appendChild(info);
+               showElement.appendChild(showDate);
+               
+               showList.appendChild(showElement);
+           });
+       }
+       // 페이지 로딩 시 공연 목록 생성
+       window.onload = loadShows;
+   </script>
+</body>
+</html>
