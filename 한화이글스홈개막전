@@ -102,88 +102,97 @@
     </div>
 
     <script>
-        // 공연 정보를 로드하는 함수
-        function loadShowInfo(showKey) {
-            fetch('shows.txt')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('파일을 불러오는 데 실패했습니다.');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const showBlocks = data.trim().split('\n\n').map(block => block.trim());
-                    const shows = showBlocks.map(block => {
-                        const lines = block.split('\n');
-                        const title = lines[0].replace(/^=== (.+) ===$/, '$1'); // 공연 제목
-                        const details = lines[1].split('|'); // 나머지 정보
-                        return {
-                            name: title,
-                            date: details[0],
-                            endDate: details[1],
-                            venue: details[2],
-                            cast: details[3],
-                            duration: details[4],
-                            description: details[5],
-                            image: details[6],
-                            gallery: details[7] ? details[7].split(',') : []
-                        };
-                    });
+        // 공연 정보를 담을 객체
+        let shows = {};
 
-                    const showInfo = shows.find(show => show.name === showKey);
-                    if (showInfo) {
-                        // 공연 정보 표시
-                        document.getElementById('showImage').src = showInfo.image;
-                        document.getElementById('showName').textContent = showInfo.name;
-                        document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-                        document.getElementById('showVenue').textContent = showInfo.venue;
-                        document.getElementById('showCast').textContent = showInfo.cast;
-                        document.getElementById('showDuration').textContent = showInfo.duration;
-                        document.getElementById('showDescription').textContent = showInfo.description;
-
-                        // D-Day 계산
-                        const today = new Date();
-                        const showStartDate = new Date(showInfo.date);
-                        const showEndDate = new Date(showInfo.endDate);
-                        const timeDiffStart = showStartDate.getTime() - today.getTime();
-                        const timeDiffEnd = showEndDate.getTime() - today.getTime();
-
-                        const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24)); // 시작일까지 남은 일 수 계산
-                        const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24)); // 종료일까지 남은 일 수 계산
-
-                        if (daysLeftStart === 0) {
-                            document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-                        } else if (daysLeftStart > 0) {
-                            document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-                        } else if (daysLeftEnd < 0) {
-                            document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
-                        }
-
-                        // 갤러리 이미지 표시
-                        const gallery = showInfo.gallery;
-                        if (gallery.length > 0) {
-                            document.getElementById('gallery').classList.remove('hidden');
-                            for (let i = 0; i < gallery.length; i++) {
-                                document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
-                            }
-                        } else {
-                            document.getElementById('gallery').classList.add('hidden'); // 이미지가 없으면 갤러리 섹션 숨김
-                        }
-                    } else {
-                        // 공연 정보가 없을 경우 에러 처리
-                        document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading show info:', error);
-                    document.querySelector('.container').innerHTML = '<p>공연 정보를 불러오는 데 오류가 발생했습니다.</p>';
-                });
+        // 텍스트 파일에서 공연 정보를 로드하는 함수
+        async function loadShows() {
+            const response = await fetch('shows.txt');
+            const text = await response.text();
+            parseShows(text);
         }
 
-        // URL에서 공연명 추출 및 공연 정보 로드
-        const urlPath = window.location.pathname.split('/').pop();
-        const showKey = decodeURIComponent(urlPath); // URL에서 공연명 가져오기
-        loadShowInfo(showKey); // 공연 정보 로드 호출
+        // 공연 정보를 파싱하는 함수
+        function parseShows(text) {
+            const entries = text.trim().split(/===/).filter(entry => entry.trim() !== '');
+
+            entries.forEach(entry => {
+                const lines = entry.trim().split('\n');
+                const title = lines[0].trim();
+                const details = lines[1].split('|');
+
+                shows[title] = {
+                    name: title,
+                    date: details[0],
+                    endDate: details[1],
+                    venue: details[2],
+                    cast: details[3],
+                    duration: details[4],
+                    description: details[5],
+                    image: details[6],
+                    gallery: details[7] ? details[7].split(',') : [] // 이미지 배열 생성
+                };
+            });
+        }
+
+        // 공연 정보 로드 및 표시
+        async function init() {
+            await loadShows();
+
+            // URL에서 공연명 추출
+            const urlPath = window.location.pathname.split('/').pop();
+            const showKey = decodeURIComponent(urlPath);
+            const showInfo = shows[showKey];
+
+            if (showInfo) {
+                // 공연 정보 표시
+                document.getElementById('showImage').src = showInfo.image;
+                document.getElementById('showName').textContent = showInfo.name;
+                document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                document.getElementById('showVenue').textContent = showInfo.venue;
+                document.getElementById('showCast').textContent = showInfo.cast;
+                document.getElementById('showDuration').textContent = showInfo.duration;
+                document.getElementById('showDescription').textContent = showInfo.description;
+
+                // D-Day 계산
+                const today = new Date();
+                const showStartDate = new Date(showInfo.date);
+                const showEndDate = new Date(showInfo.endDate);
+                const timeDiffStart = showStartDate.getTime() - today.getTime();
+                const timeDiffEnd = showEndDate.getTime() - today.getTime();
+
+                const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24)); // 시작일까지 남은 일 수 계산
+                const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24)); // 종료일까지 남은 일 수 계산
+
+                if (daysLeftStart === 0) {
+                    document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+                } else if (daysLeftStart > 0) {
+                    document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
+                } else if (daysLeftEnd < 0) {
+                    document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+                } else {
+                    document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+                }
+
+                // 갤러리 이미지 표시
+                const gallery = showInfo.gallery;
+                if (gallery.length > 0) {
+                    // 이미지가 있는 경우만 갤러리 섹션을 표시
+                    document.getElementById('gallery').classList.remove('hidden');
+                    for (let i = 0; i < gallery.length; i++) {
+                        document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
+                    }
+                } else {
+                    document.getElementById('gallery').classList.add('hidden'); // 이미지가 없으면 갤러리 섹션 숨김
+                }
+            } else {
+                // 공연 정보가 없을 경우 에러 처리
+                document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+            }
+        }
+
+        // 페이지 로드 시 init 함수 호출
+        window.onload = init;
     </script>
 </body>
 </html>
