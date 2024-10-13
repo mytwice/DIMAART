@@ -20,12 +20,12 @@
         }
         .view-toggle {
             position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 20px; /* 오른쪽에 위치 */
+            top: 60px;   /* 타이틀 아래로 간격 */
+            display: flex;
+            gap: 10px;
         }
         .view-toggle button {
-            margin-left: 10px;
             padding: 10px 15px;
             background-color: #007bff;
             color: white;
@@ -57,8 +57,6 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
-            max-width: 600px;
-            flex-grow: 1;
         }
         .show img {
             width: 100px;
@@ -84,8 +82,7 @@
             color: #666;
         }
         .gallery-item {
-            width: calc(33.33% - 20px); /* 갤러리 모드에서 이미지가 3열로 배치되도록 */
-            max-width: 100%;
+            width: 200px;
             height: 300px;
             border-radius: 8px;
             overflow: hidden;
@@ -121,6 +118,11 @@
             background-color: #0056b3;
         }
         @media (max-width: 768px) {
+            .view-toggle {
+                top: auto;
+                bottom: 10px; /* 모바일에서 타이틀과 더 가까운 위치에 배치 */
+                right: 10px; /* 조금 더 안쪽으로 배치 */
+            }
             .show {
                 flex-direction: column;
                 text-align: center;
@@ -130,14 +132,6 @@
             }
             .show-info {
                 margin-left: 0;
-            }
-            .gallery-item {
-                width: calc(50% - 20px); /* 작은 화면에서 갤러리 항목이 2열로 */
-            }
-        }
-        @media (max-width: 480px) {
-            .gallery-item {
-                width: 100%; /* 더 작은 화면에서는 갤러리 항목이 1열로 */
             }
         }
     </style>
@@ -157,7 +151,7 @@
     </div>
 
     <!-- 플로팅 버튼 -->
-    <a href="https://mytwice.github.io/DIMAART/newpage.html" target="_blank" class="floating-btn">+</a>
+    <a href="https://naver.me/FPn2unan" target="_blank" class="floating-btn">+</a>
 
     <script>
         // 공연 정보 리스트
