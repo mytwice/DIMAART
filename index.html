@@ -291,24 +291,39 @@
             showContainer.innerHTML = ''; // 기존 내용을 초기화
             showContainer.className = 'show-gallery'; // 클래스 변경
             
-            Object.values(shows).forEach(show => {
+            // 공연을 종료된 공연과 종료되지 않은 공연으로 나누어 정렬
+            const sortedShows = Object.values(shows).sort((a, b) => {
+                const today = new Date();
+                const aEndDate = new Date(a.endDate || a.date);
+                const bEndDate = new Date(b.endDate || b.date);
+                
+                // 종료된 공연은 뒤쪽으로 보내기 위해 비교
+                if (isEnded(a.date, a.endDate) && !isEnded(b.date, b.endDate)) return 1;
+                if (!isEnded(a.date, a.endDate) && isEnded(b.date, b.endDate) ) return -1;
+        
+                // 날짜가 가까운 공연이 위로 가도록 정렬
+                return aEndDate - bEndDate;
+            });
+        
+            sortedShows.forEach(show => {
                 const galleryItem = document.createElement('div');
                 galleryItem.classList.add('gallery-item');
                 if (isEnded(show.date, show.endDate)) galleryItem.classList.add('ended');
-        
+            
                 const link = document.createElement('a');
                 link.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
                 link.classList.add('gallery-link');
-        
+            
                 const img = document.createElement('img');
                 img.src = show.image;
                 img.alt = `${show.name} 포스터`;
-        
+            
                 link.appendChild(img); 
                 galleryItem.appendChild(link); 
                 showContainer.appendChild(galleryItem);
             });
         }
+
 
         // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
         function generateUrl(showName) {
