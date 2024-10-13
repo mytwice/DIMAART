@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="showTitle">공연 세부 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .home-button {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .show-image {
+            width: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .show-info {
+            flex: 1;
+        }
+        .show-info h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .show-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .countdown {
+            font-weight: bold;
+            color: #ff5733;
+        }
+        .gallery {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .gallery img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+        }
+        .gallery.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="home-button" onclick="window.location.href='https://mytwice.github.io/DIMAART/'">홈으로 돌아가기</button>
+        <h1 id="showTitle">공연 세부 정보</h1>
+    </div>
+    <div class="container">
+        <img id="showImage" class="show-image" src="" alt="공연 이미지">
+        <div class="show-info">
+            <h2 id="showName">공연명</h2>
+            <p><strong>일시:</strong> <span id="showDate">2024년 10월 25일</span></p>
+            <p><strong>장소:</strong> <span id="showVenue">예술의 전당</span></p>
+            <p><strong>출연:</strong> <span id="showCast">아티스트 리스트</span></p>
+            <p><strong>관람 시간:</strong> <span id="showDuration">155분 (인터미션: 20분)</span></p>
+            <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
+            <p><span class="countdown" id="countdown">D-11</span></p>
+        </div>
+    </div>
+
+    <div class="gallery hidden" id="gallery">
+        <h3>작품 이미지</h3>
+        <img id="galleryImage1" src="" alt="작품 이미지 1">
+        <img id="galleryImage2" src="" alt="작품 이미지 2">
+        <img id="galleryImage3" src="" alt="작품 이미지 3">
+        <img id="galleryImage4" src="" alt="작품 이미지 4">
+    </div>
+
+    <script>
+        // 공연 정보 객체 (URL에 따라 공연 정보를 설정)
+        const shows = {
+            '도마동축제': {
+                name: "도마동축제",
+                date: "2024-10-25",  // 시작일
+                endDate: "2024-10-30", // 종료일
+                venue: "예술의 전당",
+                cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
+                duration: "155분 (인터미션: 20분)",
+                description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
+                image: "도마동축제.jpg",
+                gallery: ["image1.jpg", "image2.jpg"] // 갤러리 이미지 배열
+            },
+            '공연명-2': {
+                name: "공연명 2",
+                date: "2024-11-10",  // 시작일
+                endDate: "2024-11-10", // 종료일
+                venue: "세종문화회관",
+                cast: "아티스트 리스트 2",
+                duration: "180분 (인터미션: 15분)",
+                description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
+                image: "poster2.jpg",
+                gallery: [] // 이미지 없음
+            }
+        };
+
+        // URL에서 공연명 추출 및 공연 정보 로드
+        const urlPath = window.location.pathname.split('/').pop();
+        const showKey = decodeURIComponent(urlPath); // URL에서 공연명 가져오기
+        const showInfo = shows[showKey]; // shows 객체에서 공연 정보 가져오기
+
+        if (showInfo) {
+            // 공연 정보 표시
+            document.getElementById('showImage').src = showInfo.image;
+            document.getElementById('showName').textContent = showInfo.name;
+            document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+            document.getElementById('showVenue').textContent = showInfo.venue;
+            document.getElementById('showCast').textContent = showInfo.cast;
+            document.getElementById('showDuration').textContent = showInfo.duration;
+            document.getElementById('showDescription').textContent = showInfo.description;
+
+            // D-Day 계산
+            const today = new Date();
+            const showStartDate = new Date(showInfo.date);
+            const showEndDate = new Date(showInfo.endDate);
+            const timeDiffStart = showStartDate.getTime() - today.getTime();
+            const timeDiffEnd = showEndDate.getTime() - today.getTime();
+
+            const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24)); // 시작일까지 남은 일 수 계산
+            const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24)); // 종료일까지 남은 일 수 계산
+
+            if (daysLeftStart === 0) {
+                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+            } else if (daysLeftStart > 0) {
+                document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
+            } else if (daysLeftEnd < 0) {
+                document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+            } else {
+                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+            }
+
+            // 갤러리 이미지 표시
+            const gallery = showInfo.gallery;
+            if (gallery.length > 0) {
+                // 이미지가 있는 경우만 갤러리 섹션을 표시
+                document.getElementById('gallery').classList.remove('hidden');
+                for (let i = 0; i < gallery.length; i++) {
+                    document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
+                }
+            } else {
+                document.getElementById('gallery').classList.add('hidden'); // 이미지가 없으면 갤러리 섹션 숨김
+            }
+        } else {
+            // 공연 정보가 없을 경우 에러 처리
+            document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+        }
+    </script>
+</body>
+</html>
