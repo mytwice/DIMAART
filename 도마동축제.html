@@ -38,14 +38,14 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .show-info {
-            flex: 1;
-            padding-right: 20px;
-        }
         .show-image {
             width: 300px;
             height: auto;
             border-radius: 8px;
+            margin-right: 20px;
+        }
+        .show-info {
+            flex: 1;
         }
         .show-info h2 {
             margin: 0;
@@ -58,17 +58,20 @@
         }
         .countdown {
             font-weight: bold;
-            color: #ff5733; /* D-Day 강조 색상 */
+            color: #ff5733;
         }
         .gallery {
             margin-top: 20px;
+            display: flex;
+            gap: 10px;
         }
         .gallery img {
             width: 100%;
             max-width: 300px;
-            margin-right: 10px;
             border-radius: 8px;
-            cursor: pointer;
+        }
+        .gallery.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -78,6 +81,7 @@
         <h1 id="showTitle">공연 세부 정보</h1>
     </div>
     <div class="container">
+        <img id="showImage" class="show-image" src="" alt="공연 이미지">
         <div class="show-info">
             <h2 id="showName">공연명</h2>
             <p><strong>일시:</strong> <span id="showDate">2024년 10월 25일</span></p>
@@ -87,16 +91,14 @@
             <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
             <p><span class="countdown" id="countdown">D-11</span></p>
         </div>
-        <img id="showImage" class="show-image" src="" alt="공연 이미지">
     </div>
 
-    <div class="gallery">
+    <div class="gallery hidden" id="gallery">
         <h3>작품 이미지</h3>
-        <img src="image1.jpg" alt="작품 이미지 1">
-        <img src="image2.jpg" alt="작품 이미지 2">
-        <img src="image3.jpg" alt="작품 이미지 3">
-        <img src="image4.jpg" alt="작품 이미지 4">
-        <!-- 추가 이미지가 필요한 경우 여기에 추가 -->
+        <img id="galleryImage1" src="" alt="작품 이미지 1">
+        <img id="galleryImage2" src="" alt="작품 이미지 2">
+        <img id="galleryImage3" src="" alt="작품 이미지 3">
+        <img id="galleryImage4" src="" alt="작품 이미지 4">
     </div>
 
     <script>
@@ -109,7 +111,8 @@
                 cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
                 duration: "155분 (인터미션: 20분)",
                 description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
-                image: "도마동축제.jpg"
+                image: "도마동축제.jpg",
+                gallery: ["image1.jpg", "image2.jpg"] // 갤러리 이미지 배열
             },
             '공연명-2': {
                 name: "공연명 2",
@@ -118,16 +121,8 @@
                 cast: "아티스트 리스트 2",
                 duration: "180분 (인터미션: 15분)",
                 description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
-                image: "poster2.jpg"
-            },
-            '공연명-3': {
-                name: "공연명 3",
-                date: "2024년 12월 5일",
-                venue: "국립극장",
-                cast: "아티스트 리스트 3",
-                duration: "120분 (인터미션: 10분)",
-                description: "공연 3에 대한 설명이 여기에 들어갑니다. 관객과의 소통을 중요시합니다.",
-                image: "poster3.jpg"
+                image: "poster2.jpg",
+                gallery: [] // 이미지 없음
             }
         };
 
@@ -158,6 +153,16 @@
                 document.getElementById('countdown').textContent = `D-${daysLeft}`;
             } else {
                 document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+            }
+
+            // 갤러리 이미지 표시
+            const gallery = showInfo.gallery;
+            if (gallery.length > 0) {
+                // 이미지가 있는 경우만 갤러리 섹션을 표시
+                document.getElementById('gallery').classList.remove('hidden');
+                for (let i = 0; i < gallery.length; i++) {
+                    document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
+                }
             }
         } else {
             // 공연 정보가 없을 경우 에러 처리
