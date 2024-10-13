@@ -134,7 +134,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>공연 리스트</h1>
+        <h1>DIMA ARTIST 공연</h1>
         <div class="view-toggle">
             <button id="listViewBtn" class="active">리스트 보기</button>
             <button id="galleryViewBtn">갤러리 보기</button>
@@ -235,13 +235,19 @@
                 const galleryItem = document.createElement('div');
                 galleryItem.classList.add('gallery-item');
                 if (isEnded(show.date)) galleryItem.classList.add('ended');
-
+        
+                // Create anchor element for the gallery item
+                const link = document.createElement('a');
+                link.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
+                link.classList.add('gallery-link');
+        
                 const img = document.createElement('img');
                 img.src = show.poster;
                 img.alt = `${show.name} 포스터`;
-
-                galleryItem.appendChild(img);
-                showContainer.appendChild(galleryItem);
+        
+                link.appendChild(img); // Add image to link
+                galleryItem.appendChild(link); // Add link to gallery item
+                showContainer.appendChild(galleryItem); // Add gallery item to container
             });
         }
 
