@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공연 세부 페이지</title>
+    <title id="showTitle">공연 세부 정보</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,6 +16,18 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+        .home-button {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         .container {
             max-width: 800px;
@@ -43,31 +55,16 @@
             margin: 5px 0;
             color: #666;
         }
-        .ticket-booking {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .ticket-booking input,
-        .ticket-booking button {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .ticket-booking button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .ticket-booking button:hover {
-            background-color: #218838;
+        .countdown {
+            font-weight: bold;
+            color: #ff5733; /* D-Day 강조 색상 */
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>공연 세부 정보</h1>
+        <button class="home-button" onclick="window.location.href='https://mytwice.github.io/DIMAART/'">홈으로 돌아가기</button>
+        <h1 id="showTitle">공연 세부 정보</h1>
     </div>
     <div class="container">
         <img id="showImage" class="show-image" src="" alt="공연 이미지">
@@ -77,11 +74,7 @@
             <p><strong>시간:</strong> <span id="showTime">19:00</span></p>
             <p><strong>장소:</strong> <span id="showVenue">예술의 전당</span></p>
             <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
-        </div>
-        <div class="ticket-booking">
-            <h3>티켓 예매</h3>
-            <input type="number" id="ticketQuantity" placeholder="티켓 수" min="1">
-            <button id="bookButton">티켓 예매하기</button>
+            <p><span class="countdown" id="countdown">D-11</span></p>
         </div>
     </div>
 
@@ -93,7 +86,7 @@
                 date: "2024년 10월 25일",
                 time: "19:00",
                 venue: "예술의 전당",
-                description: "도마동축제에 대한 설명이 여기에 들어갑니다.",
+                description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
                 image: "도마동축제.jpg"
             },
             '공연명-2': {
@@ -101,7 +94,7 @@
                 date: "2024년 11월 10일",
                 time: "20:00",
                 venue: "세종문화회관",
-                description: "공연 2에 대한 설명이 여기에 들어갑니다.",
+                description: "공연 2에 대한 설명이 여기에 들어갑니다. 최고의 아티스트들이 참여합니다.",
                 image: "poster2.jpg"
             },
             '공연명-3': {
@@ -109,7 +102,7 @@
                 date: "2024년 12월 5일",
                 time: "18:30",
                 venue: "국립극장",
-                description: "공연 3에 대한 설명이 여기에 들어갑니다.",
+                description: "공연 3에 대한 설명이 여기에 들어갑니다. 관객과의 소통을 중요시합니다.",
                 image: "poster3.jpg"
             }
         };
@@ -127,20 +120,24 @@
             document.getElementById('showTime').textContent = showInfo.time;
             document.getElementById('showVenue').textContent = showInfo.venue;
             document.getElementById('showDescription').textContent = showInfo.description;
+
+            // D-Day 계산
+            const today = new Date();
+            const showDate = new Date(showInfo.date);
+            const timeDiff = showDate - today;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // 남은 일 수 계산
+
+            if (daysLeft === 0) {
+                document.getElementById('countdown').textContent = "당일 공연입니다!";
+            } else if (daysLeft > 0) {
+                document.getElementById('countdown').textContent = `D-${daysLeft}`;
+            } else {
+                document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+            }
         } else {
             // 공연 정보가 없을 경우 에러 처리
             document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
         }
-
-        // 티켓 예매 버튼 클릭 이벤트
-        document.getElementById('bookButton').onclick = function() {
-            const quantity = document.getElementById('ticketQuantity').value;
-            if (quantity && quantity > 0) {
-                alert(`${quantity} 장의 티켓이 예매되었습니다.`);
-            } else {
-                alert('티켓 수를 입력하세요.');
-            }
-        };
     </script>
 </body>
 </html>
