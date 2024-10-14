@@ -1,3 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="showTitle">공연 세부 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-align: left;
+        }
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .show-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .show-image {
+            flex: 0 0 150px; /* 기본 너비를 작게 설정 */
+            max-width: 150px; /* 최대 너비를 150px로 설정 */
+            height: auto; /* 자동 높이 설정 */
+            border-radius: 8px;
+            object-fit: cover; /* 비율 유지하며 잘리게 함 */
+        }
+        .show-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .show-info h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .show-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .countdown {
+            font-weight: bold;
+            color: #ff5733;
+            font-size: 1.2em;
+        }
+
+        /* 갤러리 스타일 */
+        .gallery {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .gallery img {
+            width: 400px;
+            height: auto;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .gallery button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .gallery button:hover {
+            background-color: #555;
+        }
+
+        .share-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-button {
+            background-color: #E564B9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .action-button:hover {
+            background-color: #D454A9;
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 10px;
+                margin: 10px;
+            }
+            .show-info h2 {
+                font-size: 1.2em;
+            }
+            .show-info p {
+                font-size: 0.9em;
+            }
+            .gallery img {
+                width: 200px;
+            }
+            .gallery button {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+    </div>
+    <div class="container">
+        <div class="show-content">
+            <img id="showImage" class="show-image" src="" alt="공연 이미지">
+            <div class="show-info">
+                <h2 id="showName">공연명</h2>
+                <p><strong>일시:</strong> <span id="showDate"></span></p>
+                <p><strong>장소:</strong> <span id="showVenue"></span></p>
+                <p><strong>출연:</strong> <span id="showCast"></span></p>
+                <p><strong>관람 시간:</strong> <span id="showDuration"></span></p>
+                <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
+                <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
+                <p><strong>입장 방식:</strong> <span id="showEntry"></span></p>
+                <p><strong>공개 여부:</strong> <span id="showPublic"></span></p>
+                <p><strong>관련 링크:</strong> <a id="showLink" href="#" target="_blank"></a></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="countdown-container">
+        <p class="countdown" id="countdown">D-11</p>
+    </div>
+    
+    <div class="container">
+        <div class="gallery">
+            <button id="prevButton">◀</button>
+            <img id="galleryImage" src="" alt="갤러리 이미지">
+            <button id="nextButton">▶</button>
+        </div>
+    </div>
+
+    <div class="share-container">
+        <button class="action-button" onclick="shareShow()">공유하기</button>
+        <button class="action-button" onclick="goToList()">목록 보기</button>
+    </div>
+
 <script>
     let shows = {};
 
@@ -66,3 +240,6 @@
         }
     }
 </script>
+
+    </body>
+</html>
