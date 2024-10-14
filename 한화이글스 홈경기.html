@@ -59,54 +59,6 @@
             font-weight: bold;
             color: #ff5733;
         }
-        .card-news {
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            display: flex; /* 플렉스 박스를 사용하여 중앙 정렬 */
-            align-items: center; /* 수직 중앙 정렬 */
-            justify-content: center; /* 수평 중앙 정렬 */
-        }
-        
-        .card-container {
-            display: flex;
-            transition: transform 0.3s ease-in-out;
-            width: 100%; /* 카드 컨테이너의 너비를 전체로 설정 */
-        }
-        
-        .card {
-            flex: 0 0 100%;
-            position: relative;
-        }
-        
-        .card img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .card-nav {
-            position: absolute; /* 버튼을 절대 위치로 설정 */
-            top: 50%; /* 세로 중앙 정렬 */
-            transform: translateY(-50%); /* 정확한 중앙 정렬 */
-            width: 100%; /* 전체 너비 */
-            display: flex; /* 버튼을 양쪽으로 배치 */
-            justify-content: space-between; /* 양쪽으로 분산 */
-        }
-        
-        .card-nav button {
-            background-color: rgba(255, 255, 255, 0.5); /* 투명 배경 */
-            border: none; /* 기본 테두리 없애기 */
-            border-radius: 50%; /* 원형 버튼 */
-            padding: 10px; /* 버튼 패딩 */
-            cursor: pointer; /* 커서 변경 */
-            transition: background-color 0.3s ease; /* 호버 효과를 위한 전환 */
-        }
-        
-        .card-nav button:hover {
-            background-color: rgba(255, 255, 255, 0.8); /* 호버 시 색상 변경 */
-        }
        
         @media (max-width: 767px) {
             .container {
@@ -138,11 +90,6 @@
                 <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
                 <p><span class="countdown" id="countdown">D-11</span></p>
             </div>
-        </div>
-        <div class="card-news">
-            <button id="prevCard" onclick="changeCard(-1)" disabled>&#10094;</button> <!-- 좌측 화살표 -->
-            <div class="card-container" id="cardContainer"></div>
-            <button id="nextCard" onclick="changeCard(1)">&#10095;</button> <!-- 우측 화살표 -->
         </div>
         </div>
     </div>
@@ -237,43 +184,6 @@
                 document.getElementById('countdown').textContent = "현재 공연 중입니다!";
             }
 
-            // 카드뉴스 생성
-            const cardContainer = document.getElementById('cardContainer');
-            showInfo.gallery.forEach((image, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<img src="${image}" alt="공연 이미지 ${index + 1}">`;
-                cardContainer.appendChild(card);
-            });
-
-            // 이미지가 1장일 때 화살표 숨기기
-            if (showInfo.gallery.length <= 1) {
-                document.querySelector('.card-nav').style.display = 'none';
-            }
-        } else {
-            document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
-        }
-
-        let currentCard = 0;
-        const totalCards = showInfo ? showInfo.gallery.length : 0;
-
-        function changeCard(direction) {
-            currentCard += direction;
-            updateCardPosition();
-            updateButtonState();
-        }
-
-        function updateCardPosition() {
-            const cardContainer = document.getElementById('cardContainer');
-            cardContainer.style.transform = `translateX(-${currentCard * 100}%)`;
-        }
-
-        function updateButtonState() {
-            document.getElementById('prevCard').disabled = currentCard === 0;
-            document.getElementById('nextCard').disabled = currentCard === totalCards - 1;
-        }
-
-        updateButtonState();
     </script>
 </body>
 </html>
