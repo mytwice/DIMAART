@@ -11,7 +11,10 @@
         "gallery": [
             "도마동축제_image1.jpg", 
             "도마동축제_image2.jpg"
-        ]
+        ],
+        "entryMethod": "선착순 입장",
+        "public": "공개",
+        "relatedLink": "https://example.com/domadong-festival"
     },
     "한화이글스홈경기": {
         "name": "한화이글스 홈경기",
@@ -25,7 +28,10 @@
         "gallery": [
             "한화이글스_image1.jpg", 
             "한화이글스_image2.jpg"
-        ]
+        ],
+        "entryMethod": "티켓 소지자 입장",
+        "public": "공개",
+        "relatedLink": "https://example.com/hanwha-eagles"
     },
     "엑스포음악분수": {
         "name": "엑스포음악분수",
@@ -39,7 +45,10 @@
         "gallery": [
             "엑스포음악분수_1.jpg", 
             "엑스포음악분수_2.jpg"
-        ]
+        ],
+        "entryMethod": "무료 입장",
+        "public": "공개",
+        "relatedLink": "https://example.com/expo-water-fountain"
     },
     "서울세계불꽃축제": {
         "name": "서울세계불꽃축제",
@@ -53,7 +62,10 @@
         "gallery": [
             "서울세계불꽃축제_image1.jpg", 
             "서울세계불꽃축제_image2.jpg"
-        ]
+        ],
+        "entryMethod": "무료 입장",
+        "public": "공개",
+        "relatedLink": "https://example.com/seoul-fireworks"
     },
     "사이언스페스티벌": {
         "name": "사이언스페스티벌",
@@ -67,6 +79,9 @@
         "gallery": [
             "사이언스페스티벌_image1.jpg", 
             "사이언스페스티벌_image2.jpg"
-        ]
+        ],
+        "entryMethod": "사전 등록 필요",
+        "public": "비공개",
+        "relatedLink": "https://example.com/science-festival"
     }
 }
