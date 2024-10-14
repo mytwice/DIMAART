@@ -14,28 +14,20 @@
         .header {
             background-color: #333;
             color: white;
-            padding: 20px;
+            padding: 25px; /* Adjusted padding */
             text-align: center;
             position: relative;
         }
-        /* 하얀색 느낌의 홈 버튼 */
-        .home-button {
+        /* DIMA ARTIST 링크 스타일 */
+        .dima-artist {
             position: absolute;
             left: 20px;
-            top: 20px;
-            padding: 10px 15px;
-            background-color: white;
-            color: #333;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
+            top: 10px; /* Adjusted positioning */
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .home-button:hover {
-            background-color: #f0f0f0;
-            color: #000;
+            font-size: 1.6em; /* Font size */
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         /* 플로팅 상단 이동 버튼 */
@@ -66,7 +58,7 @@
             flex-direction: column;
             max-width: 1200px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 10px; /* Adjusted padding */
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -77,7 +69,7 @@
             height: auto;
             border-radius: 8px;
             margin-right: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Adjusted margin */
         }
         .show-info {
             flex: 1;
@@ -96,7 +88,7 @@
             color: #ff5733;
         }
         .gallery {
-            margin-top: 20px;
+            margin-top: 10px; /* Adjusted margin */
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
@@ -119,12 +111,7 @@
 
         @media (max-width: 767px) {
             .header {
-                padding: 10px;
-            }
-            .home-button {
-                padding: 8px 10px;
-                top: 10px;
-                left: 10px;
+                padding: 25px;
             }
             .container {
                 padding: 10px;
@@ -141,9 +128,8 @@
 </head>
 <body>
     <div class="header">
-        <h1 id="showTitle">공연 세부 정보</h1>
+        <a href="https://mytwice.github.io/DIMAART/" class="dima-artist">DIMA ARTIST</a>
     </div>
-    <button class="home-button" onclick="window.location.href='https://mytwice.github.io/DIMAART/'">홈으로 돌아가기</button>
     <div class="container">
         <img id="showImage" class="show-image" src="" alt="공연 이미지">
         <div class="show-info">
@@ -164,124 +150,88 @@
         <img id="galleryImage3" src="" alt="">
         <img id="galleryImage4" src="" alt="">
     </div>
-<!-- 플로팅 상단 이동 버튼 -->
+    <!-- 플로팅 상단 이동 버튼 -->
     <div class="floating-btn" onclick="scrollToTop()">↑</div>
     <script>
         // 공연 정보 객체 (URL에 따라 공연 정보를 설정)
-    const shows = {
-        '도마동축제': {
-            name: "도마동축제",
-            date: "2024-10-25",  // 시작일
-            endDate: "2024-10-30", // 종료일
-            venue: "예술의 전당",
-            cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
-            duration: "155분 (인터미션: 20분)",
-            description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
-            image: "도마동축제.jpg",
-            gallery: ["도마동축제_image1.jpg", "도마동축제_image2.jpg"] // 갤러리 이미지 배열
-        },
-        '한화이글스 홈경기': {
-            name: "한화이글스 홈경기",
-            date: "2024-10-10",  // 시작일
-            endDate: "2024-10-10", // 종료일
-            venue: "대전 한화생명이글스파크",
-            cast: "한화이글스",
-            duration: "120분 (인터미션: 없음)",
-            description: "한화이글스의 홈경기에 대한 설명입니다. 많은 응원 부탁드립니다!",
-            image: "한화이글스.jpg",
-            gallery: ["한화이글스_image1.jpg", "한화이글스_image2.jpg"] // 갤러리 이미지 배열
-        },
-        '엑스포음악분수': {
-            name: "엑스포음악분수",
-            date: "2024-04-20",  // 시작일
-            endDate: "2024-10-25", // 종료일
-            venue: "엑스포과학공원",
-            cast: "음악분수 연출팀",
-            duration: "90분 (인터미션: 15분)",
-            description: "엑스포 음악 분수에 대한 설명입니다. 음악과 함께 즐기는 환상적인 분수쇼를 놓치지 마세요!",
-            image: "엑스포음악분수.jpg",
-            gallery: ["엑스포음악분수_1.jpg", "엑스포음악분수_2.jpg"] // 갤러리 이미지 배열
-        },
-        '서울세계불꽃축제': {
-            name: "서울세계불꽃축제",
-            date: "2024-10-07",  // 시작일
-            endDate: "2024-10-07", // 종료일
-            venue: "한강공원",
-            cast: "다양한 불꽃놀이 팀",
-            duration: "120분 (인터미션: 없음)",
-            description: "서울의 아름다운 하늘을 수놓는 세계적인 불꽃놀이 행사입니다.",
-            image: "서울세계불꽃축제.jpg",
-            gallery: ["서울세계불꽃축제_image1.jpg", "서울세계불꽃축제_image2.jpg"] // 갤러리 이미지 배열
-        },
-        '사이언스페스티벌': {
-            name: "사이언스페스티벌",
-            date: "2024-11-05",  // 시작일
-            endDate: "2024-11-07", // 종료일
-            venue: "서울 코엑스",
-            cast: "과학자들, 연사들",
-            duration: "180분 (인터미션: 30분)",
-            description: "최신 과학 기술과 연구 결과를 공유하는 자리입니다. 다양한 체험 부스와 강연이 준비되어 있습니다.",
-            image: "사이언스페스티벌.jpg",
-            gallery: ["사이언스페스티벌_image1.jpg", "사이언스페스티벌_image2.jpg"] // 갤러리 이미지 배열
-        },
-    };
-        // URL에서 공연명 추출 및 공연 정보 로드
-        const urlPath = window.location.pathname.split('/').pop();
-        const showKey = decodeURIComponent(urlPath); // URL에서 공연명 가져오기
-        const showInfo = shows[showKey]; // shows 객체에서 공연 정보 가져오기
+        const shows = {
+            '도마동축제': {
+                name: "도마동축제",
+                date: "2024-10-25",  // 시작일
+                endDate: "2024-10-30", // 종료일
+                venue: "예술의 전당",
+                cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
+                duration: "155분 (인터미션: 20분)",
+                description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
+                image: "도마동축제.jpg",
+                gallery: ["도마동축제_image1.jpg", "도마동축제_image2.jpg"] // 갤러리 이미지 배열
+            },
+            '한화이글스 홈경기': {
+                name: "한화이글스 홈경기",
+                date: "2024-10-10",  // 시작일
+                endDate: "2024-10-10", // 종료일
+                venue: "대전 한화생명이글스파크",
+                cast: "한화이글스",
+                duration: "120분 (인터미션: 없음)",
+                description: "한화이글스의 홈경기에 대한 설명입니다. 많은 응원 부탁드립니다!",
+                image: "한화이글스.jpg",
+                gallery: ["한화이글스_image1.jpg", "한화이글스_image2.jpg"] // 갤러리 이미지 배열
+            },
+            '엑스포음악분수': {
+                name: "엑스포음악분수",
+                date: "2024-04-20",  // 시작일
+                endDate: "2024-10-25", // 종료일
+                venue: "광주 국립아시아문화전당",
+                cast: "예술가 1, 예술가 2",
+                duration: "60분 (인터미션: 없음)",
+                description: "엑스포 음악 분수에 대한 설명입니다. 흥미로운 경험이 될 것입니다.",
+                image: "엑스포음악분수.jpg",
+                gallery: ["엑스포음악분수_image1.jpg", "엑스포음악분수_image2.jpg"] // 갤러리 이미지 배열
+            },
+        };
 
-        if (showInfo) {
-            // 공연 정보 표시
-            document.getElementById('showImage').src = showInfo.image;
-            document.getElementById('showName').textContent = showInfo.name;
-            document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-            document.getElementById('showVenue').textContent = showInfo.venue;
-            document.getElementById('showCast').textContent = showInfo.cast;
-            document.getElementById('showDuration').textContent = showInfo.duration;
-            document.getElementById('showDescription').textContent = showInfo.description;
+        // URL 쿼리에서 공연 이름 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const showName = urlParams.get('name');
+        const show = shows[showName];
 
-            // D-Day 계산
-            const today = new Date();
-            const showStartDate = new Date(showInfo.date);
-            const showEndDate = new Date(showInfo.endDate);
-            const timeDiffStart = showStartDate.getTime() - today.getTime();
-            const timeDiffEnd = showEndDate.getTime() - today.getTime();
+        // 페이지에 공연 정보 삽입
+        document.getElementById('showName').textContent = show.name;
+        document.getElementById('showDate').textContent = show.date;
+        document.getElementById('showVenue').textContent = show.venue;
+        document.getElementById('showCast').textContent = show.cast;
+        document.getElementById('showDuration').textContent = show.duration;
+        document.getElementById('showDescription').textContent = show.description;
+        document.getElementById('showImage').src = show.image;
 
-            const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24)); // 시작일까지 남은 일 수 계산
-            const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24)); // 종료일까지 남은 일 수 계산
-
-            if (daysLeftStart === 0) {
-                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-            } else if (daysLeftStart > 0) {
-                document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-            } else if (daysLeftEnd < 0) {
-                document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
-            } else {
-                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-            }
-
-            // 갤러리 이미지 표시
-            const gallery = showInfo.gallery;
-            if (gallery.length > 0) {
-                // 이미지가 있는 경우만 갤러리 섹션을 표시
-                document.getElementById('gallery').classList.remove('hidden');
-                for (let i = 0; i < gallery.length; i++) {
-                    document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
+        // 갤러리 이미지 설정
+        const gallery = document.getElementById('gallery');
+        if (show.gallery.length > 0) {
+            gallery.classList.remove('hidden');
+            const galleryImages = gallery.getElementsByTagName('img');
+            for (let i = 0; i < galleryImages.length; i++) {
+                if (show.gallery[i]) {
+                    galleryImages[i].src = show.gallery[i];
                 }
-            } else {
-                document.getElementById('gallery').classList.add('hidden'); // 이미지가 없으면 갤러리 섹션 숨김
             }
-        } else {
-            // 공연 정보가 없을 경우 에러 처리
-            document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
         }
 
-        // 플로팅 버튼을 클릭하면 페이지 상단으로 스크롤
+        // 카운트다운 업데이트
+        function updateCountdown() {
+            const now = new Date();
+            const showDate = new Date(show.date);
+            const timeDifference = showDate - now;
+            const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+            document.getElementById('countdown').textContent = `D-${daysLeft}`;
+        }
+
+        // 페이지 로드 시 카운트다운 업데이트
+        updateCountdown();
+        setInterval(updateCountdown, 86400000); // 하루마다 업데이트
+
+        // 상단으로 스크롤 함수
         function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
     </script>
 </body>
