@@ -14,56 +14,16 @@
         .header {
             background-color: #333;
             color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+            padding: 10px 20px;
+            text-align: left;
         }
-        /* 하얀색 느낌의 홈 버튼 */
-        .home-button {
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            padding: 10px 15px;
-            background-color: white;
-            color: #333;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .home-button:hover {
-            background-color: #f0f0f0;
-            color: #000;
-        }
-
-        /* 플로팅 상단 이동 버튼 */
-        .floating-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            width: 50px;
-            height: 50px;
-            background-color: #007bff;
+        .logo {
             color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
         }
-        .floating-btn:hover {
-            background-color: #0056b3;
-        }
-
         .container {
-            display: flex;
-            flex-direction: column;
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
@@ -80,7 +40,7 @@
             margin-bottom: 20px;
         }
         .show-info {
-            flex: 1;
+            margin-bottom: 20px;
         }
         .show-info h2 {
             margin: 0;
@@ -95,37 +55,47 @@
             font-weight: bold;
             color: #ff5733;
         }
-        .gallery {
+        .card-news {
             margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
-        .gallery img {
-            width: 100%;
-            max-width: 300px;
+        .card-container {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+        .card {
+            flex: 0 0 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
             border-radius: 8px;
         }
-        .gallery.hidden {
-            display: none;
+        .card-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
         }
-
-        /* 반응형 스타일 추가 */
-        @media (min-width: 768px) {
-            .container {
-                flex-direction: row;
-            }
+        .card-nav button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
+        .card-nav button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
         @media (max-width: 767px) {
-            .header {
-                padding: 10px;
-            }
-            .home-button {
-                padding: 8px 10px;
-                top: 10px;
-                left: 10px;
-            }
             .container {
                 padding: 10px;
                 margin: 10px;
@@ -141,9 +111,8 @@
 </head>
 <body>
     <div class="header">
-        <h1 id="showTitle">공연 세부 정보</h1>
+        <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
     </div>
-    <button class="home-button" onclick="window.location.href='https://mytwice.github.io/DIMAART/'">홈으로 돌아가기</button>
     <div class="container">
         <img id="showImage" class="show-image" src="" alt="공연 이미지">
         <div class="show-info">
@@ -155,19 +124,16 @@
             <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
             <p><span class="countdown" id="countdown">D-11</span></p>
         </div>
+        <div class="card-news">
+            <div class="card-container" id="cardContainer"></div>
+            <div class="card-nav">
+                <button id="prevCard" onclick="changeCard(-1)" disabled>이전</button>
+                <button id="nextCard" onclick="changeCard(1)">다음</button>
+            </div>
+        </div>
     </div>
 
-    <div class="gallery hidden" id="gallery">
-        <h3>작품 이미지</h3>
-        <img id="galleryImage1" src="" alt="">
-        <img id="galleryImage2" src="" alt="">
-        <img id="galleryImage3" src="" alt="">
-        <img id="galleryImage4" src="" alt="">
-    </div>
-<!-- 플로팅 상단 이동 버튼 -->
-    <div class="floating-btn" onclick="scrollToTop()">↑</div>
     <script>
-        // 공연 정보 객체 (URL에 따라 공연 정보를 설정)
     const shows = {
         '도마동축제': {
             name: "도마동축제",
@@ -225,13 +191,12 @@
             gallery: ["사이언스페스티벌_image1.jpg", "사이언스페스티벌_image2.jpg"] // 갤러리 이미지 배열
         },
     };
-        // URL에서 공연명 추출 및 공연 정보 로드
+
         const urlPath = window.location.pathname.split('/').pop();
-        const showKey = decodeURIComponent(urlPath); // URL에서 공연명 가져오기
-        const showInfo = shows[showKey]; // shows 객체에서 공연 정보 가져오기
+        const showKey = decodeURIComponent(urlPath);
+        const showInfo = shows[showKey];
 
         if (showInfo) {
-            // 공연 정보 표시
             document.getElementById('showImage').src = showInfo.image;
             document.getElementById('showName').textContent = showInfo.name;
             document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
@@ -240,15 +205,13 @@
             document.getElementById('showDuration').textContent = showInfo.duration;
             document.getElementById('showDescription').textContent = showInfo.description;
 
-            // D-Day 계산
             const today = new Date();
             const showStartDate = new Date(showInfo.date);
             const showEndDate = new Date(showInfo.endDate);
             const timeDiffStart = showStartDate.getTime() - today.getTime();
             const timeDiffEnd = showEndDate.getTime() - today.getTime();
-
-            const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24)); // 시작일까지 남은 일 수 계산
-            const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24)); // 종료일까지 남은 일 수 계산
+            const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
+            const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
 
             if (daysLeftStart === 0) {
                 document.getElementById('countdown').textContent = "현재 공연 중입니다!";
@@ -260,29 +223,38 @@
                 document.getElementById('countdown').textContent = "현재 공연 중입니다!";
             }
 
-            // 갤러리 이미지 표시
-            const gallery = showInfo.gallery;
-            if (gallery.length > 0) {
-                // 이미지가 있는 경우만 갤러리 섹션을 표시
-                document.getElementById('gallery').classList.remove('hidden');
-                for (let i = 0; i < gallery.length; i++) {
-                    document.getElementById(`galleryImage${i + 1}`).src = gallery[i];
-                }
-            } else {
-                document.getElementById('gallery').classList.add('hidden'); // 이미지가 없으면 갤러리 섹션 숨김
-            }
+            // 카드뉴스 생성
+            const cardContainer = document.getElementById('cardContainer');
+            showInfo.gallery.forEach((image, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<img src="${image}" alt="공연 이미지 ${index + 1}">`;
+                cardContainer.appendChild(card);
+            });
         } else {
-            // 공연 정보가 없을 경우 에러 처리
             document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
         }
 
-        // 플로팅 버튼을 클릭하면 페이지 상단으로 스크롤
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        let currentCard = 0;
+        const totalCards = showInfo ? showInfo.gallery.length : 0;
+
+        function changeCard(direction) {
+            currentCard += direction;
+            updateCardPosition();
+            updateButtonState();
         }
+
+        function updateCardPosition() {
+            const cardContainer = document.getElementById('cardContainer');
+            cardContainer.style.transform = `translateX(-${currentCard * 100}%)`;
+        }
+
+        function updateButtonState() {
+            document.getElementById('prevCard').disabled = currentCard === 0;
+            document.getElementById('nextCard').disabled = currentCard === totalCards - 1;
+        }
+
+        updateButtonState();
     </script>
 </body>
 </html>
