@@ -59,6 +59,30 @@
             font-weight: bold;
             color: #ff5733;
         }
+        
+        /* 갤러리 스타일 */
+        .gallery {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .gallery img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .gallery button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .gallery button:hover {
+            background-color: #555;
+        }
 
         @media (max-width: 767px) {
             .container {
@@ -70,6 +94,9 @@
             }
             .show-info p {
                 font-size: 0.9em;
+            }
+            .gallery img {
+                max-height: 200px;
             }
         }
     </style>
@@ -90,6 +117,13 @@
                 <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
                 <p><span class="countdown" id="countdown">D-11</span></p>
             </div>
+        </div>
+
+        <!-- 갤러리 섹션 추가 -->
+        <div class="gallery">
+            <button id="prevButton">◀</button>
+            <img id="galleryImage" src="" alt="갤러리 이미지">
+            <button id="nextButton">▶</button>
         </div>
     </div>
 
@@ -152,39 +186,60 @@
         },
     };
 
-        const urlPath = window.location.pathname.split('/').pop();
-        const showKey = decodeURIComponent(urlPath);
-        const showInfo = shows[showKey];
+    const urlPath = window.location.pathname.split('/').pop();
+    const showKey = decodeURIComponent(urlPath);
+    const showInfo = shows[showKey];
 
-        if (showInfo) {
-            document.getElementById('showImage').src = showInfo.image;
-            document.getElementById('showName').textContent = showInfo.name;
-            document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-            document.getElementById('showVenue').textContent = showInfo.venue;
-            document.getElementById('showCast').textContent = showInfo.cast;
-            document.getElementById('showDuration').textContent = showInfo.duration;
-            document.getElementById('showDescription').textContent = showInfo.description;
+    if (showInfo) {
+        document.getElementById('showImage').src = showInfo.image;
+        document.getElementById('showName').textContent = showInfo.name;
+        document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+        document.getElementById('showVenue').textContent = showInfo.venue;
+        document.getElementById('showCast').textContent = showInfo.cast;
+        document.getElementById('showDuration').textContent = showInfo.duration;
+        document.getElementById('showDescription').textContent = showInfo.description;
 
-            const today = new Date();
-            const showStartDate = new Date(showInfo.date);
-            const showEndDate = new Date(showInfo.endDate);
-            const timeDiffStart = showStartDate.getTime() - today.getTime();
-            const timeDiffEnd = showEndDate.getTime() - today.getTime();
-            const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
-            const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
+        const today = new Date();
+        const showStartDate = new Date(showInfo.date);
+        const showEndDate = new Date(showInfo.endDate);
+        const timeDiffStart = showStartDate.getTime() - today.getTime();
+        const timeDiffEnd = showEndDate.getTime() - today.getTime();
+        const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
+        const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
 
-            if (daysLeftStart === 0) {
-                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-            } else if (daysLeftStart > 0) {
-                document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-            } else if (daysLeftEnd < 0) {
-                document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
-            } else {
-                document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-            }
+        if (daysLeftStart === 0) {
+            document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+        } else if (daysLeftStart > 0) {
+            document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
+        } else if (daysLeftEnd < 0) {
+            document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
         } else {
-            document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+            document.getElementById('countdown').textContent = "현재 공연 중입니다!";
         }
+
+        // 갤러리 이미지 관련 코드
+        const galleryImages = showInfo.gallery;
+        let currentImageIndex = 0;
+
+        function updateGalleryImage() {
+            document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
+        }
+
+        document.getElementById('prevButton').onclick = function() {
+            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : galleryImages.length - 1;
+            updateGalleryImage();
+        };
+
+        document.getElementById('nextButton').onclick = function() {
+            currentImageIndex = (currentImageIndex < galleryImages.length - 1) ? currentImageIndex + 1 : 0;
+            updateGalleryImage();
+        };
+
+        // 초기 갤러리 이미지 설정
+        updateGalleryImage();
+    } else {
+        document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+    }
     </script>
 </body>
 </html>
