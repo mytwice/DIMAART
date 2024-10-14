@@ -84,20 +84,21 @@
             left: 0;
             right: 0;
             display: flex;
-            justify-content: space-between; /* 버튼 간의 공간을 평등하게 배분 */
+            justify-content: space-between; /* 양쪽에 버튼을 배치 */
             transform: translateY(-50%); /* 수직 중앙 정렬 */
             pointer-events: none; /* 마우스 이벤트 비활성화 */
         }
         
         .card-nav button {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 24px;
-            pointer-events: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* 배경색 */
+            color: white; /* 글자색 */
+            border: none; /* 테두리 없음 */
+            padding: 10px 15px; /* 여백 */
+            cursor: pointer; /* 커서 포인터 */
+            font-size: 24px; /* 글자 크기 */
+            pointer-events: auto; /* 마우스 이벤트 활성화 */
         }
+
         .card-nav button:disabled {
             display: none;
         }
