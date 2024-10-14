@@ -98,17 +98,18 @@
             margin-top: 40px;
         }
 
-        .share-button {
-            background-color: #007bff;
+        .action-button {
+            background-color: #E564B9;
             color: white;
             border: none;
             padding: 10px 20px;
             font-size: 1em;
             border-radius: 4px;
             cursor: pointer;
+            margin: 0 10px;
         }
-        .share-button:hover {
-            background-color: #0056b3;
+        .action-button:hover {
+            background-color: #D454A9;
         }
 
         @media (max-width: 767px) {
@@ -144,6 +145,7 @@
                 <p><strong>장소:</strong> <span id="showVenue"></span></p>
                 <p><strong>출연:</strong> <span id="showCast"></span></p>
                 <p><strong>관람 시간:</strong> <span id="showDuration"></span></p>
+                <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
                 <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
                 <p><strong>입장 방식:</strong> <span id="showEntry"></span></p>
                 <p><strong>공개 여부:</strong> <span id="showPublic"></span></p>
@@ -165,7 +167,8 @@
     </div>
 
     <div class="share-container">
-        <button class="share-button" onclick="shareShow()">공유하기</button>
+        <button class="action-button" onclick="shareShow()">공유하기</button>
+        <button class="action-button" onclick="goToList()">목록 보기</button>
     </div>
 
     <script>
@@ -178,9 +181,10 @@
             cast: "김호영, 이석훈, 김성규...",
             duration: "155분 (인터미션: 20분)",
             description: "도마동축제에 대한 설명이 여기에 들어갑니다.",
-            entry: "",
+            entry: "선착순 입장",
             public: "공개",
-            link: "",
+            organizer: "DIMA Art Center",
+            link: "https://example.com",
             image: "도마동축제.jpg",
             gallery: ["도마동축제_image1.jpg", "도마동축제_image2.jpg"]
         },
@@ -192,6 +196,7 @@
             cast: "한화이글스",
             duration: "120분",
             description: "한화이글스의 홈경기 설명입니다.",
+            organizer: "한화이글스",
             image: "한화이글스.jpg",
             gallery: ["한화이글스_image1.png", "한화이글스_image2.png"]
         }
@@ -211,6 +216,7 @@
         document.getElementById('showDescription').textContent = showInfo.description || '';
         document.getElementById('showEntry').textContent = showInfo.entry || '';
         document.getElementById('showPublic').textContent = showInfo.public || '';
+        document.getElementById('showOrganizer').textContent = showInfo.organizer || '';
         const linkElement = document.getElementById('showLink');
         if (showInfo.link) {
             linkElement.textContent = showInfo.link;
@@ -228,12 +234,10 @@
         const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
         const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
 
-        if (daysLeftStart === 0) {
-            document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+        if (daysLeftEnd < 0) {
+            document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
         } else if (daysLeftStart > 0) {
             document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-        } else if (daysLeftEnd < 0) {
-            document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
         } else {
             document.getElementById('countdown').textContent = "현재 공연 중입니다!";
         }
@@ -272,6 +276,10 @@
         }).catch((error) => {
             console.error('공유 실패:', error);
         });
+    }
+
+    function goToList() {
+        window.location.href = "https://mytwice.github.io/DIMAART/";
     }
     </script>
 </body>
