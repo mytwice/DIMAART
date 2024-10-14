@@ -80,14 +80,16 @@
         }
         .card-nav {
             position: absolute;
-            top: 50%;
+            top: 50%; /* 카드 중앙에 위치하도록 설정 */
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between; /* 양쪽에 버튼을 배치 */
             transform: translateY(-50%); /* 수직 중앙 정렬 */
             pointer-events: none; /* 마우스 이벤트 비활성화 */
+            padding: 0 20px; /* 양쪽 여백 추가 */
         }
+
         
         .card-nav button {
             background-color: rgba(0, 0, 0, 0.5); /* 배경색 */
