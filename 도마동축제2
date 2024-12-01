@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="showTitle">공연 세부 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-align: left;
+        }
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .show-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .show-image {
+            flex: 0 0 300px;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+        }
+        .show-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .show-info h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .show-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .countdown {
+            font-weight: bold;
+            color: #ff5733;
+            font-size: 1.2em;
+        }
+
+        /* 갤러리 스타일 */
+        .gallery {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .gallery img {
+            width: 400px;
+            height: auto;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .gallery button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .gallery button:hover {
+            background-color: #555;
+        }
+
+        .share-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-button {
+            background-color: #E564B9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .action-button:hover {
+            background-color: #D454A9;
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 10px;
+                margin: 10px;
+            }
+            .show-info h2 {
+                font-size: 1.2em;
+            }
+            .show-info p {
+                font-size: 0.9em;
+            }
+            .gallery img {
+                width: 200px;
+            }
+            .gallery button {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+    </div>
+    <div class="container">
+        <div class="show-content">
+            <img id="showImage" class="show-image" src="" alt="공연 이미지">
+            <div class="show-info">
+                <h2 id="showName">공연명</h2>
+                <p><strong>일시:</strong> <span id="showDate"></span></p>
+                <p><strong>장소:</strong> <span id="showVenue"></span></p>
+                <p><strong>출연:</strong> <span id="showCast"></span></p>
+                <p><strong>관람 시간:</strong> <span id="showDuration"></span></p>
+                <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
+                <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
+                <p><strong>입장 방식:</strong> <span id="showEntry"></span></p>
+                <p><strong>공개 여부:</strong> <span id="showPublic"></span></p>
+                <p><strong>관련 링크:</strong> <a id="showLink" href="#" target="_blank"></a></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="countdown-container">
+        <p class="countdown" id="countdown">D-11</p>
+    </div>
+    
+    <div class="container">
+        <div class="gallery">
+            <button id="prevButton">◀</button>
+            <img id="galleryImage" src="" alt="갤러리 이미지">
+            <button id="nextButton">▶</button>
+        </div>
+    </div>
+
+    <div class="share-container">
+        <button class="action-button" onclick="shareShow()">공유하기</button>
+        <button class="action-button" onclick="goToList()">목록 보기</button>
+    </div>
+
+    <script>
+    google.charts.load("current", { packages: ["corechart"] }).then(() => {
+        const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Replace with your actual Google Sheets key
+        let query = new google.visualization.Query(
+            `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
+        );
+
+        query.send((response) => {
+            if (response.isError()) {
+                console.error(
+                    "Error in query: " +
+                    response.getMessage() +
+                    " " +
+                    response.getDetailedMessage()
+                );
+                return;
+            }
+
+            let dataTable = response.getDataTable().toJSON();
+            let jsonData = JSON.parse(dataTable);
+            let cols = jsonData.cols.map((col) => col.label);
+            let rows = jsonData.rows.map((row) => {
+                let newRow = {};
+                row.c.forEach((obj, index) => {
+                    if (obj == null || obj == undefined) return;
+                    obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
+                    ["f", "v"].forEach((each) => delete obj[each]);
+                    newRow = { ...newRow, ...obj };
+                });
+                return newRow;
+            });
+
+            // Parse rows into a format we can use
+            const shows = rows.reduce((acc, row) => {
+                if (!row['공연명']) return acc;
+
+                acc[row['공연명']] = {
+                    name: row['공연명'],
+                    date: row['시작일'],
+                    endDate: row['종료일'],
+                    venue: row['장소'],
+                    cast: row['출연'],
+                    duration: row['관람 시간'],
+                    description: row['설명'],
+                    image: row['이미지 URL'],
+                    gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
+                };
+
+                return acc;
+            }, {});
+
+            // Extract key from URL
+            const urlPath = window.location.pathname.split('/').pop();
+            const showKey = decodeURIComponent(urlPath);
+            const showInfo = shows[showKey];
+
+            if (showInfo) {
+                // Update DOM elements with show info
+                document.getElementById('showImage').src = showInfo.image;
+                document.getElementById('showName').textContent = showInfo.name;
+                document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                document.getElementById('showVenue').textContent = showInfo.venue;
+                document.getElementById('showCast').textContent = showInfo.cast;
+                document.getElementById('showDuration').textContent = showInfo.duration;
+                document.getElementById('showDescription').textContent = showInfo.description;
+
+                const today = new Date();
+                const showStartDate = new Date(showInfo.date);
+                const showEndDate = new Date(showInfo.endDate);
+                const timeDiffStart = showStartDate.getTime() - today.getTime();
+                const timeDiffEnd = showEndDate.getTime() - today.getTime();
+                const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
+                const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
+
+                if (daysLeftStart === 0) {
+                    document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+                } else if (daysLeftStart > 0) {
+                    document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
+                } else if (daysLeftEnd < 0) {
+                    document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+                } else {
+                    document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+                }
+
+                // 갤러리 이미지 관련 코드
+                const galleryImages = showInfo.gallery;
+                let currentImageIndex = 0;
+
+                function updateGalleryImage() {
+                    document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
+                }
+
+                document.getElementById('prevButton').onclick = function() {
+                    currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : galleryImages.length - 1;
+                    updateGalleryImage();
+                };
+
+                document.getElementById('nextButton').onclick = function() {
+                    currentImageIndex = (currentImageIndex < galleryImages.length - 1) ? currentImageIndex + 1 : 0;
+                    updateGalleryImage();
+                };
+
+                // 초기 갤러리 이미지 설정
+                updateGalleryImage();
+
+                // 공유 버튼 이벤트 추가
+                document.getElementById('shareButton').onclick = function () {
+                    const shareData = {
+                        title: showInfo.name,
+                        text: `공연 정보: ${showInfo.name}\n일시: ${showInfo.date} ~ ${showInfo.endDate}\n장소: ${showInfo.venue}`,
+                        url: window.location.href,
+                    };
+
+                    if (navigator.share) {
+                        navigator.share(shareData).catch(console.error);
+                    } else {
+                        navigator.clipboard.writeText(window.location.href)
+                            .then(() => alert("URL이 클립보드에 복사되었습니다!"))
+                            .catch((err) => console.error("복사 실패:", err));
+                    }
+                };
+            } else {
+                document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+            }
+        });
+    });
+    </script>
+</body>
+</html>
