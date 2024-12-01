@@ -174,11 +174,11 @@
 
     <script>
         google.charts.load("current", { packages: ["corechart"] }).then(() => {
-            const myKey = "1iMPbNin0C5v9oIqEQm0aM4OCg9IwDswemDxdEW0Ati8"; // Replace with your actual Google Sheets key
+            const myKey = ""; // Google Sheets API Key를 여기에 추가하세요
             let query = new google.visualization.Query(
                 `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
             );
-        
+    
             query.send((response) => {
                 if (response.isError()) {
                     console.error(
@@ -189,7 +189,8 @@
                     );
                     return;
                 }
-        
+    
+                // 데이터 처리
                 let dataTable = response.getDataTable().toJSON();
                 let jsonData = JSON.parse(dataTable);
                 let cols = jsonData.cols.map((col) => col.label);
@@ -203,67 +204,85 @@
                     });
                     return newRow;
                 });
-        
-                // Parse rows into a format we can use
+    
+                // 표시 ON/OFF 필터링
                 const shows = rows.reduce((acc, row) => {
-                    if (!row['공연명']) return acc;
-        
+                    // 표시가 true인 경우에만 처리
+                    if (!row['표시 ON/OFF']) return acc;
+    
                     acc[row['공연명']] = {
                         name: row['공연명'],
-                        date: row['시작일'],
-                        endDate: row['종료일'],
+                        date: row['일시'],
                         venue: row['장소'],
                         cast: row['출연'],
-                        duration: row['관람 시간'],
-                        description: row['설명'],
-                        image: row['이미지 URL'],
-                        gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
+                        duration: row['관람시간'],
+                        organizer: row['주최/주관'],
+                        entry: row['입장방식'],
+                        public: row['공개여부'],
+                        image: row['이미지 URL'], // 이미지 URL 추가
+                        gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [], // 갤러리 이미지 추가
                     };
-        
+    
                     return acc;
                 }, {});
-        
-                // Extract key from URL
+    
+                // URL에서 공연 키 가져오기
                 const urlPath = window.location.pathname.split('/').pop();
                 const showKey = decodeURIComponent(urlPath);
                 const showInfo = shows[showKey];
-        
+    
                 if (showInfo) {
-                    // Update DOM elements with show info
+                    // 공연 정보를 DOM에 업데이트
                     document.getElementById('showImage').src = showInfo.image;
-                    document.getElementById('공연명').textContent = showInfo.name;
-                    document.getElementById('일시').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-                    document.getElementById('장소').textContent = showInfo.venue;
-                    document.getElementById('출연').textContent = showInfo.cast;
-                    document.getElementById('관람시간').textContent = showInfo.duration;
-                    document.getElementById('주최/주관').textContent = showInfo.description;
-        
+                    document.getElementById('showName').textContent = showInfo.name;
+                    document.getElementById('showDate').textContent = showInfo.date;
+                    document.getElementById('showVenue').textContent = showInfo.venue;
+                    document.getElementById('showCast').textContent = showInfo.cast;
+                    document.getElementById('showDuration').textContent = showInfo.duration;
+                    document.getElementById('showOrganizer').textContent = showInfo.organizer;
+                    document.getElementById('showEntry').textContent = showInfo.entry;
+                    document.getElementById('showPublic').textContent = showInfo.public;
+    
+                    // 남은 시간 계산 및 표시
                     const today = new Date();
                     const showStartDate = new Date(showInfo.date);
-                    const showEndDate = new Date(showInfo.endDate);
-                    const timeDiffStart = showStartDate.getTime() - today.getTime();
-                    const timeDiffEnd = showEndDate.getTime() - today.getTime();
-                    const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
-                    const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
-        
-                    if (daysLeftStart === 0) {
-                        document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-                    } else if (daysLeftStart > 0) {
-                        document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-                    } else if (daysLeftEnd < 0) {
-                        document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+                    const timeDiff = showStartDate.getTime() - today.getTime();
+                    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    
+                    if (daysLeft > 0) {
+                        document.getElementById('countdown').textContent = `공연까지 D-${daysLeft}`;
+                    } else if (daysLeft === 0) {
+                        document.getElementById('countdown').textContent = "공연이 오늘입니다!";
                     } else {
-                        document.getElementById('countdown').textContent = "현재 공연 중입니다!";
+                        document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
                     }
-        
-                    // 공유 버튼 이벤트 추가
+    
+                    // 갤러리 기능 추가
+                    const galleryImages = showInfo.gallery;
+                    let currentIndex = 0;
+    
+                    if (galleryImages.length > 0) {
+                        document.getElementById('galleryImage').src = galleryImages[currentIndex];
+    
+                        document.getElementById('prevButton').onclick = () => {
+                            currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+                            document.getElementById('galleryImage').src = galleryImages[currentIndex];
+                        };
+    
+                        document.getElementById('nextButton').onclick = () => {
+                            currentIndex = (currentIndex + 1) % galleryImages.length;
+                            document.getElementById('galleryImage').src = galleryImages[currentIndex];
+                        };
+                    }
+    
+                    // 공유 기능
                     document.getElementById('shareButton').onclick = function () {
                         const shareData = {
                             title: showInfo.name,
                             text: `${showInfo.name}에 대한 자세한 정보를 확인하세요!`,
                             url: window.location.href
                         };
-        
+    
                         if (navigator.share) {
                             navigator.share(shareData)
                                 .then(() => console.log("공유 성공"))
@@ -274,8 +293,8 @@
                                 .catch((err) => console.error("복사 실패:", err));
                         }
                     };
-        
-                    // 리스트 이동 버튼 이벤트 추가
+    
+                    // 목록 이동 기능
                     document.getElementById('goToListButton').onclick = function () {
                         window.location.href = "https://mytwice.github.io/DIMAART/";
                     };
@@ -284,7 +303,9 @@
                 }
             });
         });
-        </script>
+    </script>
+    
+
         
 
 </body>
