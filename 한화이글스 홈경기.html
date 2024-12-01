@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="showTitle">공연 세부 정보</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,11 +38,10 @@
             gap: 20px;
         }
         .show-image {
-            flex: 0 0 150px; /* 기본 너비를 작게 설정 */
-            max-width: 150px; /* 최대 너비를 150px로 설정 */
-            height: auto; /* 자동 높이 설정 */
+            flex: 0 0 300px;
+            max-width: 300px;
+            height: auto;
             border-radius: 8px;
-            object-fit: cover; /* 비율 유지하며 잘리게 함 */
         }
         .show-info {
             flex: 1;
@@ -173,99 +173,162 @@
     </div>
 
     <script>
-    const shows = {
-        '도마동축제': {
-            name: "도마동축제",
-            date: "2024-10-25 19:00",  // 시작일시
-            endDate: "2024-10-30 22:00", // 종료일시
-            venue: "예술의 전당",
-            cast: "김호영, 이석훈, 김성규...",
-            duration: "155분 (인터미션: 20분)",
-            description: "도마동축제에 대한 설명이 여기에 들어갑니다.",
-            entry: "선착순 입장",
-            public: "공개",
-            organizer: "DIMA Art Center",
-            link: "https://example.com",
-            image: "도마동축제.jpg",
-            gallery: ["도마동축제_image1.jpg", "도마동축제_image2.jpg"]
-        },
-        '한화이글스 홈경기': {
-            name: "한화이글스 홈경기",
-            date: "2024-10-10 14:00",  
-            endDate: "2024-10-10 17:00",
-            venue: "대전 한화생명이글스파크",
-            cast: "한화이글스",
-            duration: "120분",
-            description: "한화이글스의 홈경기 설명입니다.",
-            organizer: "한화이글스",
-            image: "한화이글스.jpg",
-            gallery: ["한화이글스_image1.png", "한화이글스_image2.png"]
-        }
-    };
+    // 구글 차트 라이브러리 로드 후 실행
+    google.charts.load("current", { packages: ["corechart"] }).then(() => {
+        // 구글 시트 키 (실제 사용 시 myKey를 실제 시트 키로 대체)
+        myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"
+        let query = new google.visualization.Query(
+            `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
+        );
+    
+        
+        query.send((response) => {
+            if (response.isError()) {
+                console.error(
+                    "Error in query: " +
+                    response.getMessage() +
+                    " " +
+                    response.getDetailedMessage()
+                );
+                return;
+            }
+            
+            // 데이터 테이블을 JSON으로 변환
+            let dataTable = response.getDataTable().toJSON();
+            let jsonData = JSON.parse(dataTable);
+            
+            // 열 이름 추출
+            let cols = jsonData.cols.map((col) => col.label);
+            
+            // 행 데이터 처리
+            let rows = jsonData.rows.map((row) => {
+                let newRow;
+                row.c.forEach((obj, index) => {
+                    if (obj == null || obj == undefined) return; // 빈값일 경우 건너뛰기
+                    obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
+                    ["f", "v"].forEach((each) => delete obj[each]);
+                    newRow = { ...newRow, ...obj };
+                });
+                return newRow;
+            });
 
-    const urlPath = window.location.pathname.split('/').pop();
-    const showKey = decodeURIComponent(urlPath);
-    const showInfo = shows[showKey];
+            // 공연 정보 객체 생성
+            const shows = {};
+            
+            // 행 순회하며 공연 정보 추출
+            rows.forEach(row => {
+                // 표시 ON/OFF가 TRUE인 경우에만 처리
+                if (row['표시 ON/OFF'] === 'TRUE') {
+                    const showName = row['공연명'];
+                    shows[showName] = {
+                        name: showName,
+                        date: row['일시'],
+                        endDate: row['종료일시'] || '',
+                        venue: row['장소'] || '',
+                        cast: row['출연'] || '',
+                        duration: row['관람시간'] || '',
+                        description: row['설명'] || '',
+                        entry: row['입장방식'] || '',
+                        public: row['공개여부'] || '',
+                        organizer: row['주최/주관'] || '',
+                        link: row['관련 링크'] || '',
+                        image: row['메인포스터'] || '',
+                        gallery: [
+                            row['사진1'] || '',
+                            row['사진2'] || '',
+                            row['사진3'] || '',
+                            row['사진4'] || ''
+                        ].filter(img => img !== '') // 빈 문자열 제거
+                    };
+                }
+            });
 
-    if (showInfo) {
-        document.getElementById('showImage').src = showInfo.image;
-        document.getElementById('showName').textContent = showInfo.name;
-        document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-        document.getElementById('showVenue').textContent = showInfo.venue;
-        document.getElementById('showCast').textContent = showInfo.cast || '';
-        document.getElementById('showDuration').textContent = showInfo.duration || '';
-        document.getElementById('showDescription').textContent = showInfo.description || '';
-        document.getElementById('showEntry').textContent = showInfo.entry || '';
-        document.getElementById('showPublic').textContent = showInfo.public || '';
-        document.getElementById('showOrganizer').textContent = showInfo.organizer || '';
-        const linkElement = document.getElementById('showLink');
-        if (showInfo.link) {
-            linkElement.textContent = showInfo.link;
-            linkElement.href = showInfo.link;
-        } else {
-            linkElement.style.display = 'none';
-        }
+            // 기존 페이지 초기화 로직 유지
+            const urlPath = window.location.pathname.split('/').pop();
+            const showKey = decodeURIComponent(urlPath);
+            const showInfo = shows[showKey];
 
-        // Countdown logic
-        const today = new Date();
-        const showStartDate = new Date(showInfo.date);
-        const showEndDate = new Date(showInfo.endDate);
-        const timeDiffStart = showStartDate.getTime() - today.getTime();
-        const timeDiffEnd = showEndDate.getTime() - today.getTime();
-        const daysLeftStart = Math.ceil(timeDiffStart / (1000 * 60 * 60 * 24));
-        const daysLeftEnd = Math.ceil(timeDiffEnd / (1000 * 60 * 60 * 24));
+            if (showInfo) {
+                // 기존 코드와 동일한 페이지 업데이트 로직
+                document.getElementById('showImage').src = showInfo.image;
+                document.getElementById('showName').textContent = showInfo.name;
+                document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                document.getElementById('showVenue').textContent = showInfo.venue;
+                document.getElementById('showCast').textContent = showInfo.cast || '';
+                document.getElementById('showDuration').textContent = showInfo.duration || '';
+                document.getElementById('showDescription').textContent = showInfo.description || '';
+                document.getElementById('showEntry').textContent = showInfo.entry || '';
+                document.getElementById('showPublic').textContent = showInfo.public || '';
+                document.getElementById('showOrganizer').textContent = showInfo.organizer || '';
+                
+                const linkElement = document.getElementById('showLink');
+                if (showInfo.link) {
+                    linkElement.textContent = showInfo.link;
+                    linkElement.href = showInfo.link;
+                } else {
+                    linkElement.style.display = 'none';
+                }
 
-        if (daysLeftEnd < 0) {
-            document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
-        } else if (daysLeftStart > 0) {
-            document.getElementById('countdown').textContent = `공연까지 ${daysLeftStart}일 남았습니다.`;
-        } else {
-            document.getElementById('countdown').textContent = "현재 공연 중입니다!";
-        }
+                // 갤러리 이미지 로직
+                const galleryImages = showInfo.gallery;
+                let currentImageIndex = 0;
 
-        // Gallery image logic
-        const galleryImages = showInfo.gallery;
-        let currentImageIndex = 0;
+                function updateGalleryImage() {
+                    document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
+                }
 
-        function updateGalleryImage() {
-            document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
-        }
+                document.getElementById('prevButton').onclick = function() {
+                    currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : galleryImages.length - 1;
+                    updateGalleryImage();
+                };
 
-        document.getElementById('prevButton').onclick = function() {
-            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : galleryImages.length - 1;
-            updateGalleryImage();
-        };
+                document.getElementById('nextButton').onclick = function() {
+                    currentImageIndex = (currentImageIndex < galleryImages.length - 1) ? currentImageIndex + 1 : 0;
+                    updateGalleryImage();
+                };
 
-        document.getElementById('nextButton').onclick = function() {
-            currentImageIndex = (currentImageIndex < galleryImages.length - 1) ? currentImageIndex + 1 : 0;
-            updateGalleryImage();
-        };
+                updateGalleryImage();
 
-        updateGalleryImage();
-    } else {
-        document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
-    }
+                function calculateDDay(dateString) {
+                    // 날짜 범위 분리 (~ 기준)
+                    const [startDateStr, endDateStr] = dateString.split('~').map(date => date.trim());
+                    
+                    // 날짜 파싱 (시간 있는 경우와 없는 경우 모두 처리)
+                    const parseDate = (dateStr) => {
+                        return dateStr.includes(' ') ? new Date(dateStr) : new Date(dateStr + ' 00:00:00');
+                    };
 
+                    const today = new Date();
+                    const startDate = parseDate(startDateStr);
+                    const endDate = parseDate(endDateStr);
+
+                    // 오늘 날짜를 시간 제외하고 비교
+                    const todayNoTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    const startDateNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                    const endDateNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+                    // D-DAY 계산
+                    if (todayNoTime > endDateNoTime) {
+                        return "공연이 종료되었습니다.";
+                    } else if (todayNoTime < startDateNoTime) {
+                        // 공연 시작 전
+                        const daysLeft = Math.ceil((startDateNoTime - todayNoTime) / (1000 * 60 * 60 * 24));
+                        return `공연까지 ${daysLeft}일 남았습니다.`;
+                    } else {
+                        // 공연 기간 중
+                        return "현재 공연 중입니다!";
+                    }
+                }
+
+                // 페이지에서 사용
+                document.getElementById('countdown').textContent = calculateDDay(`${showInfo.date} ~ ${showInfo.endDate}`);
+            } else {
+                document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+            }
+        });
+    });
+
+    // 공유 및 목록 보기 함수
     function shareShow() {
         const shareData = {
             title: showInfo.name,
