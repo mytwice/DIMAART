@@ -230,12 +230,12 @@
                 if (showInfo) {
                     // Update DOM elements with show info
                     document.getElementById('showImage').src = showInfo.image;
-                    document.getElementById('showName').textContent = showInfo.name;
-                    document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-                    document.getElementById('showVenue').textContent = showInfo.venue;
-                    document.getElementById('showCast').textContent = showInfo.cast;
-                    document.getElementById('showDuration').textContent = showInfo.duration;
-                    document.getElementById('showDescription').textContent = showInfo.description;
+                    document.getElementById('공연명').textContent = showInfo.name;
+                    document.getElementById('일시').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                    document.getElementById('장소').textContent = showInfo.venue;
+                    document.getElementById('출연').textContent = showInfo.cast;
+                    document.getElementById('관람시간').textContent = showInfo.duration;
+                    document.getElementById('주최/주관').textContent = showInfo.description;
         
                     const today = new Date();
                     const showStartDate = new Date(showInfo.date);
