@@ -173,137 +173,82 @@
     </div>
 
     <script>
-        google.charts.load("current", { packages: ["corechart"] }).then(() => {
-            const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Google Sheets API Key를 여기에 추가하세요
-            let query = new google.visualization.Query(
-                `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
-            );
+        document.addEventListener('DOMContentLoaded', function() {
+            google.charts.load("current", { packages: ["corechart"] }).then(() => {
+                const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Replace with your actual Google Sheets key
+                let query = new google.visualization.Query(
+                    `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
+                );
     
-            query.send((response) => {
-                if (response.isError()) {
-                    console.error(
-                        "Error in query: " +
-                        response.getMessage() +
-                        " " +
-                        response.getDetailedMessage()
-                    );
-                    return;
-                }
+                query.send((response) => {
+                    if (response.isError()) {
+                        console.error(
+                            "Error in query: " +
+                            response.getMessage() +
+                            " " +
+                            response.getDetailedMessage()
+                        );
+                        return;
+                    }
     
-                // 데이터 처리
-                let dataTable = response.getDataTable().toJSON();
-                let jsonData = JSON.parse(dataTable);
-                let cols = jsonData.cols.map((col) => col.label);
-                let rows = jsonData.rows.map((row) => {
-                    let newRow = {};
-                    row.c.forEach((obj, index) => {
-                        if (obj == null || obj == undefined) return;
-                        obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
-                        ["f", "v"].forEach((each) => delete obj[each]);
-                        newRow = { ...newRow, ...obj };
+                    let dataTable = response.getDataTable().toJSON();
+                    let jsonData = JSON.parse(dataTable);
+                    let cols = jsonData.cols.map((col) => col.label);
+                    let rows = jsonData.rows.map((row) => {
+                        let newRow = {};
+                        row.c.forEach((obj, index) => {
+                            if (obj == null || obj == undefined) return;
+                            obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
+                            ["f", "v"].forEach((each) => delete obj[each]);
+                            newRow = { ...newRow, ...obj };
+                        });
+                        return newRow;
                     });
-                    return newRow;
-                });
     
-                // 표시 ON/OFF 필터링
-                const shows = rows.reduce((acc, row) => {
-                    // 표시가 true인 경우에만 처리
-                    if (!row['표시 ON/OFF']) return acc;
+                    const shows = rows.reduce((acc, row) => {
+                        if (!row['공연명']) return acc;
+                        if (!row['표시 ON/OFF'] || row['표시 ON/OFF'] !== "true") return acc;
     
-                    acc[row['공연명']] = {
-                        name: row['공연명'],
-                        date: row['일시'],
-                        venue: row['장소'],
-                        cast: row['출연'],
-                        duration: row['관람시간'],
-                        organizer: row['주최/주관'],
-                        entry: row['입장방식'],
-                        public: row['공개여부'],
-                        image: row['이미지 URL'], // 이미지 URL 추가
-                        gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [], // 갤러리 이미지 추가
-                    };
+                        acc[row['공연명']] = {
+                            name: row['공연명'],
+                            date: row['시작일'],
+                            endDate: row['종료일'],
+                            venue: row['장소'],
+                            cast: row['출연'],
+                            duration: row['관람 시간'],
+                            description: row['설명'],
+                            image: row['이미지 URL'],
+                            gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
+                        };
     
-                    return acc;
-                }, {});
+                        return acc;
+                    }, {});
     
-                // URL에서 공연 키 가져오기
-                const urlPath = window.location.pathname.split('/').pop();
-                const showKey = decodeURIComponent(urlPath);
-                const showInfo = shows[showKey];
+                    const urlPath = window.location.pathname.split('/').pop();
+                    const showKey = decodeURIComponent(urlPath);
+                    const showInfo = shows[showKey];
     
-                if (showInfo) {
-                    // 공연 정보를 DOM에 업데이트
-                    document.getElementById('showImage').src = showInfo.image;
-                    document.getElementById('공연명').textContent = showInfo.name;
-                    document.getElementById('showDate').textContent = showInfo.date;
-                    document.getElementById('showVenue').textContent = showInfo.venue;
-                    document.getElementById('showCast').textContent = showInfo.cast;
-                    document.getElementById('showDuration').textContent = showInfo.duration;
-                    document.getElementById('showOrganizer').textContent = showInfo.organizer;
-                    document.getElementById('showEntry').textContent = showInfo.entry;
-                    document.getElementById('showPublic').textContent = showInfo.public;
-    
-                    // 남은 시간 계산 및 표시
-                    const today = new Date();
-                    const showStartDate = new Date(showInfo.date);
-                    const timeDiff = showStartDate.getTime() - today.getTime();
-                    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    
-                    if (daysLeft > 0) {
-                        document.getElementById('countdown').textContent = `공연까지 D-${daysLeft}`;
-                    } else if (daysLeft === 0) {
-                        document.getElementById('countdown').textContent = "공연이 오늘입니다!";
+                    if (showInfo) {
+                        console.log("Show Info Found: ", showInfo);
+                        document.getElementById('showName').textContent = showInfo.name;
+                        document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                        document.getElementById('showVenue').textContent = showInfo.venue;
+                        document.getElementById('showCast').textContent = showInfo.cast;
+                        document.getElementById('showDuration').textContent = showInfo.duration;
+                        document.getElementById('showOrganizer').textContent = showInfo.description;
+                        document.getElementById('showDescription').textContent = showInfo.description;
+                        document.getElementById('showEntry').textContent = showInfo.entry || "N/A";
+                        document.getElementById('showPublic').textContent = showInfo.public || "N/A";
+                        document.getElementById('showLink').href = showInfo.link || "#";
+                        document.getElementById('showImage').src = showInfo.image;
                     } else {
-                        document.getElementById('countdown').textContent = "공연이 종료되었습니다.";
+                        document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
                     }
-    
-                    // 갤러리 기능 추가
-                    const galleryImages = showInfo.gallery;
-                    let currentIndex = 0;
-    
-                    if (galleryImages.length > 0) {
-                        document.getElementById('galleryImage').src = galleryImages[currentIndex];
-    
-                        document.getElementById('prevButton').onclick = () => {
-                            currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-                            document.getElementById('galleryImage').src = galleryImages[currentIndex];
-                        };
-    
-                        document.getElementById('nextButton').onclick = () => {
-                            currentIndex = (currentIndex + 1) % galleryImages.length;
-                            document.getElementById('galleryImage').src = galleryImages[currentIndex];
-                        };
-                    }
-    
-                    // 공유 기능
-                    document.getElementById('shareButton').onclick = function () {
-                        const shareData = {
-                            title: showInfo.name,
-                            text: `${showInfo.name}에 대한 자세한 정보를 확인하세요!`,
-                            url: window.location.href
-                        };
-    
-                        if (navigator.share) {
-                            navigator.share(shareData)
-                                .then(() => console.log("공유 성공"))
-                                .catch((error) => console.error("공유 실패:", error));
-                        } else {
-                            navigator.clipboard.writeText(window.location.href)
-                                .then(() => alert("URL이 클립보드에 복사되었습니다!"))
-                                .catch((err) => console.error("복사 실패:", err));
-                        }
-                    };
-    
-                    // 목록 이동 기능
-                    document.getElementById('goToListButton').onclick = function () {
-                        window.location.href = "https://mytwice.github.io/DIMAART/";
-                    };
-                } else {
-                    document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
-                }
+                });
             });
         });
     </script>
+    
     
 
         
