@@ -40,10 +40,12 @@
         .show-image {
             flex: 0 0 300px;
             max-width: 300px;
-            height: auto;
+            height: 400px; /* 고정된 높이 설정 */
             border-radius: 8px;
-            object-fit: cover; /* 이미지 비율을 유지하며 영역을 꽉 채우도록 설정 */
+            object-fit: contain; /* 비율을 유지하며 이미지가 완전히 표시되도록 설정 */
+            background-color: #f0f0f0; /* 빈 영역에 배경색 추가 (선택 사항) */
         }
+
 
         .show-info {
             flex: 1;
