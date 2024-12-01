@@ -173,85 +173,82 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            google.charts.load("current", { packages: ["corechart"] }).then(() => {
-                const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Replace with your actual Google Sheets key
-                let query = new google.visualization.Query(
-                    `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
-                );
-    
-                query.send((response) => {
-                    if (response.isError()) {
-                        console.error(
-                            "Error in query: " +
-                            response.getMessage() +
-                            " " +
-                            response.getDetailedMessage()
-                        );
-                        return;
-                    }
-    
-                    let dataTable = response.getDataTable().toJSON();
-                    let jsonData = JSON.parse(dataTable);
-                    let cols = jsonData.cols.map((col) => col.label);
-                    let rows = jsonData.rows.map((row) => {
-                        let newRow = {};
-                        row.c.forEach((obj, index) => {
-                            if (obj == null || obj == undefined) return;
-                            obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
-                            ["f", "v"].forEach((each) => delete obj[each]);
-                            newRow = { ...newRow, ...obj };
-                        });
-                        return newRow;
+    document.addEventListener('DOMContentLoaded', function() {
+        google.charts.load("current", { packages: ["corechart"] }).then(() => {
+            const myKey = ""; // Replace with your actual Google Sheets key
+            let query = new google.visualization.Query(
+                `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
+            );
+
+            query.send((response) => {
+                if (response.isError()) {
+                    console.error(
+                        "Error in query: " +
+                        response.getMessage() +
+                        " " +
+                        response.getDetailedMessage()
+                    );
+                    return;
+                }
+
+                let dataTable = response.getDataTable().toJSON();
+                let jsonData = JSON.parse(dataTable);
+                let cols = jsonData.cols.map((col) => col.label);
+                let rows = jsonData.rows.map((row) => {
+                    let newRow = {};
+                    row.c.forEach((obj, index) => {
+                        if (obj == null || obj == undefined) return;
+                        obj[cols[index]] = "f" in obj ? obj["f"] : obj["v"];
+                        ["f", "v"].forEach((each) => delete obj[each]);
+                        newRow = { ...newRow, ...obj };
                     });
-    
-                    const shows = rows.reduce((acc, row) => {
-                        if (!row['공연명']) return acc;
-                        if (!row['표시 ON/OFF'] || row['표시 ON/OFF'] !== "true") return acc;
-    
-                        acc[row['공연명']] = {
-                            name: row['공연명'],
-                            date: row['시작일'],
-                            endDate: row['종료일'],
-                            venue: row['장소'],
-                            cast: row['출연'],
-                            duration: row['관람 시간'],
-                            description: row['설명'],
-                            image: row['이미지 URL'],
-                            gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
-                        };
-    
-                        return acc;
-                    }, {});
-    
-                    const urlPath = window.location.pathname.split('/').pop();
-                    const showKey = decodeURIComponent(urlPath);
-                    const showInfo = shows[showKey];
-    
-                    if (showInfo) {
-                        console.log("Show Info Found: ", showInfo);
-                        document.getElementById('showName').textContent = showInfo.name;
-                        document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
-                        document.getElementById('showVenue').textContent = showInfo.venue;
-                        document.getElementById('showCast').textContent = showInfo.cast;
-                        document.getElementById('showDuration').textContent = showInfo.duration;
-                        document.getElementById('showOrganizer').textContent = showInfo.description;
-                        document.getElementById('showDescription').textContent = showInfo.description;
-                        document.getElementById('showEntry').textContent = showInfo.entry || "N/A";
-                        document.getElementById('showPublic').textContent = showInfo.public || "N/A";
-                        document.getElementById('showLink').href = showInfo.link || "#";
-                        document.getElementById('showImage').src = showInfo.image;
-                    } else {
-                        document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
-                    }
+                    return newRow;
                 });
+
+                const shows = rows.reduce((acc, row) => {
+                    if (!row['공연명']) return acc;
+                    if (!row['표시 ON/OFF'] || row['표시 ON/OFF'] !== "true") return acc;
+
+                    acc[row['공연명']] = {
+                        name: row['공연명'],
+                        date: row['시작일'],
+                        endDate: row['종료일'],
+                        venue: row['장소'],
+                        cast: row['출연'],
+                        duration: row['관람 시간'],
+                        description: row['설명'],
+                        image: row['이미지 URL'],
+                        gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
+                    };
+
+                    return acc;
+                }, {});
+
+                const urlPath = window.location.pathname.split('/').pop();
+                const showKey = decodeURIComponent(urlPath);
+                const showInfo = shows[showKey];
+
+                if (showInfo) {
+                    console.log("Show Info Found: ", showInfo);
+                    document.getElementById('showName').textContent = showInfo.name;
+                    document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                    document.getElementById('showVenue').textContent = showInfo.venue;
+                    document.getElementById('showCast').textContent = showInfo.cast;
+                    document.getElementById('showDuration').textContent = showInfo.duration;
+                    document.getElementById('showOrganizer').textContent = showInfo.description;
+                    document.getElementById('showDescription').textContent = showInfo.description;
+                    document.getElementById('showEntry').textContent = showInfo.entry || "N/A";
+                    document.getElementById('showPublic').textContent = showInfo.public || "N/A";
+                    document.getElementById('showLink').href = showInfo.link || "#";
+                    document.getElementById('showImage').src = showInfo.image;
+                } else {
+                    document.querySelector('.container').innerHTML = '<p>해당 공연 정보를 찾을 수 없습니다.</p>';
+                }
             });
         });
-    </script>
-    
-    
-
-        
+    });
+</script>
+      
 
 </body>
 </html>
