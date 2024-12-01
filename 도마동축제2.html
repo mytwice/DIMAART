@@ -173,13 +173,13 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         google.charts.load("current", { packages: ["corechart"] }).then(() => {
-            const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Replace with your actual Google Sheets key
+            const myKey = ""; // Replace with your actual Google Sheets key
             let query = new google.visualization.Query(
                 `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
             );
-
+    
             query.send((response) => {
                 if (response.isError()) {
                     console.error(
@@ -190,7 +190,7 @@
                     );
                     return;
                 }
-
+    
                 let dataTable = response.getDataTable().toJSON();
                 let jsonData = JSON.parse(dataTable);
                 let cols = jsonData.cols.map((col) => col.label);
@@ -204,11 +204,11 @@
                     });
                     return newRow;
                 });
-
+    
+                // 공연명 및 '표시 ON/OFF' 값에 따라 공연 정보 필터링
                 const shows = rows.reduce((acc, row) => {
-                    if (!row['공연명']) return acc;
-                    if (!row['표시 ON/OFF'] || row['표시 ON/OFF'] !== "true") return acc;
-
+                    if (!row['공연명'] || !row['표시 ON/OFF'] || row['표시 ON/OFF'] !== "true") return acc;
+    
                     acc[row['공연명']] = {
                         name: row['공연명'],
                         date: row['시작일'],
@@ -220,14 +220,17 @@
                         image: row['이미지 URL'],
                         gallery: row['갤러리 이미지 URL'] ? row['갤러리 이미지 URL'].split(',') : [],
                     };
-
+    
                     return acc;
                 }, {});
-
+    
+                // URL 경로에서 공연명을 추출하고, 대소문자 및 공백을 처리하여 비교
                 const urlPath = window.location.pathname.split('/').pop();
-                const showKey = decodeURIComponent(urlPath);
-                const showInfo = shows[showKey];
-
+                const showKey = decodeURIComponent(urlPath).trim();  // URL에서 공연명 추출 후 공백 제거
+    
+                // 공연명 비교 시 대소문자 구분 없애고, 양쪽 공백 제거
+                const showInfo = shows[showKey.toLowerCase()] || shows[showKey.trim()];  // 소문자와 공백 제거하여 비교
+    
                 if (showInfo) {
                     console.log("Show Info Found: ", showInfo);
                     document.getElementById('showName').textContent = showInfo.name;
