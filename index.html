@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIMA ART</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
-        
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -95,10 +95,10 @@
 
     .floating-buttons {
         position: fixed;
-        right: 20px;  /* 변경: left에서 right로 */
+        right: 20px;
         bottom: 20px;
         display: flex;
-        flex-direction: row-reverse;  /* 추가: 버튼 순서 반전 */
+        flex-direction: row-reverse;
         gap: 10px;
         z-index: 1000;
     }
@@ -131,7 +131,7 @@
 
     @media (max-width: 768px) {
         .floating-buttons {
-            flex-direction: column-reverse;  /* 변경: column에서 column-reverse로 */
+            flex-direction: column-reverse;
         }
         
         .show {
@@ -152,7 +152,6 @@
 <body>
     <div class="header">
         <h1>DIMA ARTIST 공연</h1>
-        </div>
     </div>
     <div class="container">
         <div id="showContainer" class="show-list">
@@ -167,232 +166,233 @@
     </div>
 
     <script>
-        // 공연 정보 리스트
-        
-        const shows = [
-            {
-                name: "도마동축제",
-                date: "2024-10-25",  // 시작일
-                endDate: "2024-10-30", // 종료일
-                venue: "예술의 전당",
-                cast: "김호영, 이석훈, 김성규, 신재범, 박은태, 최재림, 강홍석, 서경수, 김지우, 김환희, 나하나, 고창석, 심재현, 전재현, 고은영, 이윤하, 김용수, 주민우, 한준용, 김강진...",
-                duration: "155분 (인터미션: 20분)",
-                description: "도마동축제에 대한 설명이 여기에 들어갑니다. 다양한 공연과 행사가 열릴 예정입니다.",
-                image: "도마동축제.jpg",
-                gallery: ["도마동축제_image1.jpg", "도마동축제_image2.jpg"] // 갤러리 이미지 배열
-            },
-            {
-                name: "한화이글스 홈경기",
-                date: "2024-10-10",  // 시작일
-                endDate: "2024-10-10", // 종료일
-                venue: "대전 한화생명이글스파크",
-                cast: "한화이글스",
-                duration: "120분 (인터미션: 없음)",
-                description: "한화이글스의 홈경기에 대한 설명입니다. 많은 응원 부탁드립니다!",
-                image: "한화이글스.jpg",
-                gallery: ["한화이글스_image1.jpg", "한화이글스_image2.jpg"] // 갤러리 이미지 배열
-            },
-            {
-                name: "엑스포음악분수",
-                date: "2024-04-20",  // 시작일
-                endDate: "2024-10-25", // 종료일
-                venue: "엑스포과학공원",
-                cast: "음악분수 연출팀",
-                duration: "90분 (인터미션: 15분)",
-                description: "엑스포 음악 분수에 대한 설명입니다. 음악과 함께 즐기는 환상적인 분수쇼를 놓치지 마세요!",
-                image: "엑스포음악분수.jpg",
-                gallery: ["엑스포음악분수_1.jpg", "엑스포음악분수_2.jpg"] // 갤러리 이미지 배열
-            },
-            {
-                name: "서울세계불꽃축제",
-                date: "2024-10-07",  // 시작일
-                endDate: "2024-10-07", // 종료일
-                venue: "한강공원",
-                cast: "다양한 불꽃놀이 팀",
-                duration: "120분 (인터미션: 없음)",
-                description: "서울의 아름다운 하늘을 수놓는 세계적인 불꽃놀이 행사입니다.",
-                image: "서울세계불꽃축제.jpg",
-                gallery: ["서울세계불꽃축제_image1.jpg", "서울세계불꽃축제_image2.jpg"] // 갤러리 이미지 배열
-            },
-            {
-                name: "사이언스페스티벌",
-                date: "2024-11-05",  // 시작일
-                endDate: "2024-11-07", // 종료일
-                venue: "서울 코엑스",
-                cast: "과학자들, 연사들",
-                duration: "180분 (인터미션: 30분)",
-                description: "최신 과학 기술과 연구 결과를 공유하는 자리입니다. 다양한 체험 부스와 강연이 준비되어 있습니다.",
-                image: "사이언스페스티벌.jpg",
-                gallery: ["사이언스페스티벌_image1.jpg", "사이언스페스티벌_image2.jpg"] // 갤러리 이미지 배열
-            }
-        ];
+        // 구글 차트 라이브러리 로드 후 실행
+        google.charts.load("current", { packages: ["corechart"] }).then(() => {
+            // 구글 시트 키 (실제 사용 시 myKey를 실제 시트 키로 대체)
+            const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // 실제 구글 시트 키로 대체
+            let query = new google.visualization.Query(
+                `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
+            );
 
-        // 공연이 종료되었는지 확인하는 함수
-        function isEnded(date, endDate) {
-            const today = new Date();
-            const showEndDate = new Date(endDate || date);
-            return showEndDate < today;
-        }
+            query.send((response) => {
+                if (response.isError()) {
+                    console.error(
+                        "Error in query: " +
+                        response.getMessage() +
+                        " " +
+                        response.getDetailedMessage()
+                    );
+                    return;
+                }
 
-        // 공연 목록을 동적으로 생성하는 함수
-        function loadShows() {
-            const showContainer = document.getElementById('showContainer');
-            showContainer.innerHTML = ''; // 기존 내용을 초기화
+                // 데이터 테이블을 JSON으로 변환
+                let dataTable = response.getDataTable().toJSON();
+                let jsonData = JSON.parse(dataTable);
 
-            const today = new Date();
+                // 열 이름 추출
+                let cols = jsonData.cols.map((col) => col.label);
 
-            // 종료되지 않은 공연 (날짜 가까운 순으로 정렬)
-            const upcomingShows = Object.values(shows).filter(show => !isEnded(show.date, show.endDate)).sort((a, b) => {
-                return new Date(a.date) - new Date(b.date); // 가까운 공연이 위로
-            });
+                // 행 데이터 처리
+                let rows = jsonData.rows.map((row) => {
+                    let newRow = {};
+                    row.c.forEach((obj, index) => {
+                        if (obj == null || obj == undefined) return; // 빈값일 경우 건너뛰기
+                        const colName = cols[index];
+                        newRow[colName] = "f" in obj ? obj["f"] : obj["v"];
+                    });
+                    return newRow;
+                });
 
-            // 종료된 공연 (최신 종료 순으로 정렬)
-            const endedShows = Object.values(shows).filter(show => isEnded(show.date, show.endDate)).sort((a, b) => {
-                return new Date(b.endDate || b.date) - new Date(a.endDate || a.date); // 종료된 공연이 최신순으로
-            });
+                // 공연 정보 필터링 및 처리
+                const shows = rows.filter(row => row['표시 ON/OFF'] === 'TRUE').map(row => {
+                    // 일시와 종료일시에서 중복된 부분 제거
+                    const dates = row['일시'].split('~').map(date => date.trim());
+                    const startDate = dates[0];
+                    const endDate = dates.length > 1 ? dates[1] : startDate;
 
-            // 종료되지 않은 공연 출력
-            upcomingShows.forEach(show => {
-                createShowElement(showContainer, show);
-            });
+                    return {
+                        name: row['공연명'],
+                        date: startDate,
+                        endDate: endDate,
+                        venue: row['장소'] || '',
+                        cast: row['출연'] || '',
+                        duration: row['관람시간'] || '',
+                        description: row['설명'] || '',
+                        image: row['메인포스터'] || '',
+                        gallery: [
+                            row['사진1'] || '',
+                            row['사진2'] || '',
+                            row['사진3'] || '',
+                            row['사진4'] || ''
+                        ].filter(img => img !== '')
+                    };
+                });
 
-            // 종료된 공연 출력
-            endedShows.forEach(show => {
-                createShowElement(showContainer, show);
-            });
-        }
+                // 공연이 종료되었는지 확인하는 함수
+                function isEnded(date, endDate) {
+                    const today = new Date();
+                    const showEndDate = new Date(endDate || date);
+                    return showEndDate < today;
+                }
 
-        // 날짜 상태를 계산하는 함수
-        function getDateStatus(startDate, endDate) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const start = new Date(startDate);
-            start.setHours(0, 0, 0, 0);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
+                // 날짜 상태를 계산하는 함수
+                function getDateStatus(startDate, endDate) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const start = new Date(startDate);
+                    start.setHours(0, 0, 0, 0);
+                    const end = new Date(endDate);
+                    end.setHours(23, 59, 59, 999);
 
-            if (today > end) {
-                return "종료";
-            } else if (today < start) {
-                const daysUntilStart = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
-                return `D-${daysUntilStart}`;
-            } else if (today >= start && today <= end) {
-                return "진행중";
-            }
-        }
+                    if (today > end) {
+                        return "종료";
+                    } else if (today < start) {
+                        const daysUntilStart = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+                        return `D-${daysUntilStart}`;
+                    } else if (today >= start && today <= end) {
+                        return "진행중";
+                    }
+                }
 
-        // 공연 항목을 생성하는 함수
-        function createShowElement(container, show) {
-        const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
+                // 공연 항목을 생성하는 함수
+                function createShowElement(container, show) {
+                    const url = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
 
-        const showElement = document.createElement('a');
-        showElement.href = url;
-        showElement.classList.add('show');
-        if (isEnded(show.date, show.endDate)) showElement.classList.add('ended');
-        
-        // 포스터 이미지
-        const poster = document.createElement('img');
-        poster.src = show.image;
-        poster.alt = `${show.name} 포스터`;
-        
-        // 공연 정보
-        const info = document.createElement('div');
-        info.classList.add('show-info');
-        
-        const title = document.createElement('h3');
-        title.textContent = show.name;
-        
-        const date = document.createElement('p');
-        date.textContent = `${show.date} ~ ${show.endDate}`;
+                    const showElement = document.createElement('a');
+                    showElement.href = url;
+                    showElement.classList.add('show');
+                    if (isEnded(show.date, show.endDate)) showElement.classList.add('ended');
+                    
+                    // 포스터 이미지
+                    const poster = document.createElement('img');
+                    poster.src = show.image;
+                    poster.alt = `${show.name} 포스터`;
+                    
+                    // 공연 정보
+                    const info = document.createElement('div');
+                    info.classList.add('show-info');
+                    
+                    const title = document.createElement('h3');
+                    title.textContent = show.name;
+                    
+                    const date = document.createElement('p');
+                    date.textContent = `${show.date} ~ ${show.endDate}`;
 
-        info.appendChild(title);
-        info.appendChild(date);
-        
-        // 공연 날짜
-        const showDate = document.createElement('div');
-        showDate.classList.add('show-date');
-        
-        const dateText = document.createElement('p');
-        
-        const status = document.createElement('span');
-        status.textContent = getDateStatus(show.date, show.endDate);
-        status.style.marginLeft = '0px';
-        status.style.fontWeight = 'bold';
-        status.style.color = status.textContent === '종료' ? 'red' : 'green';
-        
-        dateText.appendChild(status);
-        showDate.appendChild(dateText);
-        
-        showElement.appendChild(poster);
-        showElement.appendChild(info);
-        showElement.appendChild(showDate);
-        
-        container.appendChild(showElement);
-    }
+                    info.appendChild(title);
+                    info.appendChild(date);
+                    
+                    // 공연 날짜
+                    const showDate = document.createElement('div');
+                    showDate.classList.add('show-date');
+                    
+                    const dateText = document.createElement('p');
+                    
+                    const status = document.createElement('span');
+                    status.textContent = getDateStatus(show.date, show.endDate);
+                    status.style.marginLeft = '0px';
+                    status.style.fontWeight = 'bold';
+                    status.style.color = status.textContent === '종료' ? 'red' : 
+                                          status.textContent === '진행중' ? 'green' : 'blue';
+                    
+                    dateText.appendChild(status);
+                    showDate.appendChild(dateText);
+                    
+                    showElement.appendChild(poster);
+                    showElement.appendChild(info);
+                    showElement.appendChild(showDate);
+                    
+                    container.appendChild(showElement);
+                }
 
-        // 현재 뷰 상태를 추적하는 변수
-        let isListView = true;
+                // 리스트 모드 렌더링 함수
+                function loadShows() {
+                    const showContainer = document.getElementById('showContainer');
+                    showContainer.innerHTML = ''; // 기존 내용을 초기화
+                    showContainer.className = 'show-list';
 
-        // 갤러리 모드 렌더링 함수
-        function loadGallery() {
-            const showContainer = document.getElementById('showContainer');
-            showContainer.innerHTML = ''; // 기존 내용을 초기화
-            showContainer.className = 'show-gallery'; // 클래스 변경
-            
-            // 공연을 종료된 공연과 종료되지 않은 공연으로 나누어 정렬
-            const sortedShows = Object.values(shows).sort((a, b) => {
-                const today = new Date();
-                const aEndDate = new Date(a.endDate || a.date);
-                const bEndDate = new Date(b.endDate || b.date);
+                    // 종료되지 않은 공연 (날짜 가까운 순으로 정렬)
+                    const upcomingShows = shows.filter(show => !isEnded(show.date, show.endDate))
+                        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                    // 종료된 공연 (최신 종료 순으로 정렬)
+                    const endedShows = shows.filter(show => isEnded(show.date, show.endDate))
+                        .sort((a, b) => new Date(b.endDate || b.date) - new Date(a.endDate || a.date));
+
+                    // 종료되지 않은 공연 출력
+                    upcomingShows.forEach(show => {
+                        createShowElement(showContainer, show);
+                    });
+
+                    // 종료된 공연 출력
+                    endedShows.forEach(show => {
+                        createShowElement(showContainer, show);
+                    });
+                }
+
+                // 갤러리 모드 렌더링 함수
+                function loadGallery() {
+                    const showContainer = document.getElementById('showContainer');
+                    showContainer.innerHTML = ''; // 기존 내용을 초기화
+                    showContainer.className = 'show-gallery';
+                    
+                    // 공연을 종료된 공연과 종료되지 않은 공연으로 나누어 정렬
+                    const sortedShows = shows.sort((a, b) => {
+                        const today = new Date();
+                        const aEndDate = new Date(a.endDate || a.date);
+                        const bEndDate = new Date(b.endDate || b.date);
+                        
+                        // 종료된 공연은 뒤쪽으로 보내기 위해 비교
+                        if (isEnded(a.date, a.endDate) && !isEnded(b.date, b.endDate)) return 1;
+                        if (!isEnded(a.date, a.endDate) && isEnded(b.date, b.endDate)) return -1;
                 
-                // 종료된 공연은 뒤쪽으로 보내기 위해 비교
-                if (isEnded(a.date, a.endDate) && !isEnded(b.date, b.endDate)) return 1;
-                if (!isEnded(a.date, a.endDate) && isEnded(b.date, b.endDate) ) return -1;
-        
-                // 날짜가 가까운 공연이 위로 가도록 정렬
-                return aEndDate - bEndDate;
-            });
-        
-            sortedShows.forEach(show => {
-                const galleryItem = document.createElement('div');
-                galleryItem.classList.add('gallery-item');
-                if (isEnded(show.date, show.endDate)) galleryItem.classList.add('ended');
-            
-                const link = document.createElement('a');
-                link.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
-                link.classList.add('gallery-link');
-            
-                const img = document.createElement('img');
-                img.src = show.image;
-                img.alt = `${show.name} 포스터`;
-            
-                link.appendChild(img); 
-                galleryItem.appendChild(link); 
-                showContainer.appendChild(galleryItem);
-            });
-        }
+                        // 날짜가 가까운 공연이 위로 가도록 정렬
+                        return aEndDate - bEndDate;
+                    });
+                
+                    sortedShows.forEach(show => {
+                        const galleryItem = document.createElement('div');
+                        galleryItem.classList.add('gallery-item');
+                        if (isEnded(show.date, show.endDate)) galleryItem.classList.add('ended');
+                    
+                        const link = document.createElement('a');
+                        link.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
+                        link.classList.add('gallery-link');
+                    
+                        const img = document.createElement('img');
+                        img.src = show.image;
+                        img.alt = `${show.name} 포스터`;
+                    
+                        link.appendChild(img); 
+                        galleryItem.appendChild(link); 
+                        showContainer.appendChild(galleryItem);
+                    });
+                }
 
+                // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
+                function generateUrl(showName) {
+                    return showName.replace(/\s+/g, '-');
+                }
 
-        // 공연명에서 URL 형식으로 변환하는 함수 (공백을 대시 '-'로 변환)
-        function generateUrl(showName) {
-            return showName.replace(/\s+/g, ' ');
-        }
+                // 현재 뷰 상태를 추적하는 변수
+                let isListView = true;
 
-        // 페이지 로딩 시 리스트 모드로 공연 목록 생성
-        window.onload = loadShows;
+                // 뷰 전환 버튼 이벤트
+                const viewToggleBtn = document.getElementById('viewToggleBtn');
 
-        // 뷰 전환 버튼 이벤트
-        const viewToggleBtn = document.getElementById('viewToggleBtn');
+                viewToggleBtn.addEventListener('click', () => {
+                    isListView = !isListView;
+                    if (isListView) {
+                        viewToggleBtn.textContent = '갤러리 보기';
+                        loadShows();
+                    } else {
+                        viewToggleBtn.textContent = '리스트 보기';
+                        loadGallery();
+                    }
+                });
 
-        viewToggleBtn.addEventListener('click', () => {
-            isListView = !isListView;
-            if (isListView) {
-                viewToggleBtn.textContent = '갤러리 보기';
+                // 페이지 로딩 시 리스트 모드로 공연 목록 생성
                 loadShows();
-            } else {
-                viewToggleBtn.textContent = '리스트 보기';
-                loadGallery();
-            }
+            });
         });
     </script>
 </body>
