@@ -42,7 +42,9 @@
             max-width: 300px;
             height: auto;
             border-radius: 8px;
+            object-fit: cover; /* 이미지 비율을 유지하며 영역을 꽉 채우도록 설정 */
         }
+
         .show-info {
             flex: 1;
             min-width: 300px;
@@ -330,10 +332,13 @@
 
     // 공유 및 목록 보기 함수
     function shareShow() {
+        // showInfo가 이미 전역에서 올바르게 정의된 객체일 경우, 해당 정보를 사용
+        const showName = document.getElementById('showName').textContent;
+        const showUrl = window.location.href;
         const shareData = {
-            title: showInfo.name,
-            text: `${showInfo.name}에 대한 자세한 정보를 확인하세요!`,
-            url: window.location.href
+            title: showName,
+            text: `${showName}에 대한 자세한 정보를 확인하세요!`,
+            url: showUrl
         };
         navigator.share(shareData).then(() => {
             console.log('공유 성공');
