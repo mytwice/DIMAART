@@ -417,14 +417,47 @@
 
          /* 기존 스타일에 추가할 모바일 대응 CSS */
         @media (max-width: 768px) {
+            .top-nav {
+                position: relative; /* sticky 대신 relative로 변경 */
+                white-space: nowrap; /* 줄바꿈 방지 */
+            }
+            
+            .top-nav-content {
+                flex-direction: column; /* 세로 방향으로 변경 */
+                align-items: flex-start; /* 왼쪽 정렬 */
+                padding: 10px;
+
+                overflow-x: auto; /* 가로 스크롤 허용 */
+                -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
+                padding: 0 10px;
+                scroll-behavior: smooth; /* 부드러운 스크롤 효과 */
+                /* 스크롤바 숨기기 */
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            
+            /* Chrome, Safari 스크롤바 숨기기 */
+            .top-nav-content::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .logo {
+                flex-shrink: 0; /* 로고 크기 고정 */
+                margin-right: 15px;
+            }
+            
+            .nav-menu {
+                flex-shrink: 0; /* 메뉴 크기 고정 */
+            }
+            
+            .nav-menu a {
+                padding: 8px 12px; /* 모바일에서 패딩 조정 */
+            }
+
+    
             .main-banner {
                 flex-direction: column;
                 padding: 0 10px;
-            }
-
-            .nav-menu {
-                font-size: 15px;
-                word-break : keep-all	
             }
 
             .banner-left {
@@ -444,18 +477,22 @@
                 font-size: 1em;
             }
 
-
-
+            .search-bar {
+            flex-direction: column;
+            gap: 10px;
+            }
+            
             .sort-buttons {
                 width: 100%;
                 justify-content: space-between;
             }
-
+            
             .sort-button {
                 flex: 1;
-                text-align: center;
+                margin: 0 5px;
+                white-space: nowrap;
+                font-size: 14px;
             }
-
 
             .floating-buttons {
                 right: 10px;
@@ -580,7 +617,7 @@
         let currentCategory = '전체';
         let currentSort = 'latest';
         let isListView = true;
-        let pageSize = 10; // 한 페이지당 보여줄 항목 수
+        let pageSize = 9; // 한 페이지당 보여줄 항목 수
         let currentPage = 1; // 현재 페이지
 
         // 카테고리 네비게이션 설정
@@ -809,16 +846,38 @@
                 filteredShows = shows.filter(show => show.type === currentCategory);
             }
 
+            // D-day 계산 함수
+            function getDday(startDate, endDate) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const start = new Date(startDate);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+
+                if (today > end) {
+                    return Number.MAX_SAFE_INTEGER; // 종료된 공연은 가장 뒤로
+                } else if (today < start) {
+                    return Math.ceil((start - today) / (1000 * 60 * 60 * 24)); // D-day 계산
+                } else {
+                    return 0; // 진행중인 공연은 가장 앞으로
+                }
+            }
+
             filteredShows.sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
+                const dDayA = getDday(a.date, a.endDate);
+                const dDayB = getDday(b.date, b.endDate);
 
                 if (currentSort === 'latest') {
-                    if (getDateStatus(b.date, b.endDate) === '진행중' && getDateStatus(a.date, a.endDate) !== '진행중') return 1;
-                    if (getDateStatus(a.date, a.endDate) === '진행중' && getDateStatus(b.date, b.endDate) !== '진행중') return -1;
-                    return dateB - dateA;
+                    // 진행중인 공연 > D-day 임박한 공연 > 나머지 순으로 정렬
+                    if (dDayA === dDayB) {
+                        // D-day가 같은 경우 시작일이 최신인 것이 위로
+                        return new Date(b.date) - new Date(a.date);
+                    }
+                    return dDayA - dDayB;
                 } else {
-                    return dateA - dateB;
+                    // 오래된순은 기존대로 시작일 기준 정렬
+                    return new Date(a.date) - new Date(b.date);
                 }
             });
 
