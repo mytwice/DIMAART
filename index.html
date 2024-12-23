@@ -62,21 +62,24 @@
             padding: 0 15px;
         }
 
+        /* 슬라이더 관련 스타일 수정 */
         .banner-left {
             flex: 2;
             background-color: #333;
             color: white;
-            padding: 40px;
+            padding: 0; /* 패딩 제거 */
             border-radius: 15px;
             position: relative;
             min-height: 300px;
             overflow: hidden;
+            box-shadow: 0 0px 25px rgba(0, 0, 10, 0.4); /* 그림자 추가 */
         }
 
         .banner-slider {
             position: relative;
             width: 100%;
             height: 100%;
+            min-height: 300px;
         }
 
         .slide {
@@ -92,6 +95,7 @@
             justify-content: center;
             background-size: cover;
             background-position: center;
+            min-height: 300px;
         }
 
         .slide.active {
@@ -350,9 +354,9 @@
             transform: translateY(-50%);
             color: white;
             font-size: 24px;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.4);
             padding: 10px;
-            border-radius: 50%;
+            border-radius: 30%;
             cursor: pointer;
             z-index: 10;
         }
@@ -366,49 +370,92 @@
         }
 
         .arrow:hover {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
-        /* 반응형 스타일 */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(87, 38, 66, 0.3) 5%,
+                rgba(58, 24, 48, 0.3) 20%,
+                rgba(58, 24, 48, 0.3) 80%,
+                rgba(87, 38, 66, 0.3) 100%
+            );
+            z-index: 0;
+        }
+
+        .load-more-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 12px 24px;
+            background-color: #D454A9;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background-color: #b33d74;
+            transform: scale(1.05);
+        }
+
+        .load-more-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+         /* 기존 스타일에 추가할 모바일 대응 CSS */
         @media (max-width: 768px) {
             .main-banner {
                 flex-direction: column;
-            }
-
-            .banner-left, .banner-right {
-                min-height: 200px;
-            }
-
-            .search-bar {
-                flex-direction: column;
-            }
-
-            .show-gallery {
-                grid-template-columns: repeat(1, 1fr);
-            }
-
-            .show {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .show img {
-                width: 100%;
-                height: 200px;
-            }
-
-            .show-date {
-                text-align: center;
+                padding: 0 10px;
             }
 
             .nav-menu {
-                gap: 10px;
+                font-size: 15px;
+                word-break : keep-all	
             }
 
-            .nav-menu a {
-                padding: 6px 12px;
-                font-size: 14px;
+            .banner-left {
+                min-height: 250px;
+                width: 100%;
             }
+
+            .banner-right {
+                padding: 20px;
+            }
+
+            .banner-right h2 {
+                font-size: 1.8em;
+            }
+
+            .banner-right p {
+                font-size: 1em;
+            }
+
+
+
+            .sort-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .sort-button {
+                flex: 1;
+                text-align: center;
+            }
+
 
             .floating-buttons {
                 right: 10px;
@@ -418,7 +465,17 @@
             .floating-btn, .view-toggle-btn {
                 width: 50px;
                 height: 50px;
-                font-size: 24px;
+                font-size: 20px;
+            }
+
+            .view-toggle-btn {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .banner-left {
+                min-height: 200px;
             }
         }
     </style>
@@ -523,6 +580,8 @@
         let currentCategory = '전체';
         let currentSort = 'latest';
         let isListView = true;
+        let pageSize = 10; // 한 페이지당 보여줄 항목 수
+        let currentPage = 1; // 현재 페이지
 
         // 카테고리 네비게이션 설정
         setupCategoryNavigation();
@@ -546,6 +605,7 @@
                     navLinks.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
                     currentCategory = link.textContent;
+                    currentPage = 1; // 카테고리 변경 시 페이지 리셋
                     filterAndLoadShows();
                 });
             });
@@ -559,104 +619,155 @@
                     sortButtons.forEach(b => b.classList.remove('active'));
                     button.classList.add('active');
                     currentSort = button.textContent === '최신순' ? 'latest' : 'oldest';
+                    currentPage = 1; // 정렬 변경 시 페이지 리셋
                     filterAndLoadShows();
                 });
             });
         }
 
-         // 기본 정렬 버튼 활성화
+        // 기본 정렬 버튼 활성화
         const defaultSortButton = document.querySelector('.sort-button.active');
         if (defaultSortButton) {
                 currentSort = 'latest'; // 최신순으로 설정
                 filterAndLoadShows(); // 초기 데이터 로드
         }
 
-        
         // 메인 배너 슬라이더 설정 함수
         function setupMainBannerSlider(shows) {
             const mainNoticeShows = shows.filter(show => show.mainNotice);
             if (mainNoticeShows.length === 0) return;
 
             const bannerLeft = document.querySelector('.banner-left');
+            bannerLeft.innerHTML = '';
+
             const slider = document.createElement('div');
             slider.className = 'banner-slider';
 
             const slideDots = document.createElement('div');
             slideDots.className = 'slide-dots';
 
+            let currentSlide = 0;
+            let slides = [];
+            let dots = [];
+
             mainNoticeShows.forEach((show, index) => {
-                // 슬라이드 생성
-                const slide = document.createElement('div');
-                slide.className = `slide ${index === 0 ? 'active' : ''}`;
-                slide.style.backgroundImage = `url(${show.image})`;
+            // 슬라이드 생성
+            const slide = document.createElement('div');
+            slide.className = `slide ${index === 0 ? 'active' : ''}`;
+            slide.style.backgroundImage = `url(${show.image})`;
+            // 링크 수정
+            slide.setAttribute('data-url', `https://mytwice.github.io/DIMAART/${show.name}`);
 
-                const overlay = document.createElement('div');
-                overlay.style.position = 'absolute';
-                overlay.style.top = '10px';
-                overlay.style.left = '10px';
-                overlay.style.color = 'white';
-                overlay.style.textShadow = '1px 1px 3px rgba(0,0,0,0.8)';
-                overlay.style.fontSize = '20px';
-                overlay.style.fontWeight = 'bold';
-                overlay.textContent = show.name;
-                slide.appendChild(overlay);
+            // 제목과 날짜를 포함할 컨테이너
+            const textContainer = document.createElement('div');
+            textContainer.style.position = 'absolute';
+            textContainer.style.top = '90px';
+            textContainer.style.left = '53px';
+            textContainer.style.color = 'white';
+            textContainer.style.textShadow = '1px 1px 3px rgba(0,0,0,0.8)';
 
-                slide.addEventListener('click', () => {
-                    window.location.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
-                });
+            // 제목
+            const titleText = document.createElement('div');
+            titleText.style.fontSize = '40px';
+            titleText.style.fontWeight = 'bold';
+            titleText.textContent = show.name;
 
-                slider.appendChild(slide);
+            // 날짜
+            const dateText = document.createElement('div');
+            dateText.style.fontSize = '20px';
+            dateText.style.marginTop = '10px';
+            dateText.textContent = `${show.date} ~ ${show.endDate}`;
 
-                // 닷 생성
-                const dot = document.createElement('div');
-                dot.className = `dot ${index === 0 ? 'active' : ''}`;
-                dot.addEventListener('click', () => {
-                    changeSlide(index - currentSlide); // 선택된 슬라이드로 이동
-                });
-                slideDots.appendChild(dot);
+            textContainer.appendChild(titleText);
+            textContainer.appendChild(dateText);
+            slide.appendChild(textContainer);
+
+            // 현재 활성화된 슬라이드 이름 가져오기
+            function getActiveSlideName() {
+                const activeSlide = document.querySelector('.slide.active');
+                if (activeSlide) {
+                    return activeSlide.getAttribute('data-url'); // 혹은 다른 데이터 속성
+                }
+                return null;
+            }
+
+            // 슬라이드 클릭 이벤트
+            slide.addEventListener('click', (e) => {
+                const activeSlideName = getActiveSlideName();
+                if (activeSlideName) {
+                    console.log('Navigating to:', activeSlideName); // 값 확인
+                    window.location.href = activeSlideName;
+                } else {
+                    console.error('No active slide found!');
+                }
             });
 
+            slider.appendChild(slide);
+            slides.push(slide);
+
+            // 닷 생성
+            const dot = document.createElement('div');
+            dot.className = `dot ${index === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(index));
+            slideDots.appendChild(dot);
+            dots.push(dot);
+        });
+
+            // 화살표 생성
+            const arrows = createArrows();
+            bannerLeft.appendChild(arrows.left);
+            bannerLeft.appendChild(arrows.right);
+            
+            bannerLeft.appendChild(slider);
             bannerLeft.appendChild(slideDots);
 
-            const arrowLeft = document.createElement('div');
-            arrowLeft.className = 'arrow left';
-            arrowLeft.textContent = '<';
+            // 자동 슬라이드
+            let slideInterval = setInterval(nextSlide, 5000);
 
-            const arrowRight = document.createElement('div');
-            arrowRight.className = 'arrow right';
-            arrowRight.textContent = '>';
-
-            bannerLeft.appendChild(arrowLeft);
-            bannerLeft.appendChild(arrowRight);
-            bannerLeft.appendChild(slider);
-
-            let currentSlide = 0;
-
-            arrowLeft.addEventListener('click', () => {
-                changeSlide(-1);
-            });
-            arrowRight.addEventListener('click', () => {
-                changeSlide(1);
-            });
-
-            setInterval(() => {
-                changeSlide(1);
-            }, 5000);
-
-            function changeSlide(direction) {
-                const slides = document.querySelectorAll('.slide');
-                const dots = document.querySelectorAll('.dot');
-
-                // 현재 슬라이드와 닷 비활성화
+            // 슬라이드 이동 함수
+            function goToSlide(index) {
                 slides[currentSlide].classList.remove('active');
                 dots[currentSlide].classList.remove('active');
-
-                // 새로운 슬라이드와 닷 활성화
-                currentSlide = (currentSlide + direction + slides.length) % slides.length;
+                
+                currentSlide = index;
+                
                 slides[currentSlide].classList.add('active');
                 dots[currentSlide].classList.add('active');
             }
+
+            function nextSlide() {
+                goToSlide((currentSlide + 1) % slides.length);
+            }
+
+            function prevSlide() {
+                goToSlide((currentSlide - 1 + slides.length) % slides.length);
+            }
+
+            function createArrows() {
+                const arrowLeft = document.createElement('div');
+                arrowLeft.className = 'arrow left';
+                arrowLeft.textContent = '<';
+                arrowLeft.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    clearInterval(slideInterval);
+                    prevSlide();
+                    slideInterval = setInterval(nextSlide, 5000);
+                });
+
+                const arrowRight = document.createElement('div');
+                arrowRight.className = 'arrow right';
+                arrowRight.textContent = '>';
+                arrowRight.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    clearInterval(slideInterval);
+                    nextSlide();
+                    slideInterval = setInterval(nextSlide, 5000);
+                });
+
+                return { left: arrowLeft, right: arrowRight };
+            }
         }
+
 
 
         // 공연 종료 여부 확인 함수
@@ -694,12 +805,10 @@
         function filterAndLoadShows() {
             let filteredShows = shows;
             
-            // 카테고리 필터링
             if (currentCategory !== '전체') {
                 filteredShows = shows.filter(show => show.type === currentCategory);
             }
 
-            // 정렬
             filteredShows.sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
@@ -713,7 +822,6 @@
                 }
             });
 
-            // 현재 뷰 모드에 따라 로드
             if (isListView) {
                 loadShows(filteredShows);
             } else {
@@ -725,6 +833,7 @@
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', () => {
+                currentPage = 1; // 검색 시 페이지 리셋
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const filteredShows = shows.filter(show => 
                     show.name.toLowerCase().includes(searchTerm) ||
@@ -743,6 +852,7 @@
             const viewToggleBtn = document.getElementById('viewToggleBtn');
             viewToggleBtn.addEventListener('click', () => {
                 isListView = !isListView;
+                currentPage = 1; // 뷰 전환 시 페이지 리셋
                 viewToggleBtn.textContent = isListView ? '갤러리 보기' : '리스트 보기';
                 filterAndLoadShows();
             });
@@ -754,7 +864,11 @@
             showContainer.innerHTML = '';
             showContainer.className = 'show-list';
 
-            filteredShows.forEach(show => {
+            // 현재 페이지까지의 아이템만 표시
+            const endIndex = pageSize * currentPage;
+            const showsToDisplay = filteredShows.slice(0, endIndex);
+
+            showsToDisplay.forEach(show => {
                 const showElement = document.createElement('a');
                 showElement.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
                 showElement.className = `show ${isEnded(show.date, show.endDate) ? 'ended' : ''}`;
@@ -787,6 +901,23 @@
                 
                 showContainer.appendChild(showElement);
             });
+
+            // 더보기 버튼 처리
+            const existingButton = document.querySelector('.load-more-btn');
+            if (existingButton) {
+                existingButton.remove();
+            }
+
+            if (endIndex < filteredShows.length) {
+                const loadMoreBtn = document.createElement('button');
+                loadMoreBtn.className = 'load-more-btn';
+                loadMoreBtn.textContent = '더보기';
+                loadMoreBtn.onclick = () => {
+                    currentPage++;
+                    loadShows(filteredShows);
+                };
+                showContainer.after(loadMoreBtn);
+            }
         }
 
         // 갤러리 뷰 로드 함수
@@ -795,7 +926,11 @@
             showContainer.innerHTML = '';
             showContainer.className = 'show-gallery';
 
-            filteredShows.forEach(show => {
+            // 현재 페이지까지의 아이템만 표시
+            const endIndex = pageSize * currentPage;
+            const showsToDisplay = filteredShows.slice(0, endIndex);
+
+            showsToDisplay.forEach(show => {
                 const galleryItem = document.createElement('div');
                 galleryItem.className = `gallery-item ${isEnded(show.date, show.endDate) ? 'ended' : ''}`;
                 
@@ -810,8 +945,24 @@
                 galleryItem.appendChild(link);
                 showContainer.appendChild(galleryItem);
             });
+
+            // 더보기 버튼 처리
+            const existingButton = document.querySelector('.load-more-btn');
+            if (existingButton) {
+                existingButton.remove();
+            }
+
+            if (endIndex < filteredShows.length) {
+                const loadMoreBtn = document.createElement('button');
+                loadMoreBtn.className = 'load-more-btn';
+                loadMoreBtn.textContent = '더보기';
+                loadMoreBtn.onclick = () => {
+                    currentPage++;
+                    loadGallery(filteredShows);
+                };
+                showContainer.after(loadMoreBtn);
+            }
         }
-        
     }
     </script>
 </body>
