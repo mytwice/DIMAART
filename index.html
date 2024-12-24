@@ -214,7 +214,7 @@
         }
 
         .show img {
-            width: 120px;
+            width: 100px;
             height: 120px;
             object-fit: cover;
             border-radius: 8px;
@@ -237,7 +237,7 @@
 
         .show-gallery {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
@@ -402,6 +402,7 @@
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s ease;
+            margin-bottom: 65px;
         }
 
         .load-more-btn:hover {
@@ -418,7 +419,6 @@
          /* 기존 스타일에 추가할 모바일 대응 CSS */
         @media (max-width: 768px) {
             .top-nav {
-                position: relative; /* sticky 대신 relative로 변경 */
                 white-space: nowrap; /* 줄바꿈 방지 */
             }
             
@@ -478,7 +478,7 @@
             }
 
             .search-bar {
-            flex-direction: column;
+            flex-direction: column;       
             gap: 10px;
             }
             
@@ -505,11 +505,21 @@
                 font-size: 20px;
             }
 
+            .show-gallery {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 15px;
+            }
+
             .view-toggle-btn {
                 font-size: 12px;
             }
         }
 
+            
         @media (max-width: 480px) {
             .banner-left {
                 min-height: 200px;
@@ -617,7 +627,7 @@
         let currentCategory = '전체';
         let currentSort = 'latest';
         let isListView = true;
-        let pageSize = 9; // 한 페이지당 보여줄 항목 수
+        let pageSize = 12; // 한 페이지당 보여줄 항목 수
         let currentPage = 1; // 현재 페이지
 
         // 카테고리 네비게이션 설정
