@@ -6,161 +6,206 @@
     <title id="showTitle">공연 세부 정보</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        .header {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            text-align: left;
-        }
-        .logo {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .show-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .show-image {
-            flex: 0 0 300px;
-            max-width: 300px;
-            height: 400px; /* 고정된 높이 설정 */
-            border-radius: 8px;
-            object-fit: contain; /* 비율을 유지하며 이미지가 완전히 표시되도록 설정 */
-            background-color: #f0f0f0; /* 빈 영역에 배경색 추가 (선택 사항) */
-        }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
 
+.header {
+    background-color: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-        .show-info {
-            flex: 1;
-            min-width: 300px;
-        }
-        .show-info h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.5em;
-            color: #333;
-        }
-        .show-info p {
-            margin: 5px 0;
-            color: #666;
-        }
-        .countdown-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .countdown {
-            font-weight: bold;
-            color: #ff5733;
-            font-size: 1.2em;
-        }
+.logo {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 23px;
+}
 
-        /* 갤러리 스타일 */
-        .gallery {
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .gallery img {
-            width: 400px;
-            height: auto;
-            border-radius: 8px;
-            margin: 0 10px;
-        }
-        .gallery button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-        .gallery button:hover {
-            background-color: #555;
-        }
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        .share-container {
-            text-align: center;
-            margin-top: 40px;
-        }
+.show-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-        .action-button {
-            background-color: #E564B9;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 10px;
-        }
-        .action-button:hover {
-            background-color: #D454A9;
-        }
+.show-image {
+    flex: 0 0 300px;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+}
 
-        .options {
-            grid-column: 1 / 4;
-            grid-row: 3 / 4;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            background-color: #ffffff;
-            text-align: center;
-            padding: 15px 0;
-            border-radius: 15px;
-        }
+.show-info {
+    flex: 1;
+    min-width: 300px;
+}
 
-        .options div {
-            padding: 10px;
-        }
+.show-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
+    color: #333;
+}
 
-        .options div span:first-child {
-            display: block;
-            font-size: 16px;
-        }
+.show-info p {
+    margin: 5px 0;
+    color: #666;
+}
 
-        .options div span:last-child {
-            display: block;
-            font-size: 18px;
-            font-weight: bold;
-        }
+.options {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        @media (max-width: 767px) {
-            .container {
-                padding: 10px;
-                margin: 10px;
-            }
-            .show-info h2 {
-                font-size: 1.2em;
-            }
-            .show-info p {
-                font-size: 0.9em;
-            }
-            .gallery img {
-                width: 200px;
-            }
-            .gallery button {
-                font-size: 1em;
-            }
-        }
+.options div {
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.options div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.options div span:first-child {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.options div span:last-child {
+    display: block;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+
+.gallery {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.gallery img {
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.gallery button {
+    background-color: #D454A9;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gallery button:hover {
+    background-color: #b33d74;
+}
+
+.action-button {
+    background-color: #D454A9;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+}
+
+.action-button:hover {
+    background-color: #b33d74;
+    transform: scale(1.05);
+}
+
+.share-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.countdown-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.countdown {
+    font-weight: bold;
+    color: #D454A9;
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    .show-content {
+        flex-direction: column;
+    }
+    
+    .show-image {
+        max-width: 100%;
+    }
+    
+    .options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .gallery img {
+        max-width: 100%;
+    }
+    
+    .gallery {
+        flex-direction: column;
+    }
+    
+    .action-button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
     </style>
 </head>
 <body>
@@ -176,42 +221,42 @@
                 <p><strong>시간:</strong> <span id="showTime"></span></p>
                 <p><strong>장소:</strong> <span id="showVenue"></span></p>
                 <p><strong>출연:</strong> <span id="showCast"></span></p>
-                <p><strong>주최:</strong> <span id="showOrganizer"></span></p>
+                <p><strong>러닝타임:</strong> <span id="showDuration"></span></p>
+                <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
+                <p><strong>협업기관:</strong> <span id="showWithorganizer"></span></p>
                 <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
-                <p><strong>입장 방식:</strong> <span id="showEntry"></span></p>
-                <p><strong>공개 여부:</strong> <span id="showPublic"></span></p>
                 <p><strong>관련 링크:</strong> <a id="showLink" href="#" target="_blank"></a></p>
             </div>
         </div>
     </div>
 
-    <!-- Options Section -->
-    <div class="options">
-        <div>
-            <span>외부인 입장</span>
-            <span id="showPublic"></span>
+        <!-- Options Section -->
+        <div class="options">
+            <div>
+                <span>외부인 입장</span>
+                <span id="showPublic"></span>
+            </div>
+            <div>
+                <span>입장 방식</span>
+                <span id="showEntry"></span>
+            </div>
+            <div>
+                <span>입장 오픈시간</span>
+                <span id="showEntryOpen"></span>
+            </div>
+            <div>
+                <span>관람 유의</span>
+                <span id="showNotecheck"></span>
+            </div>
+            <div>
+                <span>촬영, 녹음</span>
+                <span id="showRec"></span>
+            </div>
         </div>
-        <div>
-            <span>입장 방식</span>
-            <span id="showEntry"></span>
-        </div>
-        <div>
-            <span>입장 오픈</span>
-            <span id="showEntryOpen"></span>
-        </div>
-        <div>
-            <span>관람 유의</span>
-            <span id="showPrecautions"></span>
-        </div>
-        <div>
-            <span>촬영, 녹음</span>
-            <span id="showRecordingPolicy"></span>
-        </div>
-    </div>
     
     
     <div class="countdown-container">
-        <p class="countdown" id="countdown"></p>
+        <p class="countdown" id="countdown">D-11</p>
     </div>
     
     <div class="container">
@@ -272,68 +317,64 @@
             
             // 행 순회하며 공연 정보 추출
             rows.forEach(row => {
-            // 표시 ON/OFF가 TRUE인 경우에만 처리
-            if (row['표시 ON/OFF'] === 'TRUE') {
-                const showName = row['공연명'];
-                shows[showName] = {
-                    name: showName,                          // 공연명
-                    date: row['일시'],                      // 일시
-                    time: row['시간'] || '',                // 시간
-                    endDate: row['종료일시'] || '',         // 종료일시 (선택값)
-                    venue: row['장소'] || '',               // 장소
-                    cast: row['출연'] || '',                // 출연
-                    duration: row['관람시간'] || '',        // 관람시간
-                    organizer: row['주최/주관'] || '',      // 주최/주관
-                    collaborators: row['협업기관'] || '',   // 협업기관
-                    description: row['설명'] || '',         // 설명
-                    staffList: row['스탭리스트'] || '',     // 스탭리스트
-                    entry: row['입장방식'] || '',           // 입장방식
-                    entryOpen: row['입장오픈'] || '',       // 입장오픈
-                    audienceNotes: row['관람유의여부'] || '', // 관람유의여부
-                    recordingPolicy: row['촬영녹음여부'] || '', // 촬영녹음여부
-                    precautions: row['유의사항'] || '',     // 유의사항
-                    public: row['공개여부'] || '',          // 공개여부
-                    link: row['관련 링크'] || '',           // 관련 링크
-                    videoLink: row['영상 링크'] || '',      // 영상 링크
-                    image: row['메인포스터'] || '',         // 메인포스터
-                    gallery: [
-                        row['카드뉴스1'] || '',             // 카드뉴스1
-                        row['카드뉴스2'] || '',             // 카드뉴스2
-                        row['카드뉴스3'] || '',             // 카드뉴스3
-                        row['카드뉴스4'] || ''              // 카드뉴스4
-                    ].filter(img => img !== '')             // 빈 문자열 제거
-                };
-            }
-        });
+                // 표시 ON/OFF가 TRUE인 경우에만 처리
+                if (row['표시 ON/OFF'] === 'TRUE') {
+                    const showName = row['공연명'];
+                    shows[showName] = {
+                        name: showName,
+                        date: row['일시'],
+                        endDate: row['종료일시'] || '',
+                        time: row['시간'] || '',
+                        venue: row['장소'] || '',
+                        cast: row['출연'] || '',
+                        duration: row['관람시간'] || '',
+                        description: row['설명'] || '',
+                        entry: row['입장방식'] || '',
+                        public: row['공개여부'] || '',
+                        organizer: row['주최/주관'] || '',
+                        withorganizer: row['협업기관'] || '',
+                        entryopen: row['입장오픈'] || '',
+                        notecheck: row['관람유의여부'] || '',
+                        rec: row['촬영녹음여부'] || '',
+                        note: row['유의사항'] || '',
+                        videolink: row['영상링크'] || '',
+                        link: row['관련 링크'] || '',
+                        image: row['메인포스터'] || '',
+                        gallery: [
+                            row['사진1'] || '',
+                            row['사진2'] || '',
+                            row['사진3'] || '',
+                            row['사진4'] || ''
+                        ].filter(img => img !== '') // 빈 문자열 제거
+                    };
+                }
+            });
 
-
-            // 기존 페이지 초기화 로직 유지
-            const urlPath = window.location.pathname.split('/').pop();
+            // 기존 페이지 초기화 로직 유지 window.location.pathname.split('/').pop();
+            const urlPath = "도마동축제2"
             const showKey = decodeURIComponent(urlPath);
             const showInfo = shows[showKey];
 
             if (showInfo) {
-                // 기존 코드와 동일한 페이지 업데이트 로직
-                document.getElementById('showImage').src = showInfo.image || '';
-                document.getElementById('showName').textContent = showInfo.name || '';
-                document.getElementById('showDate').textContent = `${showInfo.date || ''} ~ ${showInfo.endDate || ''}`;
-                document.getElementById('showTime').textContent = showInfo.time || '';
-                document.getElementById('showVenue').textContent = showInfo.venue || '';
-                document.getElementById('showCast').textContent = showInfo.cast || '';
-                document.getElementById('showDuration').textContent = showInfo.duration || '';
-                document.getElementById('showOrganizer').textContent = showInfo.organizer || '';
-                document.getElementById('showCollaborators').textContent = showInfo.collaborators || '';
-                document.getElementById('showDescription').textContent = showInfo.description || '';
-                document.getElementById('showStaffList').textContent = showInfo.staffList || '';
-                document.getElementById('showEntry').textContent = showInfo.entry || '';
-                document.getElementById('showEntryOpen').textContent = showInfo.entryOpen || '';
-                document.getElementById('showAudienceNotes').textContent = showInfo.audienceNotes || '';
-                document.getElementById('showRecordingPolicy').textContent = showInfo.recordingPolicy || '';
-                document.getElementById('showPrecautions').textContent = showInfo.precautions || '';
-                document.getElementById('showPublic').textContent = showInfo.public || '';
-                document.getElementById('showLink').href = showInfo.link || '#';
-                document.getElementById('showVideoLink').href = showInfo.videoLink || '#';
+                document.getElementById('showImage').src = showInfo.image;
+                document.getElementById('showName').textContent = showInfo.name;
+                document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                document.getElementById('showTime').textContent = showInfo.time;
+                document.getElementById('showVenue').textContent = showInfo.venue;
+                document.getElementById('showCast').textContent = showInfo.cast;
+                document.getElementById('showDuration').textContent = showInfo.duration;
+                document.getElementById('showDescription').textContent = showInfo.description;
+                document.getElementById('showOrganizer').textContent = showInfo.organizer;
+                document.getElementById('showWithorganizer').textContent = showInfo.withorganizer;
                 
+                // Options 섹션 업데이트
+                document.getElementById('showPublic').textContent = showInfo.public;
+                document.getElementById('showEntry').textContent = showInfo.entry;
+                document.getElementById('showEntryOpen').textContent = showInfo.entryopen;
+                document.getElementById('showNotecheck').textContent = showInfo.notecheck;
+                document.getElementById('showRec').textContent = showInfo.rec;
+                
+                // 링크 처리
                 const linkElement = document.getElementById('showLink');
                 if (showInfo.link) {
                     linkElement.textContent = showInfo.link;
