@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIMA ART 소개</title>
+  <style>
+    /* 기존 스타일 적용 */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+    }
+
+    .top-nav {
+            background-color: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a.active {
+            background-color: #D454A9;
+            color: white;
+        }
+        .logo {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 23px;
+        }    
+
+        .main-banner {
+            display: flex;
+            max-width: 1200px;
+            margin: 30px auto;
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .section {
+        margin-bottom: 40px;
+    }
+
+    .section h2 {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .section p {
+        font-size: 16px;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .categories {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .category {
+        text-align: center;
+        width: 120px;
+    }
+
+    .category .circle {
+        width: 80px;
+        height: 80px;
+        background-color: #ececec;
+        border: 3px solid #D454A9;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #D454A9;
+        margin: 0 auto 10px;
+    }
+
+    .steps {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .step {
+        text-align: center;
+        flex: 1;
+        margin: 0 10px;
+    }
+
+    .step h3 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .step p {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .updates {
+        background-color: #fff5f9;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .updates h3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .updates ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .updates li {
+        font-size: 14px;
+        color: #666;
+        margin: 5px 0;
+    }
+
+    .footer {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .footer a {
+        color: white;
+        background-color: #D454A9;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 20px;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+    .footer a:hover {
+        background-color: #b33d74;
+    }
+  </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="top-nav-content">
+            <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+        </div>
+    </div>
+
+  <div class="container">
+    <!-- 소개 섹션 -->
+    <div class="section">
+      <h2>소개</h2>
+      <p>DIMA를 넘어 방송 예술현장을 이끌어 갈 창작물을 아카이브하는 사이트입니다.</p>
+      <p>과거 | 앞서 제작된 작품을 통해 예술적 영감을 얻습니다.</p>
+      <p>현재 | 우리의 작품을 널리 알리고 미래를 위해 기록합니다.</p>
+      <p>미래 | 콘텐츠를 공유하고 의견을 나누며 되돌아봅니다.</p>
+    </div>
+
+    <!-- 지원하는 창작물 -->
+    <div class="section">
+      <h2>지원하는 창작물</h2>
+      <div class="categories">
+        <div class="category">
+          <div class="circle">공연</div>
+          <p>공연</p>
+        </div>
+        <div class="category">
+          <div class="circle">전시</div>
+          <p>전시</p>
+        </div>
+        <div class="category">
+          <div class="circle">중계</div>
+          <p>중계</p>
+        </div>
+        <div class="category">
+          <div class="circle">영상</div>
+          <p>영상</p>
+        </div>
+        <div class="category">
+          <div class="circle">...</div>
+          <p>기타</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 작품 등록 방법 -->
+    <div class="section">
+      <h2>작품 등록 방법</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>품 접수</h3>
+          <p>등록할 작품 제출</p>
+        </div>
+        <div class="step">
+          <h3>신청 검토</h3>
+          <p>참여 승인</p>
+        </div>
+        <div class="step">
+          <h3>공개</h3>
+          <p>작품 공개</p>
+        </div>
+        <div class="step">
+          <h3>수정 요청</h3>
+          <p>비공개 처리</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 업데이트 기록 -->
+    <div class="section updates">
+      <h3>업데이트 기록</h3>
+      <ul>
+        <li>2024년 10월: 1차 기능 제작</li>
+        <li>2024년 12월: 데이터베이스 구축 및 디자인 리뉴얼</li>
+        <li>2024년 10월: 최초 공개</li>
+      </ul>
+    </div>
+
+    <!-- 문의 -->
+    <div class="footer">
+      <a href="mailto:example@email.com">문의 이메일</a>
+    </div>
+  </div>
+</body>
+</html>
