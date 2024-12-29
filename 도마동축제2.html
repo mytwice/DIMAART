@@ -261,7 +261,7 @@
             </div>
             <div>
                 <span>입장 오픈시간</span>
-                <span id="showEntryOpen"></span>분 전</p>
+                <span id="showEntryOpen"></span>
             </div>
             <div>
                 <span>관람 유의</span>
@@ -387,12 +387,12 @@
             if (showInfo) {
                 document.getElementById('showImage').src = showInfo.image;
                 document.getElementById('showName').textContent = showInfo.name;
-                document.getElementById('showDate').textContent = `${showInfo.date} ~ ${showInfo.endDate}`;
+                document.getElementById('showDate').textContent = `${showInfo.date} ${showInfo.endDate}`;
                 document.getElementById('showTime').textContent = showInfo.time;
                 document.getElementById('showVenue').textContent = showInfo.venue;
                 document.getElementById('showCast').textContent = showInfo.cast;
                 document.getElementById('showDuration').textContent = showInfo.duration;
-                document.getElementById('showDescription').textContent = showInfo.description;
+                document.getElementById('showDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
                 document.getElementById('showOrganizer').textContent = showInfo.organizer;
                 document.getElementById('showWithorganizer').textContent = showInfo.withorganizer;
                 
