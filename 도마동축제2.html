@@ -6,207 +6,226 @@
     <title id="showTitle">공연 세부 정보</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-}
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+    }
 
-.header {
-    background-color: #fff;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+    .header {
+        background-color: #fff;
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-.logo {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 23px;
-}
+    .logo {
+        color: #333;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 23px;
+    }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.show-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.show-image {
-    flex: 0 0 300px;
-    max-width: 300px;
-    height: auto;
-    border-radius: 8px;
-}
-
-.show-info {
-    flex: 1;
-    min-width: 300px;
-}
-
-.show-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5em;
-    color: #333;
-}
-
-.show-info p {
-    margin: 5px 0;
-    color: #666;
-}
-
-.options {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    max-width: 1200px;
-    margin: 20px auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.options div {
-    text-align: center;
-    padding: 15px;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.options div:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.options div span:first-child {
-    display: block;
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.options div span:last-child {
-    display: block;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #333;
-}
-
-.gallery {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.gallery img {
-    max-width: 400px;
-    height: auto;
-    border-radius: 8px;
-}
-
-.gallery button {
-    background-color: #D454A9;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.gallery button:hover {
-    background-color: #b33d74;
-}
-
-.action-button {
-    background-color: #D454A9;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1em;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 10px;
-}
-
-.action-button:hover {
-    background-color: #b33d74;
-    transform: scale(1.05);
-}
-
-.share-container {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-.countdown-container {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.countdown {
-    font-weight: bold;
-    color: #D454A9;
-    font-size: 1.2em;
-}
-
-@media (max-width: 768px) {
     .container {
-        padding: 10px;
-        margin: 10px;
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    
+
     .show-content {
-        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
     }
-    
+
     .show-image {
-        max-width: 100%;
+        flex: 0 0 300px;
+        max-width: 300px;
+        height: auto;
+        object-fit: contain; /* 가로비율 유지 */
+        border-radius: 8px;
+        background: #ececec;
     }
-    
+
+    .show-info {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .show-info h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.5em;
+        color: #333;
+    }
+
+    .show-info p {
+        margin: 5px 0;
+        color: #666;
+    }
+
     .options {
-        grid-template-columns: repeat(2, 1fr);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
         gap: 10px;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    
-    .gallery img {
-        max-width: 100%;
+
+    .options div {
+        text-align: center;
+        padding: 15px;
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        transition: all 0.3s ease;
     }
-    
+
+    .options div:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .options div span:first-child {
+        display: block;
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .options div span:last-child {
+        display: block;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #333;
+    }
+
     .gallery {
-        flex-direction: column;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    
+
+    .gallery img {
+        max-width: 400px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .gallery button {
+        background-color: #D454A9;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .gallery button:hover {
+        background-color: #b33d74;
+    }
+
     .action-button {
-        width: 100%;
-        margin: 10px 0;
+        background-color: #D454A9;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1em;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 10px;
     }
-}
+
+    .action-button:hover {
+        background-color: #b33d74;
+        transform: scale(1.05);
+    }
+
+    .share-container {
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .countdown-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .countdown {
+        font-weight: bold;
+        color: #D454A9;
+        font-size: 1.2em;
+    }
+
+    .attention {
+        padding: 20px;
+    }
+
+    .attention-item {
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: #fff5f9;
+        border-left: 4px solid #D454A9;
+        border-radius: 4px;
+        color: #333;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+            margin: 10px;
+        }
+        
+        .show-content {
+            flex-direction: column;
+        }
+        
+        .show-image {
+            max-width: 100%;
+        }
+        
+        .options {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .gallery img {
+            max-width: 100%;
+        }
+        
+        .gallery {
+            flex-direction: column;
+        }
+        
+        .action-button {
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
     </style>
+
 </head>
 <body>
     <div class="header">
@@ -224,7 +243,7 @@ body {
                 <p><strong>러닝타임:</strong> <span id="showDuration"></span></p>
                 <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
                 <p><strong>협업기관:</strong> <span id="showWithorganizer"></span></p>
-                <p id="showDescription">공연 설명이 여기에 들어갑니다.</p>
+
                 <p><strong>관련 링크:</strong> <a id="showLink" href="#" target="_blank"></a></p>
             </div>
         </div>
@@ -242,7 +261,7 @@ body {
             </div>
             <div>
                 <span>입장 오픈시간</span>
-                <span id="showEntryOpen"></span>
+                <span id="showEntryOpen"></span>분 전</p>
             </div>
             <div>
                 <span>관람 유의</span>
@@ -256,9 +275,19 @@ body {
     
     
     <div class="countdown-container">
-        <p class="countdown" id="countdown">D-11</p>
+        <p class="countdown" id="countdown">블러오는 중입니다</p>
     </div>
-    
+
+    <div class="container">
+        <h3>유의사항</h3>
+        <div class="attention"></div>
+    </div>
+
+    <div class="container">
+        <h3>설명</h3>
+        <p id="showDescription"></p>
+    </div>
+
     <div class="container">
         <div class="gallery">
             <button id="prevButton">◀</button>
@@ -350,8 +379,8 @@ body {
                 }
             });
 
-            // 기존 페이지 초기화 로직 유지 window.location.pathname.split('/').pop();
-            const urlPath = "도마동축제2"
+            // 쇼이름설정 window.location.pathname.split('/').pop();
+            const urlPath = window.location.pathname.split('/').pop();
             const showKey = decodeURIComponent(urlPath);
             const showInfo = shows[showKey];
 
@@ -403,6 +432,22 @@ body {
 
                 updateGalleryImage();
 
+
+                const attentionContainer = document.querySelector('.attention');
+                if (showInfo.note) {
+                    const notes = showInfo.note.split('\n');
+                    notes.forEach(note => {
+                        if (note.trim()) {  // Only create elements for non-empty lines
+                            const noteElement = document.createElement('div');
+                            noteElement.className = 'attention-item';
+                            noteElement.textContent = note.trim();
+                            attentionContainer.appendChild(noteElement);
+                        }
+                    });
+                } else {
+                    attentionContainer.style.display = 'none';
+                }
+                
                 function calculateDDay(dateString) {
                     // 날짜 범위 분리 (~ 기준)
                     const [startDateStr, endDateStr] = dateString.split('~').map(date => date.trim());
