@@ -5,156 +5,211 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DIMA ART 소개</title>
   <style>
-    /* 기존 스타일 적용 */
     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
     }
 
     .top-nav {
-            background-color: #fff;
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+      background-color: #fff;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-        .top-nav-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
+    .top-nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
 
-        .nav-menu {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-menu a.active {
-            background-color: #D454A9;
-            color: white;
-        }
-        .logo {
-            color: #333;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 23px;
-        }    
-
-        .main-banner {
-            display: flex;
-            max-width: 1200px;
-            margin: 30px auto;
-            gap: 20px;
-            padding: 0 15px;
-        }
+    .logo {
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 23px;
+    }
 
     .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .container p {
+      font-size: 16px;
+      color: #4d4d4d;
+   }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .banner-text {
+      position: absolute;
+      left: 40px;
+      top: 50%; /* Add this */
+      transform: translateY(-50%); /* Add this */
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .banner-text h1 {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .banner-text p {
+      font-size: 18px;
+      margin: 10px 0 0;
     }
 
     .section {
-        margin-bottom: 40px;
+      margin-bottom: 40px;
+      padding: 20px;
     }
 
     .section h2 {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
     }
 
-    .section p {
-        font-size: 16px;
-        color: #666;
-        line-height: 1.5;
+    .section h3 {
+      font-size: 14px;
+      color: #999;
+      font-weight: normal;
+      margin-bottom: 20px;
     }
 
     .categories {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     .category {
-        text-align: center;
-        width: 120px;
+      text-align: center;
+      width: 120px;
     }
 
     .category .circle {
-        width: 80px;
-        height: 80px;
-        background-color: #ececec;
-        border: 3px solid #D454A9;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        font-weight: bold;
-        color: #D454A9;
-        margin: 0 auto 10px;
+      width: 80px;
+      height: 80px;
+      background-color: #ececec;
+      border: 3px solid #D454A9;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #D454A9;
+      margin: 0 auto 10px;
     }
 
     .steps {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 60px; /* Increased gap to accommodate arrows */
+      padding: 20px;
+      position: relative;
     }
 
     .step {
-        text-align: center;
-        flex: 1;
-        margin: 0 10px;
+      text-align: center;
+      width: 200px;
+      padding: 20px;
+      background-color: white;
+      border: 2px solid #D454A9;
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .step::after {
+      content: '→';
+      position: absolute;
+      top: 50%;
+      right: -40px;
+      transform: translate(0, -50%);
+      color: #D454A9;
+      font-size: 24px;
+      z-index: 1;
+    }
+
+    .step:last-child::after {
+      display: none;
     }
 
     .step h3 {
-        font-size: 18px;
-        color: #333;
-        margin-bottom: 5px;
+      font-size: 20px;
+      color: #D454A9;
+      margin-bottom: 15px;
+      position: relative;
+      padding-bottom: 10px;
     }
 
     .step p {
-        font-size: 14px;
-        color: #666;
+      font-size: 15px;
+      color: #666;
+      line-height: 1.5;
     }
 
     .updates {
-        background-color: #fff5f9;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background-color: #fff5f9;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin: 20px;
     }
 
     .updates h3 {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
     }
 
-    .updates ul {
-        list-style: none;
-        padding: 0;
+    .update-year {
+      font-size: 20px;
+      font-weight: bold;
+      color: #D454A9;
+      margin-bottom: 10px;
     }
 
-    .updates li {
-        font-size: 14px;
-        color: #666;
-        margin: 5px 0;
+    .update-details {
+      font-size: 16px;
+      color: #666;
+      margin: 5px 0;
     }
 
     .footer {
@@ -175,28 +230,61 @@
     .footer a:hover {
         background-color: #b33d74;
     }
+
+    @media (max-width: 768px) {
+      .steps {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+      }
+
+      .step {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .step::after {
+        content: '↓';
+        top: auto;
+        right: 50%;
+        bottom: -32px;
+        transform: translateX(50%);
+      }
+    }
   </style>
 </head>
 <body>
-    <div class="top-nav">
-        <div class="top-nav-content">
-            <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
-        </div>
+  <div class="top-nav">
+    <div class="top-nav-content">
+      <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
     </div>
+  </div>
 
   <div class="container">
-    <!-- 소개 섹션 -->
+    <img src="설명상단.png" alt="">
+    <div class="image-overlay"></div>
+    <div class="banner-text">
+      <h1>DIMA ART</h1>
+      <p1>과거와 현재, 그리고 미래를 잇는 예술의 기록<br>
+        아티스트의 창작 콘텐츠 아카이브 프로젝트</p1>
+    </div>
+  </div>
+
+  <div class="container">
     <div class="section">
       <h2>소개</h2>
       <p>DIMA를 넘어 방송 예술현장을 이끌어 갈 창작물을 아카이브하는 사이트입니다.</p>
+      <br></br>
       <p>과거 | 앞서 제작된 작품을 통해 예술적 영감을 얻습니다.</p>
       <p>현재 | 우리의 작품을 널리 알리고 미래를 위해 기록합니다.</p>
       <p>미래 | 콘텐츠를 공유하고 의견을 나누며 되돌아봅니다.</p>
     </div>
+  </div>
 
-    <!-- 지원하는 창작물 -->
+  <div class="container">
     <div class="section">
       <h2>지원하는 창작물</h2>
+      <h3>공연 예정이거나, 방영된 과거의 콘텐츠 모두 접수 가능합니다</h3>
       <div class="categories">
         <div class="category">
           <div class="circle">공연</div>
@@ -220,44 +308,47 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- 작품 등록 방법 -->
+    <div class="container">
     <div class="section">
-      <h2>작품 등록 방법</h2>
-      <div class="steps">
-        <div class="step">
-          <h3>품 접수</h3>
-          <p>등록할 작품 제출</p>
-        </div>
-        <div class="step">
-          <h3>신청 검토</h3>
-          <p>참여 승인</p>
-        </div>
-        <div class="step">
-          <h3>공개</h3>
-          <p>작품 공개</p>
-        </div>
-        <div class="step">
-          <h3>수정 요청</h3>
-          <p>비공개 처리</p>
-        </div>
+        <h2>작품 등록 방법</h2>
+        <div class="steps">
+          <div class="step">
+            <h3>1. 접수</h3>
+            <p>forms.gle/n285JPvDRxT1zS126</p>
+          </div>
+          <div class="step">
+            <h3>2. 검토</h3>
+            <p>적합성에 따라 공개여부 결정</p>
+          </div>
+          <div class="step">
+            <h3>3. 공개</h3>
+            <p>페이지 공개</p>
+          </div>
+          <div class="step">
+            <h3>4. 업데이트 </h3>
+            <p>접수 폼을 통한 수정 / 비공개 반영</p>
+          </div>
       </div>
-    </div>
-
-    <!-- 업데이트 기록 -->
-    <div class="section updates">
-      <h3>업데이트 기록</h3>
-      <ul>
-        <li>2024년 10월: 1차 기능 제작</li>
-        <li>2024년 12월: 데이터베이스 구축 및 디자인 리뉴얼</li>
-        <li>2024년 10월: 최초 공개</li>
-      </ul>
-    </div>
-
-    <!-- 문의 -->
-    <div class="footer">
-      <a href="mailto:example@email.com">문의 이메일</a>
+      <div class="footer">
+        <a href="https://forms.gle/n285JPvDRxT1zS126" target="_blank">접수 폼으로 이동하기</a>
     </div>
   </div>
+</div>
+
+    <div class="container">
+    <div class="container updates">
+      <h3>업데이트 기록</h3>
+      <div>
+        <div class="update-year">2024년</div>
+        <div class="update-details">10월 : 1차 기능 제작</div>
+        <div class="update-details">12월 : 데이터베이스 구축 및 디자인 리뉴얼</div>
+        <div class="update-year">2024년</div>
+        <div class="update-details">3월 : 최초 공개</div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
