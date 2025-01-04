@@ -13,14 +13,23 @@
         background-color: #f5f5f5;
     }
 
-    .header {
-        background-color: #fff;
-        padding: 15px;
-        border-bottom: 1px solid #ddd;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .top-nav {
+      background-color: #fff;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 0px;
     }
 
     .logo {
@@ -332,9 +341,11 @@
 
 </head>
 <body>
-    <div class="header">
-        <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+  <div class="top-nav">
+    <div class="top-nav-content">
+      <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
     </div>
+  </div>
     <div class="container">
         <div class="show-content">
             <img id="showImage" class="show-image" src="" alt="공연 이미지">
