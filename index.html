@@ -482,18 +482,35 @@
             gap: 10px;
             }
             
+            .search-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 0 10px; /* 패딩 조정 */
+                margin: 15px auto; /* 상하 여백 조정 */
+            }
+            
+            #searchInput {
+                width: 100%; /* 전체 너비로 설정 */
+                max-width: 100%; /* 최대 너비 제한 */
+                margin: 0; /* 기존 마진 제거 */
+                box-sizing: border-box; /* 패딩을 너비에 포함 */
+            }
+            
             .sort-buttons {
                 width: 100%;
+                display: flex;
                 justify-content: space-between;
+                gap: 8px; /* 버튼 간격 조정 */
             }
             
             .sort-button {
                 flex: 1;
-                margin: 0 5px;
+                text-align: center;
                 white-space: nowrap;
                 font-size: 14px;
+                padding: 8px 12px;
             }
-
+  
             .floating-buttons {
                 right: 10px;
                 bottom: 10px;
@@ -554,7 +571,7 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="검색어를 입력해주세요">
+        <input type="text" id="searchInput" placeholder="검색어를 입력해주세요(공연명, 장소, 출연, 주최 및 협업기관)">
         <div class="sort-buttons">
             <button class="sort-button active">최신순</button>
             <button class="sort-button">오래된 순</button>
@@ -616,6 +633,8 @@
             duration: row['관람시간'] || '',
             description: row['설명'] || '',
             image: row['메인포스터'] || '',
+            organizer: row['주최/주관'] || '',
+            withorganizer: row['협업기관'] || '',
             mainNotice: row['메인공지 ON/OFF'] === 'TRUE',
             gallery: [row['사진1'], row['사진2'], row['사진3'], row['사진4']]
                 .filter(img => img && img !== '')
@@ -905,8 +924,11 @@
                 currentPage = 1; // 검색 시 페이지 리셋
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const filteredShows = shows.filter(show => 
-                    show.name.toLowerCase().includes(searchTerm) ||
-                    show.description.toLowerCase().includes(searchTerm)
+                    show.name.toLowerCase().includes(searchTerm) ||         // 공연명
+                    show.venue.toLowerCase().includes(searchTerm) ||        // 장소
+                    show.cast.toLowerCase().includes(searchTerm) ||         // 출연
+                    show.organizer.toLowerCase().includes(searchTerm) ||    // 주최/주관
+                    show.withorganizer.toLowerCase().includes(searchTerm)   // 협업기관
                 );
                 if (isListView) {
                     loadShows(filteredShows);
