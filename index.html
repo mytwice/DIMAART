@@ -742,8 +742,8 @@
             const dateText = document.createElement('div');
             dateText.style.fontSize = '20px';
             dateText.style.marginTop = '10px';
-            dateText.textContent = `${show.date} ~ ${show.endDate}`;
-
+            dateText.textContent = formatDateDisplay(show.date, show.endDate);
+    
             textContainer.appendChild(titleText);
             textContainer.appendChild(dateText);
             slide.appendChild(textContainer);
@@ -949,13 +949,27 @@
             });
         }
 
+        // 날짜 표시 형식화 함수
+        function formatDateDisplay(startDate, endDate) {
+            const start = startDate.trim();
+            const end = endDate?.trim() || start;
+            
+            // 시작일과 종료일이 같거나, 종료일이 없는 경우
+            if (start === end || !endDate) {
+                return start;
+            }
+            
+            // 시작일과 종료일이 다른 경우
+            return `${start} ~ ${end}`;
+        }
+
         // 리스트 뷰 로드 함수
+        // 공연 목록 로드 함수 내 날짜 표시 부분 수정
         function loadShows(filteredShows) {
             const showContainer = document.getElementById('showContainer');
             showContainer.innerHTML = '';
             showContainer.className = 'show-list';
 
-            // 현재 페이지까지의 아이템만 표시
             const endIndex = pageSize * currentPage;
             const showsToDisplay = filteredShows.slice(0, endIndex);
 
@@ -975,7 +989,7 @@
                 title.textContent = show.name;
                 
                 const date = document.createElement('p');
-                date.textContent = `${show.date} ~ ${show.endDate}`;
+                date.textContent = formatDateDisplay(show.date, show.endDate);
                 
                 const status = document.createElement('div');
                 status.className = 'show-date';
@@ -992,6 +1006,7 @@
                 
                 showContainer.appendChild(showElement);
             });
+
 
             // 더보기 버튼 처리
             const existingButton = document.querySelector('.load-more-btn');
