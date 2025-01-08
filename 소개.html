@@ -82,6 +82,7 @@
     .banner-text h1 {
       font-size: 48px;
       font-weight: bold;
+      color: #e552b4;
       margin: 0;
     }
 
@@ -226,10 +227,48 @@
         font-size: 14px;
         transition: background-color 0.3s;
     }
-
+    
     .footer a:hover {
         background-color: #b33d74;
     }
+
+    .contact-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .contact-container h2 {
+      color: #D454A9;
+      margin-bottom: 15px;
+    }
+
+    .contact-container p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .contact-container a {
+      color: #D454A9;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* 페이드인 효과 */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
     @media (max-width: 768px) {
       .steps {
@@ -270,18 +309,18 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="container fade-in">
     <div class="section">
       <h2>소개</h2>
       <p>DIMA를 넘어 방송 예술현장을 이끌어 갈 창작물을 아카이브하는 사이트입니다.</p>
-      <br></br>
+      <br>
       <p>과거 | 앞서 제작된 작품을 통해 예술적 영감을 얻습니다.</p>
       <p>현재 | 우리의 작품을 널리 알리고 미래를 위해 기록합니다.</p>
       <p>미래 | 콘텐츠를 공유하고 의견을 나누며 되돌아봅니다.</p>
     </div>
   </div>
 
-  <div class="container">
+  <div class="container fade-in">
     <div class="section">
       <h2>지원하는 창작물</h2>
       <h3>공연 예정이거나, 방영된 과거의 콘텐츠 모두 접수 가능합니다</h3>
@@ -310,7 +349,7 @@
     </div>
   </div>
 
-    <div class="container">
+    <div class="container fade-in">
     <div class="section">
         <h2>작품 등록 방법</h2>
         <div class="steps">
@@ -337,18 +376,41 @@
   </div>
 </div>
 
-    <div class="container">
+    <div class="container fade-in">
     <div class="container updates">
       <h3>업데이트 기록</h3>
       <div>
         <div class="update-year">2024년</div>
         <div class="update-details">10월 : 1차 기능 제작</div>
         <div class="update-details">12월 : 데이터베이스 구축 및 디자인 리뉴얼</div>
-        <div class="update-year">2024년</div>
+        <div class="update-year">2025년</div>
         <div class="update-details">3월 : 최초 공개</div>
       </div>
     </div>
   </div>
 
+  <div class="container contact-container">
+  <h2>문의 및 연락</h2>
+  <p>문의사항은 아래의 연락처를 이용해 주세요</p>
+  <p><strong>카카오톡 :</strong> <a href="https://open.kakao.com/o/sQ5O8Zfg" target="_blank">https://open.kakao.com/o/sQ5O8Zfg</a></p>
+</div>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // Once visible, no need to observe again
+        }
+      });
+    }, {
+      threshold: 0.5  // 화면에 20%가 보일 때 페이드인
+    });
+
+    fadeInElements.forEach(el => observer.observe(el));
+  });
+</script>
 </html>
