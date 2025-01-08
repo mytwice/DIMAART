@@ -680,7 +680,12 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
         
 
         } else {
-            document.body.innerHTML = '<div class="container"><p>해당 콘텐츠 정보를 찾을 수 없습니다. </p><button class="action-button" onclick="goToList()">목록 보기</button>';
+            document.body.innerHTML = `
+            <div class="container" style="text-align: center; margin-top: 20px;">
+                <p style="margin: 30px 0; font-size: 18px;">해당 콘텐츠 정보를 찾을 수 없습니다.<br>링크를 다시 확인하시거나 목록보기로 다시 접근해주세요.</p>
+                <button class="action-button" onclick="goToList()" style="margin: 5px;">목록 보기</button>
+                <button class="action-button" onclick="goToList2()" style="margin: 5px;">오류 제보하기</button>
+            </div>`;
         }
     });
 });
@@ -816,6 +821,10 @@ function shareShow() {
 
 function goToList() {
     window.location.href = "https://mytwice.github.io/DIMAART/";
+}
+
+function goToList2() {
+    window.location.href = "https://forms.gle/n285JPvDRxT1zS126";
 }
 
 function scrollToTop() {
