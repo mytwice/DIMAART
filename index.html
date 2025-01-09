@@ -416,6 +416,26 @@
             transform: none;
         }
 
+        .footer {
+            background-color: #f0f0f0; /* 회색 배경 */
+            padding: 20px 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer-content a {
+            color: #D454A9; /* 하이퍼링크 색상 */
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .footer-content a:hover {
+            color: #b33d74; /* 호버 시 하이퍼링크 색상 */
+        }
+
          /* 기존 스타일에 추가할 모바일 대응 CSS */
         @media (max-width: 768px) {
             .top-nav {
@@ -535,7 +555,6 @@
                 font-size: 12px;
             }
         }
-
             
         @media (max-width: 480px) {
             .banner-left {
@@ -581,6 +600,12 @@
     <div id="showContainer" class="show-list">
         <!-- JavaScript로 내용이 채워집니다 -->
     </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>디마개선프로젝트 | <a href="https://mytwice.github.io/I-DIMA/" target="_blank">홈페이지</a></p>
+        </div>
+    </footer>
 
     <div class="floating-buttons">
         <button id="viewToggleBtn" class="view-toggle-btn">갤러리 보기</button>
@@ -778,6 +803,23 @@
             slideDots.appendChild(dot);
             dots.push(dot);
         });
+
+            // 슬라이더 추가 완료 후 터치스크롤 이벤트 추가
+            let startX = 0;
+            slider.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+
+            slider.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const diffX = startX - endX;
+
+                if (diffX > 10) { // 오른쪽으로 슬라이드
+                    nextSlide();
+                } else if (diffX < -10) { // 왼쪽으로 슬라이드
+                    prevSlide();
+                }
+            });
 
             // 화살표 생성
             const arrows = createArrows();
