@@ -364,8 +364,6 @@ body {
         height: auto;
         max-width: 100%;
         width: auto;
-        pointer-events: none; /* 클릭으로 이미지 선택 방지 */
-        -webkit-user-drag: none; /* Webkit 기반 브라우저에서 이미지 드래그 방지 */
     }
 
     .gallery button {
@@ -633,23 +631,6 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
                     });
                 }
 
-                // 터치스크롤
-                let startX = 0;
-                slider.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                });
-
-                slider.addEventListener('touchend', (e) => {
-                    const endX = e.changedTouches[0].clientX;
-                    const diffX = startX - endX;
-
-                    if (diffX > 10) { // 오른쪽으로 슬라이드
-                        nextSlide();
-                    } else if (diffX < -10) { // 왼쪽으로 슬라이드
-                        prevSlide();
-                    }
-                });
-
                 // 갤러리 이미지 업데이트 함수
                 function updateGalleryImage() {
                     document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
@@ -670,6 +651,23 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
 
                 // 초기 이미지와 점 설정
                 updateGalleryImage();
+
+                // 터치스크롤
+                let startX = 0;
+                slider.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                });
+
+                slider.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    const diffX = startX - endX;
+
+                    if (diffX > 10) { // 오른쪽으로 슬라이드
+                        nextSlide();
+                    } else if (diffX < -10) { // 왼쪽으로 슬라이드
+                        prevSlide();
+                    }
+                });                
 
             // 링크 처리
                 const linkElement = document.getElementById('showLink');
