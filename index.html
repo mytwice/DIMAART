@@ -648,22 +648,28 @@
             return newRow;
         });
 
-        return rows.filter(row => row['표시 ON/OFF'] === 'TRUE').map(row => ({
-            name: row['공연명'],
-            date: row['일시'].split('~')[0].trim(),
-            endDate: row['일시'].split('~')[1]?.trim() || row['일시'].split('~')[0].trim(),
-            venue: row['장소'] || '',
-            type: row['종류'] || '',
-            cast: row['출연'] || '',
-            duration: row['관람시간'] || '',
-            description: row['설명'] || '',
-            image: row['메인포스터'] || '',
-            organizer: row['주최/주관'] || '',
-            withorganizer: row['협업기관'] || '',
-            mainNotice: row['메인공지 ON/OFF'] === 'TRUE',
-            gallery: [row['사진1'], row['사진2'], row['사진3'], row['사진4']]
-                .filter(img => img && img !== '')
-        }));
+        return rows.filter(row => row['표시 ON/OFF'] === 'TRUE').map(row => {
+            // 일시 데이터가 없는 경우를 대비한 기본값 처리
+            const date = row['일시'] || '';
+            const dateParts = date ? date.split('~') : ['', ''];
+            
+            return {
+                name: row['공연명'] || '',
+                date: dateParts[0]?.trim() || '',
+                endDate: dateParts[1]?.trim() || dateParts[0]?.trim() || '',
+                venue: row['장소'] || '',
+                type: row['종류'] || '',
+                cast: row['출연'] || '',
+                duration: row['관람시간'] || '',
+                description: row['설명'] || '',
+                image: row['메인포스터'] || '',
+                organizer: row['주최/주관'] || '',
+                withorganizer: row['협업기관'] || '',
+                mainNotice: row['메인공지 ON/OFF'] === 'TRUE',
+                gallery: [row['사진1'], row['사진2'], row['사진3'], row['사진4']]
+                    .filter(img => img && img !== '')
+            };
+        });
     }
 
     // 앱 초기화 및 이벤트 설정
@@ -885,24 +891,34 @@
             return showEndDate < today;
         }
 
-        // 날짜 상태 계산 함수
-        function getDateStatus(startDate, endDate) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const start = new Date(startDate);
-            start.setHours(0, 0, 0, 0);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
+ // 날짜 상태 계산 함수
+    function getDateStatus(startDate, endDate, type) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
 
-            if (today > end) {
-                return "종료";
-            } else if (today < start) {
-                const daysUntilStart = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
-                return `D-${daysUntilStart}`;
-            } else {
-                return "진행중";
-            }
+        // 영상인 경우 항상 "지금 시청가능" 표시
+        if (type === '영상') {
+            return "지금 시청가능";
         }
+        
+        // 중계인 경우 종료일이 지난 후에만 "지금 시청가능" 표시
+        if (type === '중계' && today > end) {
+            return "지금 시청가능";
+        }
+
+        if (today > end && type !== '중계') {
+            return "종료";
+        } else if (today < start) {
+            const daysUntilStart = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+            return `D-${daysUntilStart}`;
+        } else {
+            return "진행중";
+        }
+    }
 
         // URL 생성 함수
         function generateUrl(showName) {
@@ -1006,7 +1022,7 @@
         }
 
         // 리스트 뷰 로드 함수
-        // 공연 목록 로드 함수 내 날짜 표시 부분 수정
+        // 공연 목록 로드 함수
         function loadShows(filteredShows) {
             const showContainer = document.getElementById('showContainer');
             showContainer.innerHTML = '';
@@ -1018,7 +1034,9 @@
             showsToDisplay.forEach(show => {
                 const showElement = document.createElement('a');
                 showElement.href = `https://mytwice.github.io/DIMAART/${generateUrl(show.name)}`;
-                showElement.className = `show ${isEnded(show.date, show.endDate) ? 'ended' : ''}`;
+                // 중계와 영상 타입은 ended 클래스를 적용하지 않음
+                const isShowEnded = show.type !== '중계' && show.type !== '영상' && isEnded(show.date, show.endDate);
+                showElement.className = `show ${isShowEnded ? 'ended' : ''}`;
                 
                 const poster = document.createElement('img');
                 poster.src = show.image;
@@ -1035,10 +1053,12 @@
                 
                 const status = document.createElement('div');
                 status.className = 'show-date';
+                const dateStatus = getDateStatus(show.date, show.endDate, show.type);
                 status.innerHTML = `<p><span style="color: ${
-                    getDateStatus(show.date, show.endDate) === '종료' ? 'red' : 
-                    getDateStatus(show.date, show.endDate) === '진행중' ? 'green' : 'blue'
-                }">${getDateStatus(show.date, show.endDate)}</span></p>`;
+                    dateStatus === '종료' ? 'red' : 
+                    dateStatus === '진행중' ? 'green' : 
+                    dateStatus === '지금 시청가능' ? 'blue' : 'blue'
+                }">${dateStatus}</span></p>`;
                 
                 info.appendChild(title);
                 info.appendChild(date);
@@ -1048,7 +1068,6 @@
                 
                 showContainer.appendChild(showElement);
             });
-
 
             // 더보기 버튼 처리
             const existingButton = document.querySelector('.load-more-btn');
