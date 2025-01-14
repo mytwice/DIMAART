@@ -334,7 +334,7 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 920px) {
     .container {
         padding: 10px;
         margin: 10px;
@@ -502,7 +502,7 @@ body {
     
             <div class="video-metadata">
                 <div class="video-metadata-item">
-                    <span class="video-metadata-label">방송 일시</span>
+                    <span class="video-metadata-label">방송 / 업로드 일시</span>
                     <span id="videoDate" class="video-metadata-value"></span>
                 </div>
                 <div class="video-metadata-item">
@@ -510,7 +510,7 @@ body {
                     <span id="videoCast" class="video-metadata-value"></span>
                 </div>
                 <div class="video-metadata-item">
-                    <span class="video-metadata-label">주최/주관</span>
+                    <span class="video-metadata-label">제작</span>
                     <span id="videoOrganizer" class="video-metadata-value"></span>
                 </div>
             </div>
@@ -722,7 +722,7 @@ function updateLayout(showInfo) {
 
 function updateVideoLayout(showInfo) {
     document.getElementById('videoTitle').textContent = showInfo.name;
-    document.getElementById('videoDate').textContent = `${showInfo.date} ${showInfo.endDate}`;
+    document.getElementById('videoDate').textContent = `${showInfo.date} ${showInfo.endDate} ${showInfo.time}`;
     document.getElementById('videoCast').textContent = showInfo.cast;
     document.getElementById('videoOrganizer').textContent = showInfo.organizer;
     document.getElementById('videoDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
@@ -801,7 +801,7 @@ function calculateDDay(dateString) {
         const daysLeft = Math.ceil((startDateNoTime - todayNoTime) / (1000 * 60 * 60 * 24));
         return `${daysLeft}일 남았습니다.`;
     } else {
-        return "현재 진행 중입니다!";
+        return "D-Day!";
     }
 }
 
