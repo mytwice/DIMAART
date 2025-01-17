@@ -672,7 +672,7 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
             });
 
         // 쇼이름설정 window.location.pathname.split('/').pop();
-        const urlPath = "대신고홍보영상"
+        const urlPath = window.location.pathname.split('/').pop();
         const showKey = decodeURIComponent(urlPath);
         const showInfo = shows[showKey];
 
