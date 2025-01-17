@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIMA ART</title>
-    <link rel="icon" href="logo.svg" type="image/x-icon">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         body {
@@ -242,7 +241,7 @@
             gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 25px 15px;
         }
 
         .gallery-item {
@@ -549,7 +548,6 @@
                 gap: 20px;
                 max-width: 1200px;
                 margin: 0 auto;
-                padding: 0 15px;
             }
 
             .view-toggle-btn {
@@ -790,15 +788,19 @@
             }
 
             // 슬라이드 클릭 이벤트
-            slide.addEventListener('click', (e) => {
-                const activeSlideName = getActiveSlideName();
-                if (activeSlideName) {
-                    console.log('Navigating to:', activeSlideName); // 값 확인
-                    window.location.href = activeSlideName;
-                } else {
-                    console.error('No active slide found!');
+            slider.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const diffX = startX - endX;
+
+                clearInterval(slideInterval); // 기존 타이머 제거
+                if (diffX > 10) { // 오른쪽으로 슬라이드
+                    nextSlide();
+                } else if (diffX < -10) { // 왼쪽으로 슬라이드
+                    prevSlide();
                 }
+                slideInterval = setInterval(nextSlide, 5000); // 새로운 타이머 시작
             });
+
 
             slider.appendChild(slide);
             slides.push(slide);
@@ -815,6 +817,7 @@
             let startX = 0;
             slider.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
+
             });
 
             slider.addEventListener('touchend', (e) => {
@@ -882,8 +885,6 @@
                 return { left: arrowLeft, right: arrowRight };
             }
         }
-
-
 
         // 공연 종료 여부 확인 함수
         function isEnded(date, endDate) {
