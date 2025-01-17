@@ -348,6 +348,27 @@ body {
     border-radius: 8px;
 }
 
+
+.footer {
+background-color: #f0f0f0; /* 회색 배경 */
+padding: 20px 15px;
+text-align: center;
+font-size: 14px;
+color: #333;
+border-top: 1px solid #ddd;
+}
+
+.footer-content a {
+color: #D454A9; /* 하이퍼링크 색상 */
+text-decoration: none;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+color: #b33d74; /* 호버 시 하이퍼링크 색상 */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -517,6 +538,12 @@ body {
             <button class="action-button" onclick="goToList()">목록 보기</button>
         </div>
     
+        <footer class="footer">
+            <div class="footer-content">
+                <p>디마개선프로젝트 | <a href="https://mytwice.github.io/I-DIMA/" target="_blank">홈페이지</a></p>
+            </div>
+        </footer>
+
         <button class="floating-btn" onclick="scrollToTop()">↑</button>
     </div>
 
@@ -556,14 +583,18 @@ body {
             <div class="video-metadata-item2">
                 <h3>스태프 리스트</h3>
                 <div id="videoStaff" class="video-staff"></div>
-            </div>
-        
-       
+            </div>    
 
     <div class="share-container">
         <button class="action-button" onclick="shareShow()">공유하기</button>
         <button class="action-button" onclick="goToList()">목록 보기</button>
     </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <p>디마개선프로젝트 | <a href="https://mytwice.github.io/I-DIMA/" target="_blank">홈페이지</a></p>
+        </div>
+    </footer>
 
     <button class="floating-btn" onclick="scrollToTop()">↑</button>
 
@@ -641,7 +672,7 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
             });
 
         // 쇼이름설정 window.location.pathname.split('/').pop();
-        const urlPath = window.location.pathname.split('/').pop();
+        const urlPath = "대신고홍보영상"
         const showKey = decodeURIComponent(urlPath);
         const showInfo = shows[showKey];
 
@@ -705,24 +736,6 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
                     linkElement.style.display = 'none';
                 }
 
-        // 유의사항 컨테이너 추가
-                const attentionContainer = document.querySelector('.attention');
-                if (showInfo.note) {
-                    const notes = showInfo.note.split('\n');
-                    notes.forEach(note => {
-                        if (note.trim()) {  // 비어있지 않은 줄만 처리
-                            const noteElement = document.createElement('div');
-                            noteElement.className = 'attention-item';
-                            noteElement.textContent = note.trim();
-                            attentionContainer.appendChild(noteElement);
-                        }
-                    });
-
-                } else {
-                    attentionContainer.style.display = 'none';
-                }
-        
-
         } else {
             document.body.innerHTML = `
             <div class="container" style="text-align: center; margin-top: 20px;">
@@ -775,15 +788,6 @@ function updateVideoLayout(showInfo) {
             iframe.allowFullscreen = true;
             youtubePlayer.appendChild(iframe);
         }
-    }
-
-    // Update notes
-    if (showInfo.note) {
-        const notesHtml = showInfo.note.split('\n')
-            .filter(note => note.trim())
-            .map(note => `<div class="attention-item">${note.trim()}</div>`)
-            .join('');
-        document.getElementById('videoNotes').innerHTML = notesHtml;
     }
 
     // 설명 섹션 표시/숨김 처리
