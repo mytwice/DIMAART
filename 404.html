@@ -454,14 +454,15 @@ body {
                 <img id="showImage" class="show-image" src="" alt="공연 이미지">
                 <div class="show-info">
                     <h2 id="showName">공연명</h2>
-                    <p><strong>일시:</strong> <span id="showDate"></span></p>
-                    <p><strong>시간:</strong> <span id="showTime"></span></p>
-                    <p><strong>장소:</strong> <span id="showVenue"></span></p>
-                    <p><strong>출연:</strong> <span id="showCast"></span></p>
-                    <p><strong>러닝타임:</strong> <span id="showDuration"></span></p>
-                    <p><strong>주최/주관:</strong> <span id="showOrganizer"></span></p>
-                    <p><strong>협업기관:</strong> <span id="showWithorganizer"></span></p>
-                    <p><strong>관련 링크:</strong> <a id="showLink" href="#" target="_blank"></a></p>
+                    <p><strong>일시ㅣ</strong> <span id="showDate"></span></p>
+                    <p><strong>시간ㅣ</strong> <span id="showTime"></span></p>
+                    <p><strong>장소ㅣ</strong> <span id="showVenue"></span></p>
+                    <p><strong>출연ㅣ</strong> <span id="showCast"></span></p>
+                    <p><strong>러닝타임ㅣ</strong> <span id="showDuration"></span></p>
+                    <p><strong>주최ㅣ</strong> <span id="showOrganizer"></span></p>
+                    <p><strong>협업기관ㅣ</strong> <span id="showWithorganizer"></span></p>
+                    <p><strong>관련 링크ㅣ</strong> <a id="showLink" href="#" target="_blank"></a></p>
+                    <p>주최측 사정에 따라 변경될 수 있습니다.</p>
                 </div>
             </div>
         </div>
@@ -640,7 +641,7 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
             });
 
         // 쇼이름설정 window.location.pathname.split('/').pop();
-        const urlPath = window.location.pathname.split('/').pop();
+        const urlPath = "대신고홍보영상"
         const showKey = decodeURIComponent(urlPath);
         const showInfo = shows[showKey];
 
@@ -783,6 +784,24 @@ function updateVideoLayout(showInfo) {
             .map(note => `<div class="attention-item">${note.trim()}</div>`)
             .join('');
         document.getElementById('videoNotes').innerHTML = notesHtml;
+    }
+
+    // 설명 섹션 표시/숨김 처리
+    const descriptionContainer = document.querySelector('#videoDescription')?.closest('.video-metadata-item2');
+    if (descriptionContainer && showInfo.description && showInfo.description.trim()) {
+        descriptionContainer.style.display = 'block';
+        document.getElementById('videoDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
+    } else if (descriptionContainer) {
+        descriptionContainer.style.display = 'none';
+    }
+
+    // 스태프 리스트 섹션 표시/숨김 처리
+    const staffContainer = document.querySelector('#videoStaff')?.closest('.video-metadata-item2');
+    if (staffContainer && showInfo.staff && showInfo.staff.trim()) {
+        staffContainer.style.display = 'block';
+        document.getElementById('videoStaff').innerHTML = showInfo.staff.replace(/\n/g, '<br>');
+    } else if (staffContainer) {
+        staffContainer.style.display = 'none';
     }
 }
 
