@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="showTitle">DIMA ART</title>
-    <link rel="icon" href="logo.svg" type="image/x-icon">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
 /* Base Styles */
@@ -335,7 +334,7 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 920px) {
+@media (max-width: 768px) {
     .container {
         padding: 10px;
         margin: 10px;
@@ -480,6 +479,7 @@ body {
             </div>
             <div id="dotContainer" class="dot-container"></div>
         </div>
+        
         <div class="share-container">
             <button class="action-button" onclick="shareShow()">공유하기</button>
             <button class="action-button" onclick="goToList()">목록 보기</button>
@@ -503,7 +503,7 @@ body {
     
             <div class="video-metadata">
                 <div class="video-metadata-item">
-                    <span class="video-metadata-label">방송 / 업로드 일시</span>
+                    <span class="video-metadata-label">방송 일시</span>
                     <span id="videoDate" class="video-metadata-value"></span>
                 </div>
                 <div class="video-metadata-item">
@@ -511,7 +511,7 @@ body {
                     <span id="videoCast" class="video-metadata-value"></span>
                 </div>
                 <div class="video-metadata-item">
-                    <span class="video-metadata-label">제작</span>
+                    <span class="video-metadata-label">주최/주관</span>
                     <span id="videoOrganizer" class="video-metadata-value"></span>
                 </div>
             </div>
@@ -653,23 +653,6 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
                 // 초기 이미지와 점 설정
                 updateGalleryImage();
 
-                // 터치스크롤
-                let startX = 0;
-                slider.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                });
-
-                slider.addEventListener('touchend', (e) => {
-                    const endX = e.changedTouches[0].clientX;
-                    const diffX = startX - endX;
-
-                    if (diffX > 10) { // 오른쪽으로 슬라이드
-                        nextSlide();
-                    } else if (diffX < -10) { // 왼쪽으로 슬라이드
-                        prevSlide();
-                    }
-                });                
-
             // 링크 처리
                 const linkElement = document.getElementById('showLink');
                 if (showInfo.link) {
@@ -723,7 +706,7 @@ function updateLayout(showInfo) {
 
 function updateVideoLayout(showInfo) {
     document.getElementById('videoTitle').textContent = showInfo.name;
-    document.getElementById('videoDate').textContent = `${showInfo.date} ${showInfo.endDate} ${showInfo.time}`;
+    document.getElementById('videoDate').textContent = `${showInfo.date} ${showInfo.endDate}`;
     document.getElementById('videoCast').textContent = showInfo.cast;
     document.getElementById('videoOrganizer').textContent = showInfo.organizer;
     document.getElementById('videoDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
@@ -771,7 +754,7 @@ function updatePerformanceLayout(showInfo) {
     document.getElementById('showOrganizer').textContent = showInfo.organizer;
     document.getElementById('showWithorganizer').textContent = showInfo.withorganizer;
     
-    // Update options
+    // 세로 안내바
     document.getElementById('showPublic').textContent = showInfo.public;
     document.getElementById('showEntry').textContent = showInfo.entry;
     document.getElementById('showEntryOpen').textContent = showInfo.entryopen;
@@ -779,6 +762,78 @@ function updatePerformanceLayout(showInfo) {
     document.getElementById('showRec').textContent = showInfo.rec;
     
     document.getElementById('performanceCountdown').textContent = calculateDDay(`${showInfo.date} ${showInfo.endDate}`);
+
+    // 출연진 정보가 있을 때만 표시
+    const showCastElement = document.getElementById('showCast');
+    if (showInfo.cast) {
+        showCastElement.textContent = showInfo.cast;
+        showCastElement.parentElement.style.display = 'block';
+    } else {
+        showCastElement.parentElement.style.display = 'none';
+    }
+
+    // 러닝타임 정보가 있을 때만 표시
+    const showDurationElement = document.getElementById('showDuration');
+    if (showInfo.duration) {
+        showDurationElement.textContent = showInfo.duration;
+        showDurationElement.parentElement.style.display = 'block';
+    } else {
+        showDurationElement.parentElement.style.display = 'none';
+    }
+
+    // 협업기관 정보가 있을 때만 표시
+    const showWithorganizerElement = document.getElementById('showWithorganizer');
+    if (showInfo.withorganizer) {
+        showWithorganizerElement.textContent = showInfo.withorganizer;
+        showWithorganizerElement.parentElement.style.display = 'block';
+    } else {
+        showWithorganizerElement.parentElement.style.display = 'none';
+    }
+
+    // 관련 링크가 있을 때만 표시
+    const showLinkElement = document.getElementById('showLink');
+    if (showInfo.link) {
+        showLinkElement.textContent = showInfo.link;
+        showLinkElement.href = showInfo.link;
+        showLinkElement.parentElement.style.display = 'block';
+    } else {
+        showLinkElement.parentElement.style.display = 'none';
+    }
+
+    // 설명 섹션 표시/숨김 처리
+    const descriptionContainer = document.querySelector('.container:has(#showDescription)');
+    if (showInfo.description && showInfo.description.trim()) {
+        descriptionContainer.style.display = 'block';
+        document.getElementById('showDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
+    } else {
+        descriptionContainer.style.display = 'none';
+    }
+    
+    // 유의사항 섹션 표시/숨김 처리
+    const notesContainer = document.querySelector('.container:has(.attention)');
+    if (showInfo.note && showInfo.note.trim()) {
+        notesContainer.style.display = 'block';
+        const attentionContainer = document.querySelector('.attention');
+        attentionContainer.innerHTML = ''; // 기존 내용 초기화
+        const notes = showInfo.note.split('\n');
+        notes.forEach(note => {
+            if (note.trim()) {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'attention-item';
+                noteElement.textContent = note.trim();
+                attentionContainer.appendChild(noteElement);
+            }
+        });
+    } else {
+        notesContainer.style.display = 'none';
+    }
+    
+    // 카드뉴스 갤러리 섹션 표시/숨김 처리
+    const galleryContainer = document.querySelector('.container:has(.gallery)');
+    if (showInfo.gallery && showInfo.gallery.length > 0) {
+    } else {
+        galleryContainer.style.display = 'none';
+    }
 }
 
 function calculateDDay(dateString) {
@@ -802,7 +857,7 @@ function calculateDDay(dateString) {
         const daysLeft = Math.ceil((startDateNoTime - todayNoTime) / (1000 * 60 * 60 * 24));
         return `${daysLeft}일 남았습니다.`;
     } else {
-        return "D-Day!";
+        return "현재 진행 중입니다!";
     }
 }
 
