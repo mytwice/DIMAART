@@ -788,11 +788,21 @@
                 return null;
             }
 
+            // 슬라이드 링크처리            
+            slide.addEventListener('click', (e) => {
+                const activeSlideName = getActiveSlideName();
+                if (activeSlideName) {
+                    console.log('Navigating to:', activeSlideName); // 값 확인
+                    window.location.href = activeSlideName;
+                } else {
+                    console.error('No active slide found!');
+                }
+            });
+
             // 슬라이드 클릭 이벤트
             slider.addEventListener('touchend', (e) => {
                 const endX = e.changedTouches[0].clientX;
                 const diffX = startX - endX;
-
                 clearInterval(slideInterval); // 기존 타이머 제거
                 if (diffX > 10) { // 오른쪽으로 슬라이드
                     nextSlide();
@@ -801,7 +811,6 @@
                 }
                 slideInterval = setInterval(nextSlide, 5000); // 새로운 타이머 시작
             });
-
 
             slider.appendChild(slide);
             slides.push(slide);
