@@ -758,10 +758,12 @@
             // 제목과 날짜를 포함할 컨테이너
             const textContainer = document.createElement('div');
             textContainer.style.position = 'absolute';
-            textContainer.style.top = '90px';
+            textContainer.style.top = '50%';
+            textContainer.style.transform = 'translateY(-50%)';
             textContainer.style.left = '53px';
             textContainer.style.color = 'white';
             textContainer.style.textShadow = '1px 1px 3px rgba(0,0,0,0.8)';
+            textContainer.style.wordBreak = 'keep-all';
 
             // 제목
             const titleText = document.createElement('div');
