@@ -467,7 +467,7 @@ color: #b33d74; /* 호버 시 하이퍼링크 색상 */
 <body>
     <div class="top-nav">
         <div class="top-nav-content">
-            <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+            <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ART</a>
         </div>
     </div>
 
@@ -477,7 +477,7 @@ color: #b33d74; /* 호버 시 하이퍼링크 색상 */
             <div class="show-content">
                 <img id="showImage" class="show-image" src="" alt="공연 이미지">
                 <div class="show-info">
-                    <h2 id="showName">공연명</h2>
+                    <h2 id="showName"></h2>
                     <p><strong>일시ㅣ</strong> <span id="showDate"></span></p>
                     <p><strong>시간ㅣ</strong> <span id="showTime"></span></p>
                     <p><strong>장소ㅣ</strong> <span id="showVenue"></span></p>
@@ -543,7 +543,7 @@ color: #b33d74; /* 호버 시 하이퍼링크 색상 */
     
         <footer class="footer">
             <div class="footer-content">
-                <p>디마개선프로젝트 | <a href="https://mytwice.github.io/I-DIMA/" target="_blank">홈페이지</a></p>
+                <p>I-DIMA | <a href="https://mytwice.github.io/I-DIMA/" target="_blank">홈페이지</a></p>
             </div>
         </footer>
 
@@ -831,6 +831,58 @@ function updatePerformanceLayout(showInfo) {
     document.getElementById('showRec').textContent = showInfo.rec;
     
     document.getElementById('performanceCountdown').textContent = calculateDDay(`${showInfo.date} ${showInfo.endDate}`);
+
+    // 장소에 '동아방송예술대학교'가 포함되어 있는지 확인
+    if (showInfo.venue && showInfo.venue.includes('동아방송예술대학교')) {
+        // 마지막 단어 추출
+        const venueWords = showInfo.venue.split(' ');
+        const lastWord = venueWords[venueWords.length - 1];
+        
+        // 장소 텍스트 요소를 지우고 하이퍼링크로 대체
+        const venueElement = document.getElementById('showVenue');
+        venueElement.innerHTML = '';  // 기존 텍스트 지우기
+        
+        // 텍스트와 하이퍼링크 부분 분리
+        const venueText = document.createTextNode(showInfo.venue.substring(0, showInfo.venue.lastIndexOf(lastWord)));
+        const venueLink = document.createElement('a');
+        venueLink.href = `https://mytwice.github.io/DIMAMAP/${lastWord}`;
+        venueLink.textContent = lastWord;
+        venueLink.target = "_blank";  // 새 탭에서 열기
+        
+        // 하이퍼링크 스타일 적용
+        venueLink.style.color = '#3366cc';  // 링크 색상
+        venueLink.style.textDecoration = 'none';  // 밑줄 제거
+        
+        // 호버 효과 추가
+        venueLink.onmouseover = function() {
+            this.style.backgroundColor = '#f0f5ff';  // 호버 시 배경색 변경
+            this.style.color = '#0044cc';  // 호버 시 글자색 변경
+            this.style.textDecoration = 'underline';  // 호버 시 밑줄 표시
+        };
+        
+        // 호버 효과 제거
+        venueLink.onmouseout = function() {
+            this.style.backgroundColor = 'transparent';  // 배경색 원래대로
+            this.style.color = '#3366cc';  // 글자색 원래대로
+            this.style.textDecoration = 'none';  // 밑줄 제거
+        };
+        
+        // 클릭 효과 추가
+        venueLink.onmousedown = function() {
+            this.style.backgroundColor = '#e0e8ff';  // 클릭 시 배경색 변경
+        };
+        
+        venueLink.onmouseup = function() {
+            this.style.backgroundColor = '#f0f5ff';  // 클릭 후 배경색 변경
+        };
+
+        // 요소에 추가
+        venueElement.appendChild(venueText);
+        venueElement.appendChild(venueLink);
+    } else {
+        // 기존 처리 방식
+        document.getElementById('showVenue').textContent = showInfo.venue;
+    }
 
     // 출연진 정보가 있을 때만 표시
     const showCastElement = document.getElementById('showCast');
