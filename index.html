@@ -764,7 +764,7 @@
             // 슬라이드 생성
             const slide = document.createElement('div');
             slide.className = `slide ${index === 0 ? 'active' : ''}`;
-            slide.style.backgroundImage = `url(${show.image})`;
+            slide.style.backgroundImage = `${show.image}`;
             // 링크 수정
             slide.setAttribute('data-url', `https://mytwice.github.io/DIMAART/${show.name}`);
 
