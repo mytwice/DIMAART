@@ -1,1059 +1,3472 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4Z0ZMF9GQY"></script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VZNJWS2EY3"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-4Z0ZMF9GQY');
-</script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">    
+  gtag('config', 'G-VZNJWS2EY3');
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="showTitle">DIMA ART</title>
-    <link rel="icon" href="logo.svg" type="image/x-icon">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <title>DIMA MAP</title>
     <style>
-/* Base Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-}
+        /* 기본 스타일 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            overflow: hidden; /* 페이지에서 스크롤바를 숨깁니다 */
+        }
 
-/* Navigation */
-.top-nav {
-    background-color: #fff;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        /* 스크롤바 전체 영역 */
+        ::-webkit-scrollbar {
+            width: 18px;  /* 세로 스크롤바 너비 */
+            height: 15px; /* 가로 스크롤바 높이 */
+        }
 
-.top-nav-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        /* 스크롤바 배경 */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; /* 밝은 회색 */
+            border-radius: 10px;
+        }
 
-.logo {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 23px;
-}
+        /* 스크롤바 막대 (드래그 가능) */
+        ::-webkit-scrollbar-thumb {
+            background: #e155b5; /* 핑크 계열 색상 */
+            border-radius: 35px;
+            border: 2px solid #f1f1f1; /* 배경과 조화롭게 */
+        }
 
-/* Container Styles */
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+        /* 스크롤바 호버 효과 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c64aa3; /* 더 진한 핑크 */
+        }
 
-/* Show Content */
-.show-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
+        #map-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #8b8b8b;
+        }
 
-.show-image {
-    flex: 0 0 300px;
-    max-width: 300px;
-    height: auto;
-    object-fit: contain;
-    border-radius: 8px;
-    background: #ececec;
-}
+        #map-container {
+            position: absolute;
+            transform-origin: 0 0;
+            cursor: grab;
+            width: 100%;
+            height: 100%;
+        }
 
-.show-info {
-    flex: 1;
-    min-width: 300px;
-}
+        #map-container:active {
+            cursor: grabbing;
+        }
 
-.show-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5em;
-    color: #333;
-}
+        #map-image {
+            width: 1200px;
+            height: 900px;
+            user-select: none;
+            object-fit: contain; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
 
-.show-info p {
-    margin: 5px 0;
-    color: #666;
-    word-break: keep-all;
-}
+        /* 상단 컨트롤 패널 */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 9999;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;  /* 항목들을 줄 바꿈이 가능하게 함 */
+            gap: 16px;  /* 항목 간의 간격 */
+        }
 
-/* Options Grid */
-.options {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    max-width: 1200px;
-    margin: 20px auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+            /* 검색창 */
+            .search-container {
+            left: 50%;
+            display: flex;
 
-.options div {
-    text-align: center;
-    padding: 15px;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    word-break: keep-all;
-}
+            gap: 40px; /* 타이틀과 검색창 간 간격 */
+            margin-bottom: 00px; /* 컨테이너 간 간격 */
+        }
 
-.options div:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+        .search-results {
+            position: absolute;
+            top: 100%;  /* 입력 필드 바로 아래 배치 */
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 200px; /* 검색 결과가 너무 길어지지 않도록 제한 */
+            overflow-y: auto; /* 스크롤 가능 */
+            display: none; /* 기본적으로 숨김 */
+        }
 
-.options div span:first-child {
-    display: block;
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 5px;
-}
+        .search-result-item {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-.options div span:last-child {
-    display: block;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #333;
-}
+        .search-result-item:hover {
+            background: #f0f0f0;
+        }
 
-/* Gallery */
-.gallery {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+        .search-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
 
-.gallery img {
-    height: 500px;
-    width: auto;
-    object-fit: cover;
-    border-radius: 8px;
-}
+        .search-input {
+            flex: 1; /* 입력 창이 남은 공간을 차지하도록 설정 */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-.gallery button {
-    background-color: rgba(0, 0, 0, 0.4);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        /* 필터링 그룹을 1줄에 배치 */
+        .filter-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: nowrap;  /* 필터 그룹은 한 줄에 배치 */
+        }
 
-.gallery button:hover {
-    background-color: #333;
-}
+        #category-filter {
+            display: flex;
+            flex-wrap: nowrap;  /* 한 줄로 배치 */
+            gap: 10px;
+            width: 100%;  /* 전체 너비 사용 */
+            overflow-x: auto;  /* 가로 스크롤을 추가 */
+            padding-bottom: 10px;  /* 스크롤바가 보이도록 아래 여백 추가 */
+        }
 
-/* Button Styles */
-.action-button {
-    background-color: #D454A9;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1em;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 10px;
-}
+        #category-filter label {
+            background: #e155b5;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            white-space: nowrap;
+            font-size: 14px;
+        }
 
-.action-button:hover {
-    background-color: #b33d74;
-    transform: scale(1.05);
-}
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+        }
 
-/* Share Container */
-.share-container {
-    text-align: center;
-    margin: 40px 0;
-}
+        .filter-select {
+            width: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
 
-/* Countdown */
-.countdown {
-    font-weight: bold;
-    color: #D454A9;
-    font-size: 1.2em;
-    text-align: center;
-    margin: 20px 0;
-}
+        .filter-button {
+            padding: 12px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
 
-/* Attention Items */
-.attention {
-    padding: 20px;
-}
+        .filter-button:hover {
+            background: #1976D2;
+        }
 
-.attention-item {
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #fff5f9;
-    border-left: 4px solid #D454A9;
-    border-radius: 4px;
-    color: #333;
-    font-size: 1rem;
-    line-height: 1.5;
-    word-break: keep-all;
-}
-
-/* Navigation Dots */
-.dot-container {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin: 0 5px;
-    background-color: #ccc;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.dot.active {
-    background-color: #D454A9;
-}
-
-/* Floating Button */
-.floating-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #D454A9;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    border: none;
-    z-index: 1000;
-}
-
-.floating-btn:hover {
-    background-color: #b33d74;
-    transform: scale(1.05);
-}
-
-/* Video Layout Styles */
-.video-layout {
-    display: none;
-}
-
-.video-container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    color: #666;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.video-player-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%;
-    margin: 20px 0;
-}
-
-.video-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-}
-
-.video-player-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-}
-
-.video-title {
-    font-size: 2em;
-    margin: 0;
-    color: rgb(0, 0, 0);
-}
-
-.video-metadata {
-    display: grid;
-    max-width: 1200px;
-    margin: 20px auto;
-    color: #666;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.video-metadata-item {
-    padding: 15px;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-}
-
-.video-metadata-item2 {
-    padding: 15px;
-    max-width: 1200px;
-    margin: 20px auto;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.video-metadata-label {
-    display: block;
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.video-metadata-value {
-    display: block;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #333;
-}
-
-.video-description .video-staff{
-    margin: 20px 0;
-    padding: 20px;
-    line-height: 1.6;
-    color: #ccc;
-    background-color: #2a2a2a;
-    border-radius: 8px;
-}
+        /* 핀 및 정보 박스 */
+        .pin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 1000;
+            cursor: pointer;
+            transform: translate(-50%, -95%);
+            transition: transform 0.2s;
+        }
 
 
-.footer {
-background-color: #f0f0f0; /* 회색 배경 */
-padding: 20px 15px;
-text-align: center;
-font-size: 14px;
-color: #333;
-border-top: 1px solid #ddd;
-}
+        /* 1순위 핀 스타일 - 마커 모양 */
+        .pin-primary::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23E91E63"><path d="M12 0C7.6 0 4 3.6 4 8c0 5.4 8 16 8 16s8-10.6 8-16c0-4.4-3.6-8-8-8zm0 12c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>') no-repeat center center;
+            background-size: contain;
+        }
 
-.footer-content a {
-color: #D454A9; /* 하이퍼링크 색상 */
-text-decoration: none;
-font-weight: bold;
-transition: color 0.3s ease;
-}
+        /* 2순위 핀 스타일 - 원형 */
+        .pin-secondary {
+            position: absolute; /* Ensure absolute positioning */
+            width: 10px; /* Fixed width */
+            height: 10px; /* Fixed height */
+            background-color: #E91E63; /* Pink color */
+            border-radius: 50%; /* Circular shape */
+            border: 1px solid white; /* White border */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow */
+            transform: translate(-50%, -50%) scale(0.26); /* Center the pin */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
 
-.footer-content a:hover {
-color: #b33d74; /* 호버 시 하이퍼링크 색상 */
-}
+        /* 핀 라벨 스타일 */
+        .pin-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            font-size: 7px;
+            transform: translate(77%, 20%);
+            border-radius: 5px;
+            white-space: nowrap;
+            text-align: center;
+            display: none;
+            z-index: 1001;
+            transition: all 0.2s ease-in-out;
+        }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-        margin: 10px;
-    }
+        .pin-label2 {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            font-size: 7px;
+            transform: translate(110%, -39%) scale(2.2);
+            border-radius: 5px;
+            white-space: nowrap;
+            text-align: center;
+            display: none;
+            z-index: 1001;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .pin-info-box {
+            position: fixed;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1001;
+            max-width: 300px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
 
-    .show-content {
+        .pin-info-box strong {
+            color: #333;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .pin-info-box a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        .pin-info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .pin-info-box .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+
+        .pin-info-box .close-btn:hover {
+            color: #333;
+        }
+
+        /* 카테고리 스크롤 */
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 10px 0;
+            gap: 10px;
+        }
+
+        .category-item {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+    /* 기존 .mobile-nav 스타일을 수정 */
+    .mobile-nav {
+        display: flex;
+        position: fixed;
         flex-direction: column;
-    }
-
-    .show-image {
-        max-width: 100%;
-    }
-
-    .options {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding: 10px;
-        margin: 10px;
-    }
-
-    .gallery {
-        flex-direction: column;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: white;
         padding: 15px;
-        position: relative;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 10px 0 0 10px;
+    }
+
+    /* 네비게이션 항목 스타일 수정 */
+    .mobile-nav a {
+        padding: 12px;
+        text-align: left;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        text-decoration: none;
+        color: #666
+    }
+
+    .mobile-nav a:last-child {
+        border-bottom: none;
+    }
+
+    /* 네비게이션 바 우상단에 이미지와 텍스트 */
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 30px;
+        right: 50px;
+    }
+
+        /* 팝업 기본 숨김 */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+        z-index: 1000;
+        justify-content: center;
         align-items: center;
     }
 
-    .gallery img {
-        height: auto;
-        max-width: 100%;
-        width: auto;
-    }
-
-    .gallery button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 15px;
-        z-index: 10;
-    }
-
-    #prevButton {
-        left: 10px;
-    }
-
-    #nextButton {
-        right: 10px;
-    }
-
-    .action-button {
-        padding: 10px 20px;
-        font-size: 0.9em;
-    }
-
-    .video-container {
-        padding: 10px;
-        margin: 10px;
-    }
-
-    .video-metadata-item2 {
-        padding: 10px;
-        margin: 10px;
-    }
-
-    .video-metadata {
-        padding: 10px;
-        margin: 10px;
-    }
-    .video-header {
-        flex-direction: column;
+    /* 팝업 내용 스타일 */
+    .popup-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
+        width: 300px;
+        position: relative;
     }
 
-    .video-title {
-        font-size: 1.5em;
-    }
-
-    .video-metadata {
-        grid-template-columns: 1fr;
-    }
-
-    .floating-btn {
-        width: 50px;
-        height: 50px;
+    /* 닫기 버튼 */
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
         font-size: 20px;
+        cursor: pointer;
+    }
+
+    /* 로고 이미지 스타일 */
+    .logo-img {
+        width: 140px; /* 이미지 크기 설정 */
+        height: auto;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+    }
+
+    /* 로고 텍스트 스타일 */
+    .logo-text {
+        font-size: 13px; /* 텍스트 크기 */
+        font-weight: bold;
+        margin-right: 20px; /* 이미지와 텍스트 사이 여백 */
+        color: #f9f9f9; /* 텍스트 색상 */
+    }
+
+    .building-list {
+        position: fixed;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        height: 30vh; /* 고정 높이 설정 */
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto; /* 세로 스크롤 가능하게 설정 */
+        -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
+    }
+
+.building-container {
+    padding: 20px;
+}
+
+.building-section {
+    margin-bottom: 20px;
+}
+
+.building-section h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.floor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.floor-item {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.floor-item:hover {
+    background: #e0e0e0;
+}
+
+.locations-list {
+        margin-top: 10px;
+    }
+    
+    .location-item {
+        padding: 8px;
+        margin: 4px 0;
+        background: #f8f8f8;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    
+    .location-item:hover {
+        background: #f0f0f0;
+    }
+
+        
+    @media (max-width: 768px) {
+        /* 모바일 화면에서는 하단에 표시 */
+    .mobile-nav {
+        flex-direction: row;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        transform: none;
+        padding: 18px 0;
+        justify-content: space-around;
+        border-radius: 0;
+    }
+
+    .mobile-nav a {
+        padding: 0px;
+        text-align: center;
+        flex-grow: 1;
+        border-bottom: none;
+        border-right: 1px solid #ddd;
+    }
+
+            /* 네비게이션 바 우상단에 이미지와 텍스트 */
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 90px;
+        right: 10px;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+    }
+
+    /* 로고 이미지 스타일 */
+    .logo-img {
+        width: 130px; /* 이미지 크기 설정 */
+        height: auto;
+    }
+
+    /* 로고 텍스트 스타일 */
+    .logo-text {
+        font-size: 12px; /* 텍스트 크기 */
+        font-weight: bold;
+        margin-right: 20px; /* 이미지와 텍스트 사이 여백 */
+        color: #f9f9f9; /* 텍스트 색상 */
+    }
+    .control-panel {
+        position: fixed;
+        top: 6px;
+        left: 50%;
+        width: 100%;
+        background: white;
+        padding: 10px 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background: transparent;
+        box-shadow: none;
+        padding: 30px;
+    }
+
+    /* 모바일 네비게이션 */
+.mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 18px 0;
+    justify-content: space-around;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* 네비게이션 항목 사이에 구분선 추가 */
+.mobile-nav a {
+    padding: 0px;
+    text-align: center;
+    flex-grow: 1;
+    border-right: 1px solid #ddd; /* 항목 사이에 구분선 */
+}
+
+    /* 마지막 항목의 구분선 없애기 */
+    .mobile-nav a:last-child {
+        border-right: none;
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #666;
+        font-size: 15px;
+        gap: 4px;
+    }
+
+    
+    .filter-group {
+        display: none; /* 필터 그룹 숨김 */
+    }
+    
+    .bottom-nav {
+        display: block; /* 모바일에서만 표시 */
+    }
+    
+    #map-wrapper {
+        padding-bottom: 10px; /* 하단 네비게이션 높이만큼 여백 */
+    }
+    
+    /* 카테고리 스크롤 활성화 */
+    #category-filter {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px 0;
+        gap: 10px;
+        width: 86%;
+        margin: 0 auto;
+    }
+    
+    #category-filter label {
+        flex: 0 0 auto;
+        padding: 8px 16px;
+        background: #f0f0f0;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    /* 검색창을 중앙에 배치 */
+    .search-container {
+        background: white;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        width: 85%;
+        max-width: 800px; /* 최대 너비 설정 */
+        margin: 0 auto; /* 자동으로 좌우 여백 */
+    }
+
+    .search-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+    .search-input {
+        border: none;
+        padding: 8px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .search-results {
+        margin: 0 auto;
+        width: 78%; /* 모바일에서는 부모 요소 대비 90% 너비 */
+        font-size: 16px; /* 가독성 증가 */
+        left: 10%;
+}
+    /* 카테고리 스타일 */
+    #category-filter {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #category-filter label {
+        background: #e155b5;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    /* 하단 건물 정보 */
+    .bottom-info {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #4267B2;
+        color: white;
+        padding: 20px;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .bottom-info div {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    .building-list {
+        bottom: 70px;
     }
 }
+
+.pin-info-box {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 54%; /* 모바일 화면에서의 너비 */
+        max-width: 300px;
+        z-index: 1002; /* 다른 요소들보다 위에 표시 */
+    }
+
+    @media (max-width: 480px) {
+        /* 작은 화면에서 라벨 크기 및 입력 크기 조정 */
+        .search-input {
+            font-size: 14px;
+            padding: 6px;
+        }
+
+        .filter-select {
+            font-size: 14px;
+            padding: 6px;
+        }
+    }
     </style>
 </head>
 <body>
-    <div class="top-nav">
-        <div class="top-nav-content">
-            <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ART</a>
+    <div class="control-panel">
+        <!-- 검색 창 -->
+        <div class="search-container">
+            <span class="search-title">DIMA MAP</span> <!-- 타이틀 추가 -->
+            <input type="text" class="search-input" placeholder="검색어를 입력하세요..." id="search-input">
+            <div class="search-results" id="search-results"></div>
+        </div>
+
+        <!-- 필터링 -->
+        <div class="filter-group">
+            <label for="building-filter">건물</label>
+            <select id="building-filter" class="filter-select"></select>
+
+            <label for="floor-filter">층</label>
+            <select id="floor-filter" class="filter-select"></select>
+        </div>
+
+        <!-- 카테고리 필터 -->
+        <div id="category-filter">
+            <label><input type="checkbox" name="category" value=""> 전체</label>
+            <!-- 동적으로 카테고리 라디오 버튼 추가 -->
         </div>
     </div>
 
-    <!-- Performance/Exhibition Layout -->
-    <div id="performanceLayout" class="performance-layout">
-        <div class="container">
-            <div class="show-content">
-                <img id="showImage" class="show-image" src="" alt="공연 이미지">
-                <div class="show-info">
-                    <h2 id="showName"></h2>
-                    <p><strong>일시ㅣ</strong> <span id="showDate"></span></p>
-                    <p><strong>시간ㅣ</strong> <span id="showTime"></span></p>
-                    <p><strong>장소ㅣ</strong> <span id="showVenue"></span></p>
-                    <p><strong>출연ㅣ</strong> <span id="showCast"></span></p>
-                    <p><strong>러닝타임ㅣ</strong> <span id="showDuration"></span></p>
-                    <p><strong>주최ㅣ</strong> <span id="showOrganizer"></span></p>
-                    <p><strong>협업기관ㅣ</strong> <span id="showWithorganizer"></span></p>
-                    <p><strong>관련 링크ㅣ</strong> <a id="showLink" href="#" target="_blank"></a></p>
-                    <p>주최측 사정에 따라 변경될 수 있습니다.</p>
-                </div>
-            </div>
+    <div id="map-wrapper">
+        <div id="map-container">
+            <img id="map-image" src="map.png" alt="지도" draggable="false">
         </div>
-
-        <div class="options">
-            <div>
-                <span>외부인 입장</span>
-                <span id="showPublic"></span>
-            </div>
-            <div>
-                <span>입장 방식</span>
-                <span id="showEntry"></span>
-            </div>
-            <div>
-                <span>입장 오픈시간</span>
-                <span id="showEntryOpen"></span>
-            </div>
-            <div>
-                <span>관람 유의</span>
-                <span id="showNotecheck"></span>
-            </div>
-            <div>
-                <span>촬영, 녹음</span>
-                <span id="showRec"></span>
-            </div>
-        </div>
-
-        <div class="countdown" id="performanceCountdown"></div>
-
-        <div class="container">
-            <h3>유의사항</h3>
-            <div class="attention"></div>
-        </div>
-  
-        <div class="container">
-            <h3>설명</h3>
-            <div id="showDescription"></div>
-        </div>
-
-        <div class="container">
-            <h3>카드뉴스</h3>
-            <div class="gallery">
-                <button id="prevButton">◀</button>
-                <img id="galleryImage" src="" alt="갤러리 이미지">
-                <button id="nextButton">▶</button>
-            </div>
-            <div id="dotContainer" class="dot-container"></div>
-        </div>
-        
-        <div class="share-container">
-            <button class="action-button" onclick="shareShow()">공유하기</button>
-            <button class="action-button" onclick="goToList()">목록 보기</button>
-        </div>
-    
-        <footer class="footer">
-            <div class="footer-content">
-                <a href="https://mytwice.github.io/I-DIMA/" target="_blank">I-DIMAㅣ</a>
-                <a href="https://mytwice.github.io/I-DIMA/service" target="_blank">이용약관ㅣ</a>
-                <a href="https://mytwice.github.io/I-DIMA/service#privacy" target="_blank">개인정보 처리방침</a>
-            </div>
-        </footer>
-
-        <button class="floating-btn" onclick="scrollToTop()">↑</button>
     </div>
 
-    <!-- Video/Broadcast Layout -->
-    <div id="videoLayout" class="video-layout">
-        <div class="video-container">
-            <div class="video-header">
-                <h1 id="videoTitle" class="video-title"></h1>
-                <div class="countdown" id="videoCountdown"></div>
-            </div>
-    
-            <!-- Replace thumbnail with video player -->
-            <div class="video-player-container">
-                <div id="youtubePlayer"></div>
-            </div>
-        </div>
-    
-        
-            <div class="video-metadata">
-                <div class="video-metadata-item">
-                    <span class="video-metadata-label">방송 일시</span>
-                    <span id="videoDate" class="video-metadata-value"></span>
-                </div>
-                <div class="video-metadata-item">
-                    <span class="video-metadata-label">출연진</span>
-                    <span id="videoCast" class="video-metadata-value"></span>
-                </div>
-                <div class="video-metadata-item">
-                    <span class="video-metadata-label">제작</span>
-                    <span id="videoOrganizer" class="video-metadata-value"></span>
-                </div>
-            </div>
-            <div class="video-metadata-item2">
-                <h3>설명</h3>
-                <div id="videoDescription" class="video-description"></div>
-            </div>
-            <div class="video-metadata-item2">
-                <h3>스태프 리스트</h3>
-                <div id="videoStaff" class="video-staff"></div>
-            </div>    
-
-    <div class="share-container">
-        <button class="action-button" onclick="shareShow()">공유하기</button>
-        <button class="action-button" onclick="goToList()">목록 보기</button>
+    <div class="nav-logo">
+        <span class="logo-text">3월 1주 전 데이터 고도화 예정 / 위성 제공 ㅣ 국토지리정보원</span>
+        <img src="sub0705_01_Open_Mark_01.jpg" alt="국토지리정보원" class="logo-img">
     </div>
-    
-    <footer class="footer">
-        <div class="footer-content">
-            <a href="https://mytwice.github.io/I-DIMA/" target="_blank">I-DIMAㅣ</a>
-            <a href="https://mytwice.github.io/I-DIMA/service" target="_blank">이용약관ㅣ</a>
-            <a href="https://mytwice.github.io/I-DIMA/service#privacy" target="_blank">개인정보 처리방침</a>
+
+    <div class="building-list" style="display: none;">
+        <div class="building-container">
+            <!-- 건물과 층 정보가 동적으로 추가됨 -->
         </div>
-    </footer>
+    </div>
 
-    <button class="floating-btn" onclick="scrollToTop()">↑</button>
+    <nav class="mobile-nav">
+        <a href="https://mytwice.github.io/I-DIMA/" class="nav-item">
+            <span>🏠</span>
+            <span>I-DIMA 홈</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span>🔍</span>
+            <span>건물</span>
+        </a>
+        <a href="https://www.instagram.com/p/DF4aY0eRXTu/" class="nav-item">
+            <span>📍</span>
+            <span>원룸촌지도</span>
+        </a>
+        <a href="#" class="nav-item" id="openPopup">
+            <span>ℹ️</span>
+            <span>제보/정보</span>
+        </a>
+    </nav>
 
-    <script>
-google.charts.load("current", { packages: ["corechart"] }).then(() => {
-    const myKey = "1HARkehL11DD1-92_XO6ypNRKqkpayO-Rf4kKuViCLbU"; // Google Sheets API Key
-    let query = new google.visualization.Query(
-        `http://spreadsheets.google.com/tq?key=${myKey}&pub=1`
-    );
-    
-    query.send((response) => {
-        if (response.isError()) {
-            console.error("Error in query:", response.getMessage(), response.getDetailedMessage());
-            return;
-        }
-        
-        let dataTable = response.getDataTable().toJSON();
-        let jsonData = JSON.parse(dataTable);
-        let cols = jsonData.cols.map(col => col.label);
-        
-        let rows = jsonData.rows.map(row => {
-            let newRow = {};
-            row.c.forEach((obj, index) => {
-                if (!obj) return;
-                obj[cols[index]] = obj.f || obj.v;
-                delete obj.f;
-                delete obj.v;
-                newRow = { ...newRow, ...obj };
+    <!-- 팝업 창 -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close">&times;</span>
+        <h2>제보/정보</h2>
+        <p style="word-break: keep-all;">정보는 대학 홈페이지와 표지판을 기반으로 하며 잘못된 정보가 있을 수 있습니다</p>
+        <p style="word-break: keep-all;">잘못된 정보나 추가할 사항이 있을 경우에 언제든 연락주세요!</p>
+        <p>원활한 운영을 위해 네이버, 구글 애널리틱스로 방문자 수 등을 집계하고 있습니다</p>
+        <p>리스트 업데이트 : 2025.02.20</p>
+        <p>제작 : I DIMA 프로젝트</p>
+        <a href="https://mytwice.github.io/I-DIMA/service" target="_blank">(이용약관ㅣ개인정보처리방침)</a>
+    </div>
+</div>
+</body>
+
+<script>
+// 변수 선언
+const mapWrapper = document.getElementById('map-wrapper');
+const mapContainer = document.getElementById('map-container');
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+let pins = [];
+let isDragging = false;
+let startX, startY;
+let currentTranslateX = 0, currentTranslateY = 0, currentScale = 1;
+let mode = 'move';
+let selectedPin = null;
+let activeInfoBox = null;
+let lastTouchDistance = 0;
+let zoomAnimation;
+let initialTouchX, initialTouchY;
+let isTouchMoving = false;
+let lastTouchTime = 0;
+const TOUCH_DELAY = 300; // 더블탭 감지를 위한 시간 간격 (ms)
+
+// 맵 설정
+const mapConfig = {
+    initialScale: 2.6,        // 2.6에서 1.7로 변경
+    initialX: -550,           // 0에서 -70으로 변경
+    initialY: -630,
+    minScale: 1.0,            // 2.5에서 0으로 변경
+    maxScale: 9,
+    zoomSpeed: 1,
+    mobile: {
+        initialScale: 1.2,
+        initialX: -460,
+        initialY: -10
+    }
+};
+
+// 핀 데이터
+const pinsData = [
+  {
+    "id": "1739338815570",
+    "x": "600.26",
+    "y": "467.19",
+    "building": "지성관",
+    "floor": "",
+    "category": "",
+    "name": "지성관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739354323376",
+    "x": "599.82",
+    "y": "439.86",
+    "building": "기예관",
+    "floor": "",
+    "category": "",
+    "name": "기예관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739338828151",
+    "x": "599.21",
+    "y": "409.30",
+    "building": "덕성관",
+    "floor": "",
+    "category": "",
+    "name": "덕성관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739338831348",
+    "x": "601.32",
+    "y": "492.98",
+    "building": "대학본부",
+    "floor": "",
+    "category": "",
+    "name": "대학본부",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739338835714",
+    "x": "559.21",
+    "y": "529.30",
+    "building": "체육관",
+    "floor": "",
+    "category": "",
+    "name": "체육관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739338840600",
+    "x": "656.58",
+    "y": "510.35",
+    "building": "",
+    "floor": "실외",
+    "category": "체육시설",
+    "name": "야외공연장",
+    "description": "예술대학에 걸맞는 대형 공연을 할수 있도록 1,100석 규모의 야외 공연장으로 각종 축제, 공연, 동아리 활동 등 대규모공연을 준비, 제작, 관람하는곳입니다.",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739338860720",
+    "x": "615.53",
+    "y": "662.63",
+    "building": "시외버스정류소",
+    "floor": "",
+    "category": "",
+    "name": "시외버스정류장",
+    "description": "강남방면 4402와 시외버스를 이용할 수 있는 정류장, 셔틀버스 미정차",
+    "number": "",
+    "address": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739338879762",
+    "x": "588.16",
+    "y": "125.96",
+    "building": "예인관",
+    "floor": "",
+    "category": "",
+    "name": "예인관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위",
+    "link": ""
+  },
+  {
+    "id": "1739338899793",
+    "x": "491.84",
+    "y": "235.88",
+    "building": "DIMA 종합촬영소",
+    "floor": "",
+    "category": "",
+    "name": "DIMA 종합촬영소",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위",
+    "link": ""
+  },
+  {
+    "id": "1739338938011",
+    "x": "556.05",
+    "y": "150.61",
+    "building": "엔터테인먼트관",
+    "floor": "",
+    "category": "",
+    "name": "엔터테인먼트관",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위",
+    "link": ""
+  },
+  {
+    "id": "1739338940878",
+    "x": "532.89",
+    "y": "170.09",
+    "building": "디자인센터",
+    "floor": "",
+    "category": "",
+    "name": "디자인센터",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "1순위",
+    "link": ""
+  },
+  {
+    "id": "1739339088514",
+    "x": "622.37",
+    "y": "545.35",
+    "building": "",
+    "floor": "실외",
+    "category": "체육시설",
+    "name": "대운동장",
+    "description": "국제규격에 준하는 인조잔디 구장과 우레탄 트랙, 농구장 등이 조성되어 날씨에 상관없이 안전하게 체육활동을 즐길 수 있습니다.",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739339150584",
+    "x": "678.11",
+    "y": "757.50",
+    "building": "",
+    "floor": "",
+    "category": "정류장",
+    "name": "원룸촌 정류장",
+    "description": "4402 하차외 내부 셔틀버스를 이용할 수 있는 정류장",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739339490339",
+    "x": "584.28",
+    "y": "519.56",
+    "building": "",
+    "floor": "실외",
+    "category": "정류장",
+    "name": "운동장 정류장",
+    "description": "18시 이후 운영하는 정류장",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739339524052",
+    "x": "588.94",
+    "y": "385.78",
+    "building": "",
+    "floor": "실외",
+    "category": "정류장",
+    "name": "덕성관삼거리 정류장",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739339552981",
+    "x": "573.28",
+    "y": "168.44",
+    "building": "",
+    "floor": "실외",
+    "category": "정류장",
+    "name": "디자인센터 정류장",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739339781162",
+    "x": "704.06",
+    "y": "870.05",
+    "building": "",
+    "floor": "",
+    "category": "정류장",
+    "name": "동아방송예술대학교입구(도촌방면)",
+    "description": "4402와 시내버스를 이용할 수 있는 정류장",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739339885231",
+    "x": "739.72",
+    "y": "867.78",
+    "building": "",
+    "floor": "",
+    "category": "정류장",
+    "name": "동아방송예술대학교입구(라촌방면)",
+    "description": "이천방면 8203와 시내버스를 이용할 수 있는 정류장",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739340188989",
+    "x": "683.20",
+    "y": "191.27",
+    "building": "",
+    "floor": "",
+    "category": "경비실",
+    "name": "후문경비실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739340233722",
+    "x": "644.20",
+    "y": "722.60",
+    "building": "",
+    "floor": "",
+    "category": "경비실",
+    "name": "정문경비실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739340263459",
+    "x": "624.20",
+    "y": "163.07",
+    "building": "",
+    "floor": "실외",
+    "category": "체육시설",
+    "name": "농구장",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739340496450",
+    "x": "659.87",
+    "y": "553.27",
+    "building": "",
+    "floor": "실외",
+    "category": "체육시설",
+    "name": "농구장",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739340528109",
+    "x": "601.20",
+    "y": "509.27",
+    "building": "",
+    "floor": "실외",
+    "category": "정류장",
+    "name": "대학본부 정류장",
+    "description": "A노선과 B노선 환승이 가능한 장류장",
+    "number": "",
+    "address": "",
+    "priority": "3순위",
+    "link": ""
+  },
+  {
+    "id": "1739340738053",
+    "x": "571.86",
+    "y": "493.71",
+    "building": "대학본부",
+    "floor": "1층",
+    "category": "도서관시설",
+    "name": "리더스스테이션",
+    "description": "1,2층에 걸친 도서관",
+    "number": "031-670-6665",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://lib.dima.ac.kr/"
+  },
+  {
+    "id": "1739340915610",
+    "x": "576.02",
+    "y": "494.81",
+    "building": "대학본부",
+    "floor": "1층",
+    "category": "화장실",
+    "name": "화장실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739340949258",
+    "x": "568.68",
+    "y": "493.49",
+    "building": "대학본부",
+    "floor": "3층",
+    "category": "도서관시설",
+    "name": "러닝라운지",
+    "description": "자기주도학습, 협업, 소통, 나눔, 비교과 학습 프로그램 운영 등 가능한 공간",
+    "number": "031-670-6666",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://lib.dima.ac.kr/"
+  },
+  {
+    "id": "1739341081334",
+    "x": "612.99",
+    "y": "494.19",
+    "building": "대학본부",
+    "floor": "1층",
+    "category": "전시시설",
+    "name": "20주년 기념홀",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739341130039",
+    "x": "608.99",
+    "y": "491.52",
+    "building": "대학본부",
+    "floor": "1층",
+    "category": "화장실",
+    "name": "화장실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739341225532",
+    "x": "623.32",
+    "y": "481.19",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "한울마당",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739341251194",
+    "x": "625.99",
+    "y": "476.52",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "편의시설",
+    "name": "세븐일레븐",
+    "description": "",
+    "number": "031-672-5731",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739341337517",
+    "x": "629.32",
+    "y": "478.52",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "편의시설",
+    "name": "라감커피",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739345098868",
+    "x": "622.65",
+    "y": "468.56",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "편의시설",
+    "name": "학생식당",
+    "description": "학생 식당은 학생 및 교직원들의 건강한 식생활을 위해 종합식품전문기업의 체계적이고 효율적인 운영시스템을 도입하여 저렴한 가격, 양질의 식사, 최상의 서비스를 제공하고 있습니다.",
+    "number": "",
+    "address": "20207",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=93"
+  },
+  {
+    "id": "1739345155723",
+    "x": "621.99",
+    "y": "470.23",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "",
+    "name": "동아쉼터",
+    "description": "취식이 가능한 휴게실",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": ""
+  },
+  {
+    "id": "1739345182077",
+    "x": "623.99",
+    "y": "468.56",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "화장실",
+    "name": "화장실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739345231639",
+    "x": "626.99",
+    "y": "470.88",
+    "building": "지성관",
+    "floor": "3층",
+    "category": "공연시설",
+    "name": "콘서트홀",
+    "description": "학생들이 연극, 공연, 합주 등의 무대를 펼치는 장소로 각각의 공연을 특성에 맞춰 조명, 음향, LED 디스플레이 시스템, 중계 및 송출 등의 다양한 장비 세팅을 구성할 수 있으며 DIMA TV에 방영 중인 화요콘서트 제작을 하는 공간",
+    "number": "",
+    "address": "20317",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=140"
+  },
+  {
+    "id": "1739345324835",
+    "x": "606.65",
+    "y": "468.88",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "행정시설",
+    "name": "교무처/행정복지처",
+    "description": "지성관 2층 20205호",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739345423636",
+    "x": "615.65",
+    "y": "468.88",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "",
+    "name": "우리은행 출장소",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739345626416",
+    "x": "596.99",
+    "y": "469.25",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "행정시설",
+    "name": "입학관리팀/원격지원센터",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739345672691",
+    "x": "585.32",
+    "y": "469.58",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "학생지원시설",
+    "name": "건강관리실",
+    "description": "이용대상 : 재학생 및 교직원\n이용시간 : 월~금 09:00 ~ 18:00(방학 중 단축근무에 준함)\n점심시간 : 12:00 ~ 13:00",
+    "number": "031-670-6667",
+    "address": "20202",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=95"
+  },
+  {
+    "id": "1739345764202",
+    "x": "562.99",
+    "y": "535.90",
+    "building": "체육관",
+    "floor": "1층",
+    "category": "화장실",
+    "name": "화장실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739346547231",
+    "x": "617.86",
+    "y": "468.95",
+    "building": "지성관",
+    "floor": "2층",
+    "category": "학생지원시설",
+    "name": "무인 증명 발급기",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739346707657",
+    "x": "585.40",
+    "y": "467.73",
+    "building": "지성관",
+    "floor": "4층",
+    "category": "행정시설",
+    "name": "학과사무실(창의교양학부, 광고크리에이티브과, 방송콘텐츠제작과, 방송콘텐츠제작학과(전공심화)",
+    "description": "창의교양학부, 광고크리에이티브과, 방송콘텐츠제작과, 방송콘텐츠제작학과(전공심화)",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": ""
+  },
+  {
+    "id": "1739346862686",
+    "x": "597.40",
+    "y": "468.73",
+    "building": "지성관",
+    "floor": "4층",
+    "category": "행정시설",
+    "name": "교육혁신센터",
+    "description": "교수학습역량팀, 융복합교육팀",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://www.instagram.com/dima_ctl/"
+  },
+  {
+    "id": "1739346940087",
+    "x": "633.07",
+    "y": "485.73",
+    "building": "지성관",
+    "floor": "4층",
+    "category": "기관사무실",
+    "name": "총학생회",
+    "description": "장소 확인 후 이동 예정",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://www.instagram.com/dima_sisun_28/"
+  },
+  {
+    "id": "1739346993610",
+    "x": "609.40",
+    "y": "469.07",
+    "building": "지성관",
+    "floor": "3층",
+    "category": "기관사무실",
+    "name": "미디어센터(신문사)",
+    "description": "20315 PRESS 신문사 사무실",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://www.instagram.com/press_dima/"
+  },
+  {
+    "id": "1739347224438",
+    "x": "589.88",
+    "y": "469.18",
+    "building": "지성관",
+    "floor": "3층",
+    "category": "교수연구실",
+    "name": "강사연구실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739347457667",
+    "x": "628.88",
+    "y": "488.45",
+    "building": "지성관",
+    "floor": "4층",
+    "category": "기관사무실",
+    "name": "대의원회",
+    "description": "장소 확인 후 이동 예정",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://www.instagram.com/dima_representative_28th/"
+  },
+  {
+    "id": "1739347461841",
+    "x": "635.21",
+    "y": "483.12",
+    "building": "지성관",
+    "floor": "4층",
+    "category": "기관사무실",
+    "name": "동아리연합회",
+    "description": "장소 확인 후 이동 예정",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://www.instagram.com/dimawa_28th/"
+  },
+  {
+    "id": "1739347609863",
+    "x": "575.88",
+    "y": "462.45",
+    "building": "지성관",
+    "floor": "4중층",
+    "category": "",
+    "name": "중층 교수연구실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739347630654",
+    "x": "580.21",
+    "y": "467.79",
+    "building": "지성관",
+    "floor": "4중층",
+    "category": "개방열람실",
+    "name": "24시간 개방 자유열람실",
+    "description": "20중08",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://lib.dima.ac.kr/Common?html=/Users/Dacl/Docs/subguide01.cshtml"
+  },
+  {
+    "id": "1739347801985",
+    "x": "584.88",
+    "y": "468.79",
+    "building": "지성관",
+    "floor": "5층",
+    "category": "행정시설",
+    "name": "학과사무실(연극과, 디지털영상디자인과)",
+    "description": "연극과, 디지털영상디자인과",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739347863756",
+    "x": "580.54",
+    "y": "468.12",
+    "building": "지성관",
+    "floor": "5층",
+    "category": "개방열람실",
+    "name": "24시간 개방 자유열람실",
+    "description": "20509",
+    "number": "",
+    "address": "",
+    "priority": "2순위",
+    "link": "https://lib.dima.ac.kr/Common?html=/Users/Dacl/Docs/subguide01.cshtml"
+  },
+  {
+    "id": "1739347928176",
+    "x": "602.54",
+    "y": "469.12",
+    "building": "지성관",
+    "floor": "5층",
+    "category": "강의실",
+    "name": "511~513 강의실",
+    "description": "추후 세부 입력",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739347963714",
+    "x": "634.54",
+    "y": "485.45",
+    "building": "지성관",
+    "floor": "5층",
+    "category": "실습실",
+    "name": "리허설실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739348009311",
+    "x": "635.54",
+    "y": "486.12",
+    "building": "지성관",
+    "floor": "3층",
+    "category": "동아리실",
+    "name": "동아리실",
+    "description": "추후 세부 입력",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739348056937",
+    "x": "598.88",
+    "y": "466.79",
+    "building": "지성관",
+    "floor": "6층",
+    "category": "",
+    "name": "지성관 6층 추후 입력",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739348411396",
+    "x": "610.88",
+    "y": "656.85",
+    "building": "시외버스정류소",
+    "floor": "1층",
+    "category": "화장실",
+    "name": "화장실",
+    "description": "",
+    "number": "",
+    "address": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739348634444",
+    "x": "600.21",
+    "y": "442.06",
+    "building": "기예관",
+    "floor": "1층",
+    "category": "행정시설",
+    "name": "평생교육원",
+    "description": "동아방송예술대학교 평생교육원은 성인학습자를 대상으로 다양한 평생교육프로그램을 개발‧운영하고 있으며, 평생교육 프로그램 제공을 통해 개인의 삶의 질을 향상시키고, 자아실현을 달성하도록 도움을 주고 있습니다.",
+    "number": "",
+    "address": "30105",
+    "priority": "2순위",
+    "link": "https://lifelong.dima.ac.kr/"
+  },
+  {
+    "id": "1739348683407",
+    "x": "625.21",
+    "y": "436.73",
+    "building": "기예관",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "VIRTUAL 스튜디오",
+    "description": "VR(Virtual Reality, 가상현실), AR(Augmented Reality, 증강현실), MR(Mixed Reality, 혼합현실), XR(Extended Realit, 확장현실) 모션인식 등과 같은 특수 촬영에 적합한 스튜디오 이며 VizRT, Aximmetry 소프트웨어를 사용하여 VIRTUAL 영상제작 및 크로마키 합성작업이 가능한 실습실",
+    "number": "",
+    "address": "30120",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=134"
+  },
+  {
+    "id": "1739348722021",
+    "x": "639.88",
+    "y": "448.40",
+    "building": "기예관",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "HDTV 스튜디오",
+    "description": "대학에 있는 TV 스튜디오로는 제일 큰 규모로 카메라 이동이 자유로워 다양한 구도의 촬영이 가능하며 소규모 쇼케이스, 세트 촬영 등을 HD로 촬영, 제작, 송출, 편집이 가능한 실습실이다.",
+    "number": "",
+    "address": "30111",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=133"
+  },
+  {
+    "id": "1739348741359",
+    "x": "632.88",
+    "y": "442.73",
+    "building": "기예관",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "UHD 스튜디오",
+    "description": "실제 방송국과 유사하게 꾸며진 국내 대학기관 최초의 UHDTV 스튜디오로 4K 카메라를 사용하여 4K-12G, 2160 60P 영상물의 촬영 및 제작, 송출까지 할 수 있는 실습실",
+    "number": "",
+    "address": "30122",
+    "priority": "2순위",
+    "link": "https://www.dima.ac.kr/?p=132"
+  },
+  {
+    "id": "1739348911946",
+    "x": "605.88",
+    "y": "437.73",
+    "building": "기예관",
+    "floor": "1층",
+    "category": "학생지원시설",
+    "name": "창의실습지원센터",
+    "description": "운영 시간 : 09:00 – 21:00 (공휴일 전날 09:00 – 19:00)\n  * 점심시간 : 12:00 – 13:00 수업 관련 업무 한정 운영",
+    "number": "031-670-6635",
+    "address": "https://www.dima.ac.kr/?p=111&viewMode=view&reqIdx=2408220917215498",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739351782823",
+    "x": "584.83",
+    "y": "441.52",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "행정시설",
+    "name": "학과사무실(방송극작과, 영상제작과)",
+    "address": "",
+    "description": "방송극작과, 영상제작과",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739351874304",
+    "x": "642.16",
+    "y": "448.86",
+    "building": "기예관",
+    "floor": "2층",
+    "category": "실습실",
+    "name": "HDTV 조정실",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739351882399",
+    "x": "642.16",
+    "y": "453.19",
+    "building": "기예관",
+    "floor": "2층",
+    "category": "",
+    "name": "FM방송국",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739352757560",
+    "x": "605.49",
+    "y": "441.52",
+    "building": "기예관",
+    "floor": "2층",
+    "category": "",
+    "name": "온택트 스튜디오",
+    "address": "30212",
+    "description": "비대면을 일컫는 Untact에 온라인을 통한 외부와의 연결(On)을 더한 개념으로 비대면 강의 등과 같은 교육 콘텐츠를 만들고 1인 방송 수업 및 제작에 최적화된 실습실",
+    "number": "",
+    "link": "https://www.dima.ac.kr/?p=139",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739352858154",
+    "x": "588.49",
+    "y": "441.86",
+    "building": "기예관",
+    "floor": "2층",
+    "category": "개방열람실",
+    "name": "24시간 개방 자유열람실",
+    "address": "30209",
+    "description": "",
+    "number": "",
+    "link": "https://lib.dima.ac.kr/Common?html=/Users/Dacl/Docs/subguide01.cshtml",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739352968920",
+    "x": "590.49",
+    "y": "441.52",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "",
+    "name": "24시간 개방 자유열람실",
+    "address": "30309",
+    "description": "",
+    "number": "",
+    "link": "https://lib.dima.ac.kr/Common?html=/Users/Dacl/Docs/subguide01.cshtml",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739352995836",
+    "x": "590.83",
+    "y": "442.19",
+    "building": "기예관",
+    "floor": "4층",
+    "category": "개방열람실",
+    "name": "24시간 개방 자유열람실",
+    "address": "30409",
+    "description": "",
+    "number": "",
+    "link": "https://lib.dima.ac.kr/Common?html=/Users/Dacl/Docs/subguide01.cshtml",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353352573",
+    "x": "584.82",
+    "y": "441.94",
+    "building": "기예관",
+    "floor": "3중층",
+    "category": "행정시설",
+    "name": "학과사무실(방송기술과, 방송기술학과, 뉴미디어콘텐츠과)",
+    "address": "30중08",
+    "description": "학과사무실(방송기술과, 방송기술학과, 뉴미디어콘텐츠과)",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353503233",
+    "x": "585.16",
+    "y": "441.94",
+    "building": "기예관",
+    "floor": "4층",
+    "category": "행정시설",
+    "name": "학과사무실(음향제작과, 음향제작학과, 연기예술학과, 콘텐츠제작학과, 문화예술마케팅학과)",
+    "address": "",
+    "description": "학과사무실(음향제작과, 음향제작학과, 연기예술학과, 콘텐츠제작학과, 문화예술마케팅학과)",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353582585",
+    "x": "595.82",
+    "y": "438.94",
+    "building": "기예관",
+    "floor": "5층",
+    "category": "",
+    "name": "추후 입력",
+    "address": "",
+    "description": "추후 입력",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353625531",
+    "x": "638.49",
+    "y": "451.27",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "기관사무실",
+    "name": "대학방송국 DBS",
+    "address": "",
+    "description": "대학방송국 DBS 사무실",
+    "number": "",
+    "link": "https://www.instagram.com/pride_of_dima/",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353734170",
+    "x": "640.49",
+    "y": "444.52",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "실습실",
+    "name": "개방편집실1",
+    "address": "30323",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739357813305",
+    "x": "627.98",
+    "y": "435.76",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "학생지원시설",
+    "name": "글로벌라운지/K-WAVE한국어교육원",
+    "address": "30324",
+    "description": "외국인 유학생의 안정적인 교내생활 적응 및 지원을 위해 마련된 공간으로서, 글로벌엘리트학생단 및 글로벌라운지 전담조교 주관 멘토링 프로그램, 간담회, 문화체험 프로그램 등을 운영",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739353922806",
+    "x": "624.82",
+    "y": "442.86",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "학생지원시설",
+    "name": "대학인권센터",
+    "address": "30315",
+    "description": "",
+    "number": "",
+    "link": "https://www.dima.ac.kr/?p=96",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739357994649",
+    "x": "632.98",
+    "y": "440.10",
+    "building": "기예관",
+    "floor": "3층",
+    "category": "학생지원시설",
+    "name": "창업라운지",
+    "address": "30325",
+    "description": "창업라운지는 학생들의 취업과 창업을 위한 공간으로써 다양한 취·창업정보 제공 및 프로그램 운영과 진로고민부터 취·창업상담 서비스를 제공하는 공간",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739354758528",
+    "x": "578.83",
+    "y": "410.90",
+    "building": "덕성관",
+    "floor": "1층",
+    "category": "공연시설",
+    "name": "드라마 스페이스",
+    "address": "50101",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739356558319",
+    "x": "620.83",
+    "y": "403.91",
+    "building": "덕성관",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "개인연습실",
+    "address": "50108",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739357199036",
+    "x": "628.90",
+    "y": "457.89",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "구름다리",
+    "address": "",
+    "description": "지성관 3층↔기예관 1층",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739357205340",
+    "x": "588.90",
+    "y": "453.89",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "구름다리",
+    "address": "",
+    "description": "지성관 4층↔기예관 2층",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739357207921",
+    "x": "588.90",
+    "y": "425.23",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "구름다리",
+    "address": "",
+    "description": "기예관 3층↔덕성관 2층",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739357209907",
+    "x": "596.57",
+    "y": "395.23",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "구름다리",
+    "address": "",
+    "description": "덕성관 3.5층↔삼거리",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739357399774",
+    "x": "577.90",
+    "y": "411.07",
+    "building": "덕성관",
+    "floor": "4층",
+    "category": "실습실",
+    "name": "C3 스튜디오",
+    "address": "50402",
+    "description": "Creativity, Convergence, Contents를 의미하는 융합 수업 전용 스튜디오이며 여러 학과 학생들이 기술, 카메라, 음향, 조명, 세트제작, 송출 파트 등으로 나누어 콘텐츠를 제작, 결과물을 DIMA TV에 방영할 수 있도록 갖추어진 실습실",
+    "number": "",
+    "link": "https://www.dima.ac.kr/?p=135",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739357545369",
+    "x": "581.24",
+    "y": "411.15",
+    "building": "덕성관",
+    "floor": "2층",
+    "category": "공연시설",
+    "name": "소극장",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739358292228",
+    "x": "565.65",
+    "y": "799.08",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "A촌",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739358319438",
+    "x": "768.14",
+    "y": "807.27",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "B촌",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739358335861",
+    "x": "717.32",
+    "y": "700.19",
+    "building": "",
+    "floor": "",
+    "category": "",
+    "name": "C촌",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "1순위"
+  },
+  {
+    "id": "1739358778828",
+    "x": "631.30",
+    "y": "479.99",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "편의시설",
+    "name": "Barunson",
+    "address": "",
+    "description": "한울마당 문구점",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739359019117",
+    "x": "632.30",
+    "y": "485.24",
+    "building": "지성관",
+    "floor": "1층",
+    "category": "체육시설",
+    "name": "피트니스 센터",
+    "address": "",
+    "description": "피트니스센터는 학생 및 교직원의 건강증진 및 체력향상을 위한 시설로, 러닝머신 · 파워랙 · 프레스머신 · 케이블머신 · 롱풀머신, 치닝디핑 등 다양한 운동기구를 갖추고 있습니다. 학생회관 1층에 위치하며, 농구, 축구, 배구, 배드민턴을 위한 구기용품과 라켓, 네트 등도 대여가능",
+    "number": "031-670-6536",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739359683418",
+    "x": "560.60",
+    "y": "140.93",
+    "building": "엔터테인먼트관",
+    "floor": "2층",
+    "category": "공연시설",
+    "name": "대공연장",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739359736395",
+    "x": "550.93",
+    "y": "160.60",
+    "building": "엔터테인먼트관",
+    "floor": "1층",
+    "category": "전시시설",
+    "name": "DIMA아트센터",
+    "address": "",
+    "description": "DIMA 아트센터는 기획전과 개인전을 통해 대학 소장품 및 국내외 유수한 작가들의 작품, 전시 월~토 9:00 ~ 18:00, 일요일 및 공휴일 휴관",
+    "number": "031-670-6938",
+    "link": "https://art.dima.ac.kr/",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739359862452",
+    "x": "600.23",
+    "y": "132.26",
+    "building": "예인관",
+    "floor": "B1층",
+    "category": "편의시설",
+    "name": "GS25",
+    "address": "",
+    "description": "외부인 이용가능한 예인관 지하에 위치한 24시간 편의점",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739359932028",
+    "x": "599.23",
+    "y": "126.26",
+    "building": "예인관",
+    "floor": "1층",
+    "category": "편의시설",
+    "name": "기숙사 식당",
+    "address": "",
+    "description": "외부인도 이용 가능한 식당",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739360087827",
+    "x": "572.00",
+    "y": "593.71",
+    "building": "",
+    "floor": "실외",
+    "category": "전시시설",
+    "name": "10주년기념조형물",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739360120064",
+    "x": "586.60",
+    "y": "503.30",
+    "building": "",
+    "floor": "실외",
+    "category": "전시시설",
+    "name": "20주년기념조형물",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "3순위"
+  },
+  {
+    "id": "1739360254929",
+    "x": "504.44",
+    "y": "212.30",
+    "building": "DIMA 종합촬영소",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "1스튜디오",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739360257936",
+    "x": "486.44",
+    "y": "224.97",
+    "building": "DIMA 종합촬영소",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "3스튜디오",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739360260620",
+    "x": "468.78",
+    "y": "237.63",
+    "building": "DIMA 종합촬영소",
+    "floor": "1층",
+    "category": "실습실",
+    "name": "2스튜디오",
+    "address": "",
+    "description": "",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  },
+  {
+    "id": "1739360392972",
+    "x": "563.19",
+    "y": "152.30",
+    "building": "엔터테인먼트관",
+    "floor": "1층",
+    "category": "편의시설",
+    "name": "블루포트",
+    "address": "",
+    "description": "1층에 위치한 카페",
+    "number": "",
+    "link": "",
+    "priority": "2순위"
+  }
+]
+
+// 필터 옵션 초기화 함수
+function initializeFilterOptions() {
+    const buildingFilter = document.getElementById('building-filter');
+    const floorFilter = document.getElementById('floor-filter');
+    const categoryFilter = document.getElementById('category-filter');
+
+    const buildings = [...new Set(pinsData.map(pin => pin.building))];
+    const floors = [...new Set(pinsData.map(pin => pin.floor))];
+    const categories = [...new Set(pinsData.map(pin => pin.category))];
+
+    // 필터 옵션 채우기
+    function populateFilter(filter, options, type = 'select') {
+        if (type === 'checkbox') {
+            filter.innerHTML = ''; // 기존 콘텐츠 초기화
+            options.forEach(option => {
+                if (option) {
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" name="category" value="${option}">${option}</label>`;
+                    filter.appendChild(label);
+                }
             });
-            return newRow;
+        } else {
+            filter.innerHTML = '<option value="">전체</option>';
+            options.forEach(option => {
+                if (option) {
+                    filter.innerHTML += `<option value="${option}">${option}</option>`;
+                }
+            });
+        }
+    }
+
+    populateFilter(buildingFilter, buildings);
+    populateFilter(floorFilter, floors);
+    populateFilter(categoryFilter, categories, 'checkbox');
+}
+
+// 검색 기능
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    if (searchTerm.length < 1) {
+        searchResults.style.display = 'none';
+        return;
+    }
+
+    // name, building, description, address를 검색어에 포함하는지 체크
+    const filteredPins = pinsData.filter(pin => 
+        pin.name.toLowerCase().includes(searchTerm) ||
+        pin.building.toLowerCase().includes(searchTerm) ||
+        pin.description.toLowerCase().includes(searchTerm) ||
+        (pin.address && pin.address.toLowerCase().includes(searchTerm))
+    );
+
+    searchResults.innerHTML = '';
+    if (filteredPins.length > 0) {
+        filteredPins.forEach(pin => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.innerHTML = `
+                <div><strong>${pin.name}</strong></div>
+                <div>${pin.building} ${pin.floor}</div>
+                <div>${pin.address}</div>
+            `;
+            resultItem.addEventListener('click', () => {
+                const pinObj = pins.find(p => 
+                    p.coordinates.x === pin.x && 
+                    p.coordinates.y === pin.y
+                );
+
+                if (pinObj) {
+                    pinObj.pin.style.display = 'block'; // 핀 강제 표시
+                    moveToPin(pinObj.pin);
+                    showPinInfoBox(pinObj.pin, pin);
+                }
+
+                // 검색 결과 유지
+                searchResults.style.display = 'block';
+            });
+            searchResults.appendChild(resultItem);
+        });
+        searchResults.style.display = 'block';
+    } else {
+        searchResults.style.display = 'none';
+    }
+});
+
+// 검색 결과와 일치하는 핀만 보이게 하기
+function filterPinsBySearch() {
+    const searchTerm = searchInput.value.toLowerCase(); // 검색어 가져오기
+
+    // 검색어가 포함된 핀만 필터링하여 표시
+    pins.forEach(pinObj => {
+        const pinData = pinObj.pin.dataset;
+        const matchesSearch = (
+            pinData.name && pinData.name.toLowerCase().includes(searchTerm) ||
+            pinData.building && pinData.building.toLowerCase().includes(searchTerm) ||
+            pinData.category && pinData.category.toLowerCase().includes(searchTerm)
+        );
+
+        if (matchesSearch) {
+            pinObj.pin.style.display = 'block'; // 일치하면 표시
+        } else {
+            pinObj.pin.style.display = 'none'; // 일치하지 않으면 숨김
+        }
+    });
+    // 검색어가 없을 때
+    if (searchTerm.length === 0) {
+        searchResults.style.display = 'none';
+        filterPins2(); // 1순위와 3순위 핀만 표시
+        return;
+    }
+}
+
+// 검색창에 입력될 때마다 필터링 적용
+searchInput.addEventListener('input', filterPinsBySearch);
+
+// updateMapTransform 함수 수정 
+function updateMapTransform() {
+    const wrapperWidth = mapWrapper.offsetWidth;
+    const wrapperHeight = mapWrapper.offsetHeight;
+    const mapWidth = 1200 * currentScale;
+    const mapHeight = 900 * currentScale;
+
+    // 맵이 wrapper보다 작아지지 않도록 최소 스케일 계산
+    const minScaleX = wrapperWidth / 1200;
+    const minScaleY = wrapperHeight / 900;
+    const minScale = Math.max(minScaleX, minScaleY);
+
+    // 현재 스케일이 최소 스케일보다 작아지지 않도록 제한
+    if (currentScale < minScale) {
+        currentScale = minScale;
+    }
+
+    // 경계 제한 강화
+    const maxTranslateX = 0;
+    const maxTranslateY = 0;
+    const minTranslateX = wrapperWidth - mapWidth;
+    const minTranslateY = wrapperHeight - mapHeight;
+
+    // translate 값 제한
+    currentTranslateX = Math.min(maxTranslateX, Math.max(minTranslateX, currentTranslateX));
+    currentTranslateY = Math.min(maxTranslateY, Math.max(minTranslateY, currentTranslateY));
+
+    // transform 적용
+    mapContainer.style.transform = 
+        `translate(${currentTranslateX}px, ${currentTranslateY}px) scale(${currentScale})`;
+
+    // 핀 정보창 위치 업데이트
+    if (activeInfoBox && selectedPin) {
+        const pinRect = selectedPin.getBoundingClientRect();
+        activeInfoBox.style.left = `${pinRect.left}px`;
+        activeInfoBox.style.top = `${pinRect.top - 100}px`;
+    }
+}
+
+function animateScroll(targetX, targetY) {
+    const duration = 800; // 애니메이션 지속 시간 (ms)
+    const startX = currentTranslateX;
+    const startY = currentTranslateY;
+    const deltaX = targetX - startX;
+    const deltaY = targetY - startY;
+    const startTime = performance.now();
+
+    function scrollStep(currentTime) {
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 2); // easeOutQuad
+
+        currentTranslateX = startX + deltaX * easeProgress;
+        currentTranslateY = startY + deltaY * easeProgress;
+
+        updateMapTransform();
+
+        if (progress < 1) {
+            requestAnimationFrame(scrollStep);
+        }
+    }
+
+    requestAnimationFrame(scrollStep);
+}
+
+// 핀 생성 함수 수정
+function createPin(x, y, details = {}) {
+    const pin = document.createElement('div');
+    pin.className = 'pin'; // 기본 클래스
+    
+    // 우선순위에 따라 추가 클래스 적용
+    if (details.priority === "1순위") {
+        pin.classList.add('pin-primary');
+    } else if (details.priority === "2순위") {
+        pin.classList.add('pin-secondary');
+    }
+
+        // 우선순위에 따라 추가 클래스 적용
+        if (details.priority === "3순위") {
+        pin.classList.add('pin-secondary');
+    }
+    
+    pin.style.left = `${x}px`;
+    pin.style.top = `${y}px`;
+
+    // 핀의 우선순위 설정
+    pin.dataset.priority = details.priority || '미정';
+    pin.dataset.building = details.building || '미정';
+
+    
+    const pinLabel = document.createElement('div');
+    pinLabel.innerText = details.name || '이름 없음';
+    pinLabel.style.display = 'none';
+
+    if (details.priority === "1순위") {
+        pinLabel.className = 'pin-label';
+    } else if (details.priority === "2순위","3순위") {
+        pinLabel.className = 'pin-label2';
+    }
+
+    pin.appendChild(pinLabel);
+
+    // 마우스 오버 시 이름 표시
+    pin.addEventListener('mouseenter', () => {
+        pinLabel.style.display = 'block';
+    });
+
+    pin.addEventListener('mouseleave', () => {
+        pinLabel.style.display = 'none';
+    });
+
+    // 모바일 터치 시 이름 표시
+    pin.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        pinLabel.style.display = 'block';
+        setTimeout(() => {
+            pinLabel.style.display = 'none';
+        }, 2000); // 2초 후 자동 숨김
+    });
+
+    let lastPrimaryPinPosition = null;
+
+    const handlePinInteraction = function(e) {
+    e.stopPropagation();
+
+    if (details.priority === "1순위") {
+        lastPrimaryPinPosition = { x: pin.offsetLeft, y: pin.offsetTop }; // 1순위 핀 위치 저장
+        moveToPin(pin); // 해당 위치로 확대 이동
+        showPriorityPins(details.building);
+        showExitButton();
+        // 원하는 확대 레벨 설정
+        const targetScale = 6;
+        // 화면(맵 wrapper)의 크기를 가져옵니다.
+        const wrapperWidth = mapWrapper.offsetWidth;
+        const wrapperHeight = mapWrapper.offsetHeight;
+        // 부드러운 확대 및 중앙 이동: 중앙 좌표를 기준으로 smoothZoom 호출
+        smoothZoom(targetScale, wrapperWidth / 2, wrapperHeight / 2);
+        if (activeInfoBox) {
+            activeInfoBox.style.display = 'none';
+        }
+    } else {
+        showPinInfoBox(pin, details);
+    }
+};
+    // 데스크톱 클릭 이벤트
+    pin.addEventListener('click', handlePinInteraction);
+    
+    // 모바일 터치 이벤트
+    pin.addEventListener('touchstart', function(e) {
+        e.stopPropagation();  // 지도의 터치 이벤트 중지
+        
+        // 터치 시작 시간 저장
+        this.touchStartTime = new Date().getTime();
+        this.touchStartX = e.touches[0].clientX;
+        this.touchStartY = e.touches[0].clientY;
+    });
+
+    pin.addEventListener('touchend', function(e) {
+        e.stopPropagation();  // 지도의 터치 이벤트 중지
+        
+        // 터치 종료 시간과 이동 거리 계산
+        const touchEndTime = new Date().getTime();
+        const touchTime = touchEndTime - this.touchStartTime;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const touchDistance = Math.hypot(
+            touchEndX - this.touchStartX,
+            touchEndY - this.touchStartY
+        );
+
+        // 짧은 터치(500ms 이하)와 작은 이동 거리(10px 이하)일 때만 핀 정보 표시
+        if (touchTime < 500 && touchDistance < 10) {
+            handlePinInteraction(e);
+        }
+    });
+
+    mapContainer.appendChild(pin);
+    pins.push({
+        pin,
+        coordinates: { x, y },
+        ...details
+    });
+}
+
+// 1순위 핀을 클릭했을 때, 해당 건물에 속하는 2순위 핀 보이기
+function showPriorityPins(buildingName) {
+    // 모든 1순위 핀 숨기기
+    pins.forEach(pinObj => {
+        if (pinObj.pin.dataset.priority === "1순위", "3순위") {
+            pinObj.pin.style.display = 'none'; // 모든 1순위 핀을 숨김
+        }
+    });
+
+    // 모든 핀 중에서 "2순위"이고, 건물이 해당 이름인 핀을 보이게 함
+    pins.forEach(pinObj => {
+        if (pinObj.pin.dataset.priority === "2순위" && pinObj.pin.dataset.building === buildingName) {
+            pinObj.pin.style.display = 'block'; // 해당 2순위 핀을 보이게 함
+        } else if (pinObj.pin.dataset.priority === "2순위") {
+            pinObj.pin.style.display = 'none'; // 2순위 핀 중 해당 건물이 아닌 것은 숨김
+        }
+    });
+}
+
+// 2순위 핀이 보일 때 "건물 나가기" 버튼과 층 버튼들을 표시하는 함수
+function showExitButton() {
+    if (exitButton === null) {
+        exitButton = document.createElement('div');
+        exitButton.className = 'exit-button-container';
+        exitButton.style.position = 'absolute';
+        exitButton.style.top = '200px';
+        exitButton.style.left = '90%';
+        exitButton.style.transform = 'translateX(-82%)';
+        exitButton.style.display = 'flex';
+        exitButton.style.flexDirection = 'column';
+        exitButton.style.gap = '10px';
+        
+        const exitButtonElement = document.createElement('button');
+        exitButtonElement.className = 'exit-button';
+        exitButtonElement.innerText = '건물 나가기';
+        exitButtonElement.style.background = '#e155b5';
+        exitButtonElement.style.color = 'white';
+        exitButtonElement.style.padding = '8px 13px';
+        exitButtonElement.style.borderRadius = '20px';
+        exitButtonElement.style.whiteSpace = 'nowrap';
+        exitButtonElement.style.fontSize = '14px';
+        exitButtonElement.style.border = 'none';
+        exitButtonElement.style.cursor = 'pointer';
+        exitButtonElement.style.marginBottom = '10px';
+        exitButtonElement.style.border = '2px solid rgb(213 213 213)';
+        
+        exitButtonElement.addEventListener('click', function() {
+            hidePriorityPins();
+            hideExitButton();
+            filterPins2();
+            if (activeInfoBox) {
+                activeInfoBox.style.display = 'none';
+            }
         });
 
-        const shows = {};
-                    // 행 순회하며 공연 정보 추출
-                    rows.forEach(row => {
-                // 표시 ON/OFF가 TRUE인 경우에만 처리
-                if (row['표시 ON/OFF'] === 'TRUE') {
-                    const showName = row['공연명'];
-                    shows[showName] = {
-                        type: row['종류'] || '',
-                        name: showName,
-                        date: row['일시'],
-                        endDate: row['종료일시'] || '',
-                        time: row['시간'] || '',
-                        venue: row['장소'] || '',
-                        cast: row['출연'] || '',
-                        duration: row['관람시간'] || '',
-                        description: row['설명'] || '',
-                        entry: row['입장방식'] || '',
-                        public: row['공개여부'] || '',
-                        organizer: row['주최/주관'] || '',
-                        withorganizer: row['협업기관'] || '',
-                        staff: row['스탭리스트'] || '',
-                        entryopen: row['입장오픈'] || '',
-                        notecheck: row['관람유의여부'] || '',
-                        rec: row['촬영녹음여부'] || '',
-                        note: row['유의사항'] || '',
-                        videolink: row['영상 링크'] || '',
-                        link: row['관련 링크'] || '',
-                        image: row['메인포스터'] || '',
-                        gallery: [
-                            row['카드뉴스1'] || '',
-                            row['카드뉴스2'] || '',
-                            row['카드뉴스3'] || '',
-                            row['카드뉴스4'] || '',
-                            row['카드뉴스5'] || '',
-                            row['카드뉴스6'] || '',
-                            row['카드뉴스7'] || '',
-                            row['카드뉴스8'] || '',
-                            row['카드뉴스9'] || '',
-                            row['카드뉴스10'] ||''
-                        ].filter(img => img !== '') // 빈 문자열 제거
-                    };
+        const floorButtonsContainer = document.createElement('div');
+        floorButtonsContainer.style.display = 'flex';
+        floorButtonsContainer.style.flexDirection = 'column';
+        floorButtonsContainer.style.gap = '10px';
+        floorButtonsContainer.className = 'floor-buttons-container';
+
+        exitButton.appendChild(exitButtonElement);
+        exitButton.appendChild(floorButtonsContainer);
+        document.body.appendChild(exitButton);
+    }
+
+    const visibleSecondaryPin = document.querySelector('.pin[data-priority="2순위"]:not([style*="display: none"])');
+    if (visibleSecondaryPin) {
+        const currentBuilding = visibleSecondaryPin.dataset.building;
+        
+        const buildingFloors = [...new Set(
+            pinsData
+                .filter(pin => pin.building === currentBuilding && pin.priority === "2순위" && pin.floor)
+                .map(pin => pin.floor)
+        )];
+
+        const floorButtonsContainer = exitButton.querySelector('.floor-buttons-container');
+        floorButtonsContainer.innerHTML = '';
+
+        // **층 정보가 없을 경우, 컨테이너 초기화 후 종료**
+        if (buildingFloors.length === 0) {
+            return;
+        }
+
+        // Keep track of the currently selected floor button
+        let selectedButton = null;
+
+        buildingFloors.sort().reverse().forEach(floor => {
+            const floorButton = document.createElement('button');
+            floorButton.className = 'floor-button';
+            floorButton.innerText = floor;
+            floorButton.style.background = '#4a4a4a';
+            floorButton.style.color = 'white';
+            floorButton.style.padding = '8px 13px';
+            floorButton.style.borderRadius = '20px';
+            floorButton.style.whiteSpace = 'nowrap';
+            floorButton.style.fontSize = '14px';
+            floorButton.style.border = 'none';
+            floorButton.style.cursor = 'pointer';
+            floorButton.style.border = '2px solid #f79de0';
+            floorButton.style.transition = 'background-color 0.3s ease'; // Add smooth transition
+
+            floorButton.addEventListener('click', () => {
+                // Reset previously selected button
+                if (selectedButton) {
+                    selectedButton.style.background = '#4a4a4a';
                 }
+                
+                // Highlight current button
+                floorButton.style.background = 'rgb(195, 73, 201)'; // Change to blue when selected
+                selectedButton = floorButton;
+
+                // Show pins for selected floor
+                pins.forEach(pinObj => {
+                    const isTargetPin = 
+                        pinObj.pin.dataset.priority === "2순위" && 
+                        pinObj.building === currentBuilding && 
+                        pinObj.floor === floor;
+                    
+                    pinObj.pin.style.display = isTargetPin ? 'block' : 'none';
+                });
+            });
+            
+            floorButtonsContainer.appendChild(floorButton);
+        });
+
+        // 추가: "1층" 버튼 자동 선택 (존재할 경우)
+        const oneFloorButton = Array.from(floorButtonsContainer.children)
+            .find(btn => btn.innerText.trim() === '1층');
+        if(oneFloorButton){
+            oneFloorButton.click();
+        }
+    }
+
+    exitButton.style.display = 'block';
+}
+
+// 선택된 층의 핀만 표시하는 함수
+function highlightSelectedFloor(selectedFloor) {
+    pins.forEach(pinObj => {
+        if (pinObj.pin.dataset.priority === "2순위") {
+            // 핀의 층 정보와 선택된 층이 일치하는 경우에만 표시
+            const pinFloor = pinObj.floor ? pinObj.floor.toUpperCase() : null;
+            if (pinFloor === selectedFloor) {
+                pinObj.pin.style.display = 'block';
+            } else {
+                pinObj.pin.style.display = 'none';
+            }
+        }
+    });
+}
+
+// "건물 나가기" 버튼을 숨기는 함수
+function hideExitButton() {
+    if (exitButton) { // 버튼이 존재할 때만 실행
+        exitButton.style.display = 'none';
+    }
+}
+
+// "1순위"만 보이도록 2순위 핀을 숨기는 함수
+function hidePriorityPins() {
+    pins.forEach(pinObj => {
+        if (pinObj.pin.dataset.priority === "2순위") {
+            pinObj.pin.style.display = 'none'; // 모든 2순위 핀을 숨김
+        }
+    });
+    showOnlyFirstPriorityPins(); // 1순위 핀만 보이게
+}
+
+// 1순위 핀만 보이도록 하는 함수
+function showOnlyFirstPriorityPins() {
+    pins.forEach(pinObj => {
+        if (pinObj.pin.dataset.priority === "1순위") {
+            pinObj.pin.style.display = 'block'; // 1순위 핀만 보이게 함
+        }
+    });
+}
+
+// 핀 정보창 표시 함수
+function showPinInfoBox(pin, pinData) {
+    if (activeInfoBox) {
+        activeInfoBox.remove();
+    }
+
+    const pinRect = pin.getBoundingClientRect();
+    const infoBox = document.createElement('div');
+    infoBox.className = 'pin-info-box';
+    
+    // 모바일 여부 확인
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // 모바일에서는 화면 중앙에 표시
+        infoBox.style.left = '50%';
+        infoBox.style.top = '50%';
+        infoBox.style.transform = 'translate(-50%, -50%)';
+    } else {
+        // 데스크톱에서는 기존 위치 유지
+        infoBox.style.left = `${pinRect.left + 100}px`;
+        infoBox.style.top = `${pinRect.top - 100}px`;
+    }
+    
+    infoBox.style.left = `${pinRect.left + 100}px`;
+    infoBox.style.top = `${pinRect.top - 100}px`;
+
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'close-btn';
+    closeBtn.innerHTML = '×';
+    closeBtn.onclick = function(e) {
+        e.stopPropagation();
+        infoBox.style.display = 'none';
+        activeInfoBox = null;
+    };
+    infoBox.appendChild(closeBtn);
+
+    // 값이 있는 항목만 표시하도록 수정
+    const info = [];
+    if (pinData.name) info.push(`<strong>이름:</strong> ${pinData.name}`);
+    if (pinData.address) info.push(`<strong>건물번호:</strong> ${pinData.address}`);
+    if (pinData.number) info.push(`<strong>연락처:</strong> ${pinData.number}`);
+    if (pinData.building) info.push(`<strong>건물:</strong> ${pinData.building}`);
+    if (pinData.floor) info.push(`<strong>층:</strong> ${pinData.floor}`);
+    if (pinData.category) info.push(`<strong>카테고리:</strong> ${pinData.category}`);
+    if (pinData.description) info.push(`<strong>설명:</strong> ${pinData.description}`);
+    if (pinData.link) info.push(`<strong>주소:</strong> <a href="${pinData.link}" target="_blank">${pinData.link}</a>`);
+
+    infoBox.innerHTML += info.join('<br>');
+    
+    document.body.appendChild(infoBox);
+    infoBox.style.display = 'block';
+    activeInfoBox = infoBox;
+    selectedPin = pin;
+
+    // 정보창이 화면 밖으로 나가지 않도록 조정
+    const infoBoxRect = infoBox.getBoundingClientRect();
+    if (infoBoxRect.top < 0) {
+        infoBox.style.top = '10px';
+    }
+    if (infoBoxRect.left < 0) {
+        infoBox.style.left = '10px';
+    }
+    if (infoBoxRect.right > window.innerWidth) {
+        infoBox.style.left = `${window.innerWidth - infoBoxRect.width - 10}px`;
+    }
+
+        // 클릭 이벤트 리스너
+        closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        infoBox.remove();
+        activeInfoBox = null;
+        selectedPin = null;
+    });
+
+    infoBox.appendChild(closeBtn);
+}
+
+// 필터링 함수
+function filterPins() {
+    const buildingFilter = document.getElementById('building-filter').value;
+    const floorFilter = document.getElementById('floor-filter').value;
+    
+    // 선택된 카테고리 체크박스 값 가져오기
+    const selectedCategories = [...document.querySelectorAll('input[name="category"]:checked')]
+        .map(checkbox => checkbox.value);
+    
+    // 검색어 가져오기
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    
+    // 필터 및 검색이 모두 비어있으면 filterPins2 실행
+    if (!buildingFilter && !floorFilter && selectedCategories.length === 0 && searchTerm === "") {
+        filterPins2(); // 1순위와 3순위 핀만 표시
+        return;
+    }
+
+    // 필터링 적용
+    pins.forEach(pinObj => {
+        const matchesBuilding = !buildingFilter || pinObj.building === buildingFilter;
+        const matchesFloor = !floorFilter || pinObj.floor === floorFilter;
+        const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(pinObj.category);
+        const matchesSearch = (
+            pinObj.name && pinObj.name.toLowerCase().includes(searchTerm) ||
+            pinObj.building && pinObj.building.toLowerCase().includes(searchTerm) ||
+            pinObj.category && pinObj.category.toLowerCase().includes(searchTerm)
+        );
+
+        if (matchesBuilding && matchesFloor && matchesCategory && matchesSearch) {
+            pinObj.pin.style.display = 'block';
+        } else {
+            pinObj.pin.style.display = 'none';
+        }
+    });
+}
+
+// 필터링 함수 수정 - 최초 실행시 1순위 핀만 보이도록
+function filterPins2() {
+    const priorityFilter = "1순위";
+    
+    pins.forEach(pinObj => {
+        // 1순위이거나 3순위인 핀만 표시
+        const matchesPriority = pinObj.priority === priorityFilter || pinObj.priority === "3순위";
+        
+        if (matchesPriority) {
+            pinObj.pin.style.display = 'block';
+        } else {
+            pinObj.pin.style.display = 'none';
+        }
+    });
+}
+
+// 특정 핀으로 이동하는 함수
+function moveToPin(pin) {
+    const pinRect = pin.getBoundingClientRect();
+    const wrapperRect = mapWrapper.getBoundingClientRect();
+    
+    const targetX = -(pin.offsetLeft * currentScale - (wrapperRect.width / 2));
+    const targetY = -(pin.offsetTop * currentScale - (wrapperRect.height / 2));
+    
+    mapContainer.style.transition = 'transform 0.5s ease-out';
+    currentTranslateX = targetX;
+    currentTranslateY = targetY;
+    updateMapTransform();
+    
+    setTimeout(() => {
+        mapContainer.style.transition = '';
+    }, 500);
+}
+
+// 터치 이벤트 관련 변수
+let initialTouchDistance = 0;
+let lastTouchX = 0;
+let lastTouchY = 0;
+let isTouching = false;
+let lastTapTime = 0;
+let initialPinchScale = 1;
+let pinchStartX = 0;  // 핀치 시작 X 좌표
+let pinchStartY = 0;  // 핀치 시작 Y 좌표
+let exitButton = null;
+
+// 터치 시작 이벤트 핸들러
+mapContainer.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isTouching = true;
+    
+    if (e.touches.length === 1) {
+        e.preventDefault();  // 기본 iOS 확대 방지
+        // 싱글 터치 (이동)
+        const touch = e.touches[0];
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        
+        // 더블 탭 확인
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        
+        if (tapLength < 300 && tapLength > 0) {
+            // 더블 탭 확대
+            const touch = e.touches[0];
+            const targetScale = currentScale === mapConfig.maxScale ? 
+                mapConfig.minScale : Math.min(currentScale * 2, mapConfig.maxScale);
+            
+            smoothZoom(targetScale, touch.clientX, touch.clientY);
+        }
+        
+        lastTapTime = currentTime;
+        
+    } else if (e.touches.length === 2) {
+        // 멀티 터치 (핀치 줌)
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        
+        // 핀치 시작 지점 저장 (두 손가락의 중심점)
+        pinchStartX = (touch1.clientX + touch2.clientX) / 2;
+        pinchStartY = (touch1.clientY + touch2.clientY) / 2;
+        
+        initialTouchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+        initialPinchScale = currentScale;
+    }
+});
+
+// IOS 터치방지
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault(); // iOS Safari 기본 확대 방지
+});
+
+// 터치 이동 이벤트 핸들러
+mapContainer.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    
+    if (!isTouching) return;
+    
+    if (e.touches.length === 1) {
+        // 싱글 터치 (이동)
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - lastTouchX;
+        const deltaY = touch.clientY - lastTouchY;
+        
+        currentTranslateX += deltaX;
+        currentTranslateY += deltaY;
+        
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        
+        updateMapTransform();
+        
+    } else if (e.touches.length === 2) {
+        // 멀티 터치 (핀치 줌)
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        
+        // 현재 터치 포인트 간의 거리 계산
+        const currentTouchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+        
+        // 스케일 계산
+        const scaleFactor = currentTouchDistance / initialTouchDistance;
+        const targetScale = Math.min(
+            Math.max(
+                mapConfig.minScale,
+                initialPinchScale * scaleFactor
+            ),
+            mapConfig.maxScale
+        );
+        
+        // 핀치 시작 지점을 기준으로 확대/축소
+        const rect = mapWrapper.getBoundingClientRect();
+        const mouseX = pinchStartX - rect.left;
+        const mouseY = pinchStartY - rect.top;
+        
+        // 맵 상의 마우스 위치 계산
+        const mapX = (mouseX - currentTranslateX) / currentScale;
+        const mapY = (mouseY - currentTranslateY) / currentScale;
+        
+        // 즉시 확대/축소 적용
+        currentScale = targetScale;
+        
+        // 핀치 시작 지점을 기준으로 새로운 translate 값 계산
+        currentTranslateX = mouseX - (mapX * currentScale);
+        currentTranslateY = mouseY - (mapY * currentScale);
+        
+        updateMapTransform();
+    }
+});
+
+// 터치 종료 이벤트 핸들러
+mapContainer.addEventListener('touchend', function(e) {
+    isTouching = false;
+    initialTouchDistance = 0;
+    initialPinchScale = currentScale;
+    pinchStartX = 0;
+    pinchStartY = 0;
+    
+    // 바운스 효과 적용
+    const wrapperWidth = mapWrapper.offsetWidth;
+    const wrapperHeight = mapWrapper.offsetHeight;
+    const mapWidth = 1200 * currentScale;
+    const mapHeight = 900 * currentScale;
+    
+    const minX = Math.min(0, wrapperWidth - mapWidth);
+    const minY = Math.min(0, wrapperHeight - mapHeight);
+    
+    if (currentTranslateX < minX || currentTranslateX > 0 ||
+        currentTranslateY < minY || currentTranslateY > 0) {
+        
+        mapContainer.style.transition = 'transform 0.3s ease-out';
+        currentTranslateX = Math.max(minX, Math.min(0, currentTranslateX));
+        currentTranslateY = Math.max(minY, Math.min(0, currentTranslateY));
+        updateMapTransform();
+        
+        setTimeout(() => {
+            mapContainer.style.transition = '';
+        }, 300);
+    }
+});
+
+// 터치 취소 이벤트 핸들러
+mapContainer.addEventListener('touchcancel', function() {
+    isTouching = false;
+    initialTouchDistance = 0;
+    initialPinchScale = currentScale;
+    pinchStartX = 0;
+    pinchStartY = 0;
+});
+
+// 부드러운 줌 함수
+function smoothZoom(targetScale, mouseX, mouseY) {
+    const startScale = currentScale;
+    const scaleDiff = targetScale - startScale;
+    const duration = 300;
+    
+    if (zoomAnimation) {
+        cancelAnimationFrame(zoomAnimation);
+    }
+
+    // 현재 뷰포트 상의 마우스 위치
+    const viewportX = mouseX;
+    const viewportY = mouseY;
+
+    // 현재 맵 상의 마우스 위치 계산
+    const mapX = (viewportX - currentTranslateX) / currentScale;
+    const mapY = (viewportY - currentTranslateY) / currentScale;
+
+    const startTime = performance.now();
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // easeOutQuad 이징 함수 사용
+        const easeProgress = 1 - (1 - progress) * (1 - progress);
+        const newScale = startScale + (scaleDiff * easeProgress);
+        
+        // 새로운 translate 값 계산
+        // 마우스 위치는 고정된 채로 확대/축소되어야 함
+        const newTranslateX = viewportX - (mapX * newScale);
+        const newTranslateY = viewportY - (mapY * newScale);
+
+        // 경계 확인
+        const mapWidth = 1200 * newScale;
+        const mapHeight = 900 * newScale;
+        const wrapperWidth = mapWrapper.offsetWidth;
+        const wrapperHeight = mapWrapper.offsetHeight;
+
+        // 맵이 화면 밖으로 너무 많이 나가지 않도록 제한
+        const minX = Math.min(0, wrapperWidth - mapWidth);
+        const minY = Math.min(0, wrapperHeight - mapHeight);
+
+        currentScale = newScale;
+        currentTranslateX = Math.max(minX, Math.min(0, newTranslateX));
+        currentTranslateY = Math.max(minY, Math.min(0, newTranslateY));
+        
+        updateMapTransform();
+        
+        if (progress < 1) {
+            zoomAnimation = requestAnimationFrame(animate);
+        }
+    }
+    
+    zoomAnimation = requestAnimationFrame(animate);
+}
+
+// 마우스 다운 이벤트 핸들러 추가
+mapContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    mapContainer.style.cursor = 'grabbing';
+});
+
+// 마우스 이동 이벤트 핸들러 업데이트
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    
+    currentTranslateX += deltaX;
+    currentTranslateY += deltaY;
+    
+    startX = e.clientX;
+    startY = e.clientY;
+    
+    updateMapTransform();
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+    mapContainer.style.cursor = 'grab';
+});
+
+// X키 이벤트 리스너
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'x' || e.key === 'X') {
+        if (activeInfoBox) {
+            activeInfoBox.style.display = 'none';
+            activeInfoBox = null;
+        }
+        if (searchResults.style.display === 'block') {
+            searchResults.style.display = 'none';
+            searchInput.value = '';
+        }
+    }
+});
+
+function generateBuildingList() {
+    // 2순위 핀들만 필터링
+    const secondaryPins = pinsData.filter(pin => pin.priority === "2순위");
+    
+    // 건물별로 그룹화
+    const buildingGroups = {};
+    secondaryPins.forEach(pin => {
+        if (!buildingGroups[pin.building]) {
+            buildingGroups[pin.building] = new Set();
+        }
+        if (pin.floor) {
+            buildingGroups[pin.building].add(pin.floor);
+        }
+    });
+
+    // 건물 리스트 HTML 생성
+    const buildingContainer = document.querySelector('.building-container');
+    buildingContainer.innerHTML = ''; // 기존 내용 초기화
+
+    // X 버튼 추가
+    const closeButton = document.createElement('div');
+    closeButton.innerHTML = '&times;';
+    closeButton.style.cssText = `
+        position: sticky;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        float: right;
+        padding: 5px 10px;
+        z-index: 1000;
+    `;
+    closeButton.addEventListener('click', () => {
+        document.querySelector('.building-list').style.display = 'none';
+        filterPins2()
+        if (activeInfoBox) {
+                activeInfoBox.style.display = 'none';
+            }
+    });
+    buildingContainer.appendChild(closeButton);
+    
+    Object.entries(buildingGroups).forEach(([building, floors]) => {
+        const buildingSection = document.createElement('div');
+        buildingSection.className = 'building-section';
+        
+        // 건물명 헤더
+        const header = document.createElement('h3');
+        header.textContent = building;
+        buildingSection.appendChild(header);
+
+        // 층 버튼들을 담을 컨테이너
+        const floorList = document.createElement('div');
+        floorList.className = 'floor-list';
+
+        // 층 정보가 있는 경우에만 층 버튼 생성
+        if (floors.size > 0) {
+            // 층 정보를 정렬 (숫자 순)
+            const sortedFloors = Array.from(floors).sort((a, b) => {
+                const numA = parseInt(a);
+                const numB = parseInt(b);
+                return numB - numA;  // 내림차순 정렬
             });
 
-        // 쇼이름설정 window.location.pathname.split('/').pop();
-        const urlPath = '(작성예시) 겨울의 소리'
-        const showKey = decodeURIComponent(urlPath);
-        const showInfo = shows[showKey];
-
-        if (showInfo) {
-            document.getElementById('showTitle').textContent = `${showInfo.name} | DIMA ART`;
-            updateLayout(showInfo);
-            document.getElementById('showTime').textContent = showInfo.time;
-            
-                // 갤러리 이미지 및 점(dot) 로직
-                const galleryImages = showInfo.gallery;
-                let currentImageIndex = 0;
-
-                // 점(dot) 생성 함수
-                function createDots() {
-                    const dotContainer = document.getElementById('dotContainer');
-                    dotContainer.innerHTML = ''; // 기존 dots 제거
-                    galleryImages.forEach((_, index) => {
-                        const dot = document.createElement('span');
-                        dot.classList.add('dot');
-                        if (index === currentImageIndex) {
-                            dot.classList.add('active'); // 현재 이미지에 해당하는 점 활성화
+            sortedFloors.forEach(floor => {
+                const floorButton = document.createElement('button');
+                floorButton.className = 'floor-item';
+                floorButton.textContent = floor;
+                
+                // 층 버튼 클릭 이벤트
+                floorButton.addEventListener('click', () => {
+                    // 해당 건물의 해당 층에 있는 2순위 핀만 표시
+                    pins.forEach(pinObj => {
+                        if (pinObj.pin.dataset.priority === "2순위" && 
+                            pinObj.building === building && 
+                            pinObj.floor === floor) {
+                            pinObj.pin.style.display = 'block';
+                            if (activeInfoBox) {
+                                activeInfoBox.style.display = 'none';
+                            }
+                        } else {
+                            pinObj.pin.style.display = 'none';
                         }
-
-                        // 점 클릭 시 해당 이미지로 이동
-                        dot.onclick = function() {
-                            currentImageIndex = index;
-                            updateGalleryImage();
-                        };
-
-                        dotContainer.appendChild(dot);
                     });
+                });
+                
+                floorList.appendChild(floorButton);
+            });
+        }
+
+        buildingSection.appendChild(floorList);
+
+        // 건물별 위치 리스트 생성
+        const locationsList = document.createElement('div');
+        locationsList.className = 'locations-list';
+        
+        // 해당 건물의 2순위 핀들 표시
+        secondaryPins.filter(pin => pin.building === building).forEach(pin => {
+            const locationItem = document.createElement('div');
+            locationItem.className = 'location-item';
+            locationItem.textContent = `${pin.floor ? pin.floor + ' - ' : ''}${pin.name || '이름 없음'}`;
+            
+            // 위치 항목 클릭 이벤트
+            locationItem.addEventListener('click', () => {
+                const pinObj = pins.find(p => 
+                    p.coordinates.x == pin.x && 
+                    p.coordinates.y == pin.y
+                );
+                if (pinObj) {
+                    // 해당 핀만 표시하고 나머지는 숨김
+                    pins.forEach(p => {
+                        p.pin.style.display = 'none';
+                    });
+                    pinObj.pin.style.display = 'block';
+                    moveToPin(pinObj.pin);
+                    showPinInfoBox(pinObj.pin, pin);
                 }
+            });
+            
+            locationsList.appendChild(locationItem);
+        });
 
-                // 갤러리 이미지 업데이트 함수
-                function updateGalleryImage() {
-                    document.getElementById('galleryImage').src = galleryImages[currentImageIndex];
-                    createDots(); // 이미지 업데이트 후 점도 업데이트
-                }
+        buildingSection.appendChild(locationsList);
+        buildingContainer.appendChild(buildingSection);
+    });
+}
 
-                // 이전 버튼 클릭 이벤트
-                document.getElementById('prevButton').onclick = function() {
-                    currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : galleryImages.length - 1;
-                    updateGalleryImage();
-                };
+// 건물 버튼 클릭 이벤트 수정
+document.querySelector('.nav-item:nth-child(2)').addEventListener('click', function(e) {
+    e.preventDefault();
+    const buildingList = document.querySelector('.building-list');
+    if (buildingList.style.display === 'none') {
+        generateBuildingList(); // 리스트 표시 전에 동적으로 생성
+        buildingList.style.display = 'block';
+    } else {
+        buildingList.style.display = 'none';
+    }
+    
+});
 
-                // 다음 버튼 클릭 이벤트
-                document.getElementById('nextButton').onclick = function() {
-                    currentImageIndex = (currentImageIndex < galleryImages.length - 1) ? currentImageIndex + 1 : 0;
-                    updateGalleryImage();
-                };
+// 외부 클릭 시 리스트 닫기 이벤트
+document.addEventListener('click', function(e) {
+    const buildingList = document.querySelector('.building-list');
+    const navItem = document.querySelector('.nav-item:nth-child(2)');
+    
+    if (buildingList && buildingList.style.display !== 'none' &&
+        !buildingList.contains(e.target) && !navItem.contains(e.target)) {
+        buildingList.style.display = 'none';
+        filterPins2()
+        if (activeInfoBox) {
+                activeInfoBox.style.display = 'none';
+            }
+    }
+});
 
-                // 초기 이미지와 점 설정
-                updateGalleryImage();
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("popup");
+    const openPopup = document.getElementById("openPopup");
+    const closePopup = document.querySelector(".close");
 
-            // 링크 처리
-                const linkElement = document.getElementById('showLink');
-                if (showInfo.link) {
-                    linkElement.textContent = showInfo.link;
-                    linkElement.href = showInfo.link;
-                } else {
-                    linkElement.style.display = 'none';
-                }
+    // 팝업 열기
+    openPopup.addEventListener("click", function (event) {
+        event.preventDefault(); // 기본 링크 동작 방지
+        popup.style.display = "flex";
+    });
 
-        } else {
-            document.body.innerHTML = `
-            <div class="container" style="text-align: center; margin-top: 20px;">
-                <p style="margin: 30px 0; font-size: 18px;">해당 콘텐츠 정보를 찾을 수 없습니다.<br>링크를 다시 확인하시거나 목록보기로 다시 접근해주세요.</p>
-                <button class="action-button" onclick="goToList()" style="margin: 5px;">목록 보기</button>
-                <button class="action-button" onclick="goToList2()" style="margin: 5px;">오류 제보하기</button>
-            </div>`;
+    // 팝업 닫기 (X 버튼)
+    closePopup.addEventListener("click", function () {
+        popup.style.display = "none";
+    });
+
+    // 팝업 외부 클릭 시 닫기
+    window.addEventListener("click", function (event) {
+        if (event.target === popup) {
+            popup.style.display = "none";
         }
     });
 });
 
+// wheel 이벤트 핸들러 수정
+mapWrapper.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    
+    const rect = mapWrapper.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-function updateLayout(showInfo) {
-    const isVideoContent = showInfo.type === '중계' || showInfo.type === '영상';
-    document.getElementById('performanceLayout').style.display = isVideoContent ? 'none' : 'block';
-    document.getElementById('videoLayout').style.display = isVideoContent ? 'block' : 'none';
+    // 현재 맵의 크기 계산
+    const wrapperWidth = mapWrapper.offsetWidth;
+    const wrapperHeight = mapWrapper.offsetHeight;
+    const minScaleX = wrapperWidth / 1200;
+    const minScaleY = wrapperHeight / 900;
+    const minScale = Math.max(minScaleX, minScaleY);
 
-    if (isVideoContent) {
-        updateVideoLayout(showInfo);
-    } else {
-        updatePerformanceLayout(showInfo);
+    const delta = -e.deltaY / Math.abs(e.deltaY); // 방향만 추출 (+1 또는 -1)
+    
+    // 축소하려고 할 때 (delta < 0) 최소 스케일에 도달했다면 더 이상 축소하지 않음
+    if (delta < 0 && currentScale <= minScale) {
+        return;
     }
-}
-
-function updateVideoLayout(showInfo) {
-    document.getElementById('videoTitle').textContent = showInfo.name;
-    document.getElementById('videoDate').textContent = `${showInfo.date} ${showInfo.endDate}`;
-    document.getElementById('videoCast').textContent = showInfo.cast;
-    document.getElementById('videoOrganizer').textContent = showInfo.organizer;
-    document.getElementById('videoDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
-    document.getElementById('videoStaff').innerHTML = showInfo.staff.replace(/\n/g, '<br>');
-
-    // Only show countdown for broadcast type
-    if (showInfo.type === '중계') {
-        document.getElementById('videoCountdown').style.display = 'block';
-        document.getElementById('videoCountdown').textContent = calculateDDay(`${showInfo.date} ${showInfo.endDate}`);
-    } else {
-        document.getElementById('videoCountdown').style.display = 'none';
+    
+    const zoomFactor = 0.6; // 줌 속도 조절 (값이 작을수록 부드러움)
+    const targetScale = Math.min(
+        Math.max(
+            minScale,
+            currentScale * (1 + delta * zoomFactor)
+        ),
+        mapConfig.maxScale
+    );
+    
+    // 현재 스케일과 목표 스케일이 충분히 다른 경우에만 줌 실행
+    if (Math.abs(targetScale - currentScale) > 0.01) {
+        smoothZoom(targetScale, mouseX, mouseY);
     }
+});
 
-    // Embed YouTube video
-    if (showInfo.videolink) {
-        const videoId = extractYouTubeId(showInfo.videolink);
-        if (videoId) {
-            const youtubePlayer = document.getElementById('youtubePlayer');
-            youtubePlayer.innerHTML = ''; // Clear existing content
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube.com/embed/${videoId}`;
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            youtubePlayer.appendChild(iframe);
+// 클릭 이벤트로 정보창과 검색결과 닫기
+// mapWrapper.addEventListener('click', function() {
+//     if (activeInfoBox) {
+//         activeInfoBox.style.display = 'none';
+//         activeInfoBox = null;
+//     }
+//     searchResults.style.display = 'none';
+//     searchInput.value = '';
+// });
+
+// 윈도우 리사이즈 이벤트
+window.addEventListener('resize', function() {
+    updateMapTransform();
+    if (activeInfoBox && selectedPin) {
+        const pinRect = selectedPin.getBoundingClientRect();
+        activeInfoBox.style.left = `${pinRect.left}px`;
+        activeInfoBox.style.top = `${pinRect.top - 100}px`;
+    }
+});
+
+// 앱 초기화
+function initializeMap() {
+    // 모바일 여부 확인
+    const isMobile = window.innerWidth <= 768;
+    
+    // 모바일/데스크톱에 따른 초기 설정 적용
+    currentScale = isMobile ? mapConfig.mobile.initialScale : mapConfig.initialScale;
+    
+    const wrapperWidth = mapWrapper.offsetWidth;
+    const wrapperHeight = mapWrapper.offsetHeight;
+    const mapWidth = 1200 * currentScale;
+    const mapHeight = 900 * currentScale;
+    
+    if (isMobile) {
+        currentTranslateX = mapConfig.mobile.initialX;
+        currentTranslateY = mapConfig.mobile.initialY;
+    } else {
+        if (mapConfig.initialX === 0 && mapConfig.initialY === 0) {
+            currentTranslateX = (wrapperWidth - mapWidth) / 2;
+            currentTranslateY = (wrapperHeight - mapHeight) / 2;
+        } else {
+            currentTranslateX = mapConfig.initialX;
+            currentTranslateY = mapConfig.initialY;
         }
     }
-
-    // 설명 섹션 표시/숨김 처리
-    const descriptionContainer = document.querySelector('#videoDescription')?.closest('.video-metadata-item2');
-    if (descriptionContainer && showInfo.description && showInfo.description.trim()) {
-        descriptionContainer.style.display = 'block';
-        document.getElementById('videoDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
-    } else if (descriptionContainer) {
-        descriptionContainer.style.display = 'none';
-    }
-
-    // 스태프 리스트 섹션 표시/숨김 처리
-    const staffContainer = document.querySelector('#videoStaff')?.closest('.video-metadata-item2');
-    if (staffContainer && showInfo.staff && showInfo.staff.trim()) {
-        staffContainer.style.display = 'block';
-        document.getElementById('videoStaff').innerHTML = showInfo.staff.replace(/\n/g, '<br>');
-    } else if (staffContainer) {
-        staffContainer.style.display = 'none';
-    }
-}
-
-function updatePerformanceLayout(showInfo) {
-    document.getElementById('showImage').src = showInfo.image;
-    document.getElementById('showName').textContent = showInfo.name;
-    document.getElementById('showDate').textContent = `${showInfo.date} ${showInfo.endDate}`;
-    document.getElementById('showVenue').textContent = showInfo.venue;
-    document.getElementById('showCast').textContent = showInfo.cast;
-    document.getElementById('showDuration').textContent = showInfo.duration;
-    document.getElementById('showDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
-    document.getElementById('showOrganizer').textContent = showInfo.organizer;
-    document.getElementById('showWithorganizer').textContent = showInfo.withorganizer;
     
-    // 세로 안내바
-    document.getElementById('showPublic').textContent = showInfo.public;
-    document.getElementById('showEntry').textContent = showInfo.entry;
-    document.getElementById('showEntryOpen').textContent = showInfo.entryopen;
-    document.getElementById('showNotecheck').textContent = showInfo.notecheck;
-    document.getElementById('showRec').textContent = showInfo.rec;
-    
-    document.getElementById('performanceCountdown').textContent = calculateDDay(`${showInfo.date} ${showInfo.endDate}`);
-
-    // 장소에 '동아방송예술대학교'가 포함되어 있는지 확인
-    if (showInfo.venue && showInfo.venue.includes('동아방송예술대학교')) {
-        // 마지막 단어 추출
-        const venueWords = showInfo.venue.split(' ');
-        const lastWord = venueWords[venueWords.length - 1];
-        
-        // 장소 텍스트 요소를 지우고 하이퍼링크로 대체
-        const venueElement = document.getElementById('showVenue');
-        venueElement.innerHTML = '';  // 기존 텍스트 지우기
-        
-        // 텍스트와 하이퍼링크 부분 분리
-        const venueText = document.createTextNode(showInfo.venue.substring(0, showInfo.venue.lastIndexOf(lastWord)));
-        const venueLink = document.createElement('a');
-        venueLink.href = `https://mytwice.github.io/DIMAMAP/${lastWord}`;
-        venueLink.textContent = lastWord;
-        venueLink.target = "_blank";  // 새 탭에서 열기
-        
-        // 하이퍼링크 스타일 적용
-        venueLink.style.color = '#3366cc';  // 링크 색상
-        venueLink.style.textDecoration = 'none';  // 밑줄 제거
-        
-        // 'showDescription' 요소 선택
-        const descriptionElement = document.getElementById('showDescription');
-        // 텍스트의 줄바꿈 문자를 <br> 태그로 대체하여 HTML로 설정
-        descriptionElement.innerHTML = showInfo.description.replace(/\n/g, '<br>');
-        // 스타일 적용: padding과 단어 단위 줄바꿈 설정
-        descriptionElement.style.padding = '8px';
-        descriptionElement.style.wordBreak = 'keep-all';
-
-        // 호버 효과 추가
-        venueLink.onmouseover = function() {
-            this.style.backgroundColor = '#f0f5ff';  // 호버 시 배경색 변경
-            this.style.color = '#0044cc';  // 호버 시 글자색 변경
-            this.style.textDecoration = 'underline';  // 호버 시 밑줄 표시
-        };
-        
-        // 호버 효과 제거
-        venueLink.onmouseout = function() {
-            this.style.backgroundColor = 'transparent';  // 배경색 원래대로
-            this.style.color = '#3366cc';  // 글자색 원래대로
-            this.style.textDecoration = 'none';  // 밑줄 제거
-        };
-        
-        // 클릭 효과 추가
-        venueLink.onmousedown = function() {
-            this.style.backgroundColor = '#e0e8ff';  // 클릭 시 배경색 변경
-        };
-        
-        venueLink.onmouseup = function() {
-            this.style.backgroundColor = '#f0f5ff';  // 클릭 후 배경색 변경
-        };
-
-        // 요소에 추가
-        venueElement.appendChild(venueText);
-        venueElement.appendChild(venueLink);
-    } else {
-        // 기존 처리 방식
-        document.getElementById('showVenue').textContent = showInfo.venue;
-    }
-
-    // 출연진 정보가 있을 때만 표시
-    const showCastElement = document.getElementById('showCast');
-    if (showInfo.cast) {
-        showCastElement.textContent = showInfo.cast;
-        showCastElement.parentElement.style.display = 'block';
-    } else {
-        showCastElement.parentElement.style.display = 'none';
-    }
-
-    // 러닝타임 정보가 있을 때만 표시
-    const showDurationElement = document.getElementById('showDuration');
-    if (showInfo.duration) {
-        showDurationElement.textContent = showInfo.duration;
-        showDurationElement.parentElement.style.display = 'block';
-    } else {
-        showDurationElement.parentElement.style.display = 'none';
-    }
-
-    // 협업기관 정보가 있을 때만 표시
-    const showWithorganizerElement = document.getElementById('showWithorganizer');
-    if (showInfo.withorganizer) {
-        showWithorganizerElement.textContent = showInfo.withorganizer;
-        showWithorganizerElement.parentElement.style.display = 'block';
-    } else {
-        showWithorganizerElement.parentElement.style.display = 'none';
-    }
-
-    // 관련 링크가 있을 때만 표시
-    const showLinkElement = document.getElementById('showLink');
-    if (showInfo.link) {
-        showLinkElement.textContent = showInfo.link;
-        showLinkElement.href = showInfo.link;
-        showLinkElement.parentElement.style.display = 'block';
-    } else {
-        showLinkElement.parentElement.style.display = 'none';
-    }
-
-    // 설명 섹션 표시/숨김 처리
-    const descriptionContainer = document.querySelector('.container:has(#showDescription)');
-    if (showInfo.description && showInfo.description.trim()) {
-        descriptionContainer.style.display = 'block';
-        document.getElementById('showDescription').innerHTML = showInfo.description.replace(/\n/g, '<br>');
-    } else {
-        descriptionContainer.style.display = 'none';
-    }
-    
-    // 유의사항 섹션 표시/숨김 처리
-    const notesContainer = document.querySelector('.container:has(.attention)');
-    if (showInfo.note && showInfo.note.trim()) {
-        notesContainer.style.display = 'block';
-        const attentionContainer = document.querySelector('.attention');
-        attentionContainer.innerHTML = ''; // 기존 내용 초기화
-
-        // 정규식을 사용하여 '\n' 또는 '.,'를 기준으로 분리
-        const notes = showInfo.note.split(/\n|(?<=\.),/);
-        notes.forEach(note => {
-            if (note.trim()) {
-                const noteElement = document.createElement('div');
-                noteElement.className = 'attention-item';
-                noteElement.textContent = note.trim();
-                attentionContainer.appendChild(noteElement);
-            }
-        });
-    } else {
-        notesContainer.style.display = 'none';
-    }
-
-    
-    // 카드뉴스 갤러리 섹션 표시/숨김 처리
-    const galleryContainer = document.querySelector('.container:has(.gallery)');
-    if (showInfo.gallery && showInfo.gallery.length > 0) {
-    } else {
-        galleryContainer.style.display = 'none';
-    }
+    updateMapTransform();
 }
 
-function calculateDDay(dateString) {
-    const [startDateStr, endDateStr] = dateString.split('~').map(date => date.trim());
-    
-    const parseDate = (dateStr) => {
-        return dateStr.includes(' ') ? new Date(dateStr) : new Date(dateStr + ' 00:00:00');
-    };
-
-    const today = new Date();
-    const startDate = parseDate(startDateStr);
-    const endDate = endDateStr ? parseDate(endDateStr) : startDate;
-
-    const todayNoTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const startDateNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-    const endDateNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-
-    if (todayNoTime > endDateNoTime) {
-        return "종료되었습니다.";
-    } else if (todayNoTime < startDateNoTime) {
-        const daysLeft = Math.ceil((startDateNoTime - todayNoTime) / (1000 * 60 * 60 * 24));
-        return `${daysLeft}일 남았습니다.`;
-    } else {
-        return "현재 진행 중입니다!";
-    }
-}
-
-function extractYouTubeId(url) {
-    if (!url) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-}
-
-function shareShow() {
-    const showName = document.getElementById('videoTitle')?.textContent || document.getElementById('showName')?.textContent;
-    const shareData = {
-        title: showName,
-        text: `${showName}에 대한 자세한 정보를 확인하세요!`,
-        url: window.location.href
-    };
-    
-    if (navigator.share) {
-        navigator.share(shareData)
-            .then(() => console.log('공유 성공'))
-            .catch(error => console.error('공유 실패:', error));
-    } else {
-        const shareUrl = window.location.href;
-        const tempInput = document.createElement('input');
-        document.body.appendChild(tempInput);
-        tempInput.value = shareUrl;
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        alert('링크가 클립보드에 복사되었습니다!');
-    }
-}
-
-function goToList() {
-    window.location.href = "https://mytwice.github.io/DIMAART/";
-}
-
-function goToList2() {
-    window.location.href = "https://forms.gle/n285JPvDRxT1zS126";
-}
-
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+// 필터 설정
+function setupFilters() {
+    const filters = ['building-filter', 'floor-filter', 'category-filter'];
+    filters.forEach(filterId => {
+        document.getElementById(filterId).addEventListener('change', filterPins);
     });
 }
 
+function handleUrlPinLocation() {
+    const path = window.location.pathname;
+    const locationName = decodeURIComponent(path.split('/').pop());
+    const searchTerm = locationName.toLowerCase();
+
+    // 1단계: 전체 검색어로 핀 검색
+    let matchedPin = pinsData.find(pin => 
+        (pin.name && pin.name.toLowerCase().includes(searchTerm)) || 
+        (pin.building && pin.building.toLowerCase().includes(searchTerm))
+    );
+
+    // 2단계: 전체 검색어로 찾지 못했을 경우, 마지막 단어로 재검색
+    if (!matchedPin) {
+        const tokens = searchTerm.split(' ');
+        if (tokens.length > 1) {
+            const lastToken = tokens[tokens.length - 1];
+            matchedPin = pinsData.find(pin =>
+                (pin.name && pin.name.toLowerCase().includes(lastToken)) ||
+                (pin.building && pin.building.toLowerCase().includes(lastToken))
+            );
+        }
+    }
+
+    if (matchedPin) {
+        // 모든 핀을 숨김
+        pins.forEach(p => {
+            p.pin.style.display = 'none';
+        });
+        
+        const pinObj = pins.find(p => 
+            p.coordinates.x == matchedPin.x && 
+            p.coordinates.y == matchedPin.y
+        );
+
+        if (pinObj) {
+            // 해당 핀만 표시하고 강조
+            pinObj.pin.style.display = 'block';
+            pinObj.pin.style.transform = 'translate(-50%, -95%) scale(1.5)';
+            pinObj.pin.style.zIndex = '1001';
+            
+            moveToPin(pinObj.pin);
+            showPinInfoBox(pinObj.pin, matchedPin);
+
+            // 전체 지도보기 버튼 생성 (선택 사항)
+            const viewAllButton = document.createElement('button');
+            viewAllButton.innerText = '전체 지도 보기';
+            viewAllButton.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                background: #e155b5;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                font-size: 16px;
+                cursor: pointer;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                z-index: 1002;
+            `;
+            
+            viewAllButton.addEventListener('click', () => {
+                // 전체 핀 표시 및 강조 효과 제거
+                pinObj.pin.style.transform = 'translate(-50%, -95%)';
+                pinObj.pin.style.filter = 'none';
+                filterPins2();
+                if (activeInfoBox) {
+                    activeInfoBox.style.display = 'none';
+                }
+                viewAllButton.remove();
+            });
+            
+            document.body.appendChild(viewAllButton);
+        }
+    } else {
+        alert(`"${locationName}"에 해당하는 위치를 찾을 수 없습니다.`);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const pathParts = window.location.pathname.split('/');
+    const locationName = pathParts[pathParts.length - 1];
+    
+    if (locationName && locationName !== 'DIMAMAP') {
+        setTimeout(handleUrlPinLocation, 500);
+    }
+});
+
+// DOM이 로드되면 실행
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMap();
+    initializeFilterOptions();
+    setupFilters();
+    
+    // 모든 핀 생성
+    pinsData.forEach(pinData => createPin(pinData.x, pinData.y, pinData));
+    
+    // 최초 실행 시 1순위 핀만 표시
+    filterPins2();
+    
+    // 불필요한 필터 적용 버튼 제거
+    const applyButton = document.getElementById('apply-filters');
+    if (applyButton) {
+        applyButton.remove();
+    }
+});
+
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();  // 우클릭 방지
+});
     </script>
 </body>
 </html>
