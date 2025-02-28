@@ -1,417 +1,589 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VZNJWS2EY3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VZNJWS2EY3');
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIMA ART 소개</title>
+  <title>DIMA ART - 아티스트의 창작 콘텐츠 아카이브</title>
   <link rel="icon" href="logo.svg" type="image/x-icon">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root {
+      --primary-color: #D454A9;
+      --primary-dark: #b33d74;
+      --bg-light: #f5f5f5;
+      --text-dark: #333;
+      --text-light: #666;
+      --border-radius: 12px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f5f5f5;
+      box-sizing: border-box;
     }
-
-    .top-nav {
-      background-color: #fff;
-      padding: 15px;
-      border-bottom: 1px solid #ddd;
+    
+    body {
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      word-break: keep-all; /* 단어 단위 줄바꿈 */
+      word-wrap: break-word; /* 긴 단어 줄바꿈 허용 */
+    }
+    
+    .header {
+      background-color: white;
+      padding: 18px 24px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--box-shadow);
     }
-
-    .top-nav-content {
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 15px;
     }
-
+    
     .logo {
-      color: #333;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-dark);
       text-decoration: none;
-      font-weight: bold;
-      font-size: 23px;
+      letter-spacing: -0.5px;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0px;
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    .hero {
       position: relative;
+      height: 500px;
       overflow: hidden;
+      margin-bottom: 40px;
     }
-
-    .container img {
+    
+    .hero-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
     }
-
-    .container p {
-      font-size: 16px;
-      color: #4d4d4d;
-   }
-
-    .image-overlay {
+    
+    .hero-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
     }
-
-    .banner-text {
+    
+    .hero-content {
       position: absolute;
-      left: 40px;
-      top: 50%; /* Add this */
-      transform: translateY(-50%); /* Add this */
+      top: 50%;
+      left: 50px;
+      transform: translateY(-50%);
       color: white;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
     }
-
-    .banner-text h1 {
-      font-size: 48px;
-      font-weight: bold;
-      color: #e552b4;
-      margin: 0;
+    
+    .hero-title {
+      font-size: 54px;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 16px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-
-    .banner-text p {
-      font-size: 18px;
-      margin: 10px 0 0;
+    
+    .hero-subtitle {
+      font-size: 20px;
+      line-height: 1.5;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-
+    
     .section {
-      margin-bottom: 40px;
-      padding: 20px;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 40px;
+      margin: 30px auto;
+      max-width: 1200px;
     }
-
-    .section h2 {
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .section h3 {
-      font-size: 14px;
-      color: #999;
-      font-weight: normal;
+    
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-dark);
       margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 12px;
     }
-
-    .categories {
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .section-subtitle {
+      font-size: 18px;
+      color: #888;
+      margin-bottom: 30px;
+    }
+    
+    .intro-text {
+      margin-bottom: 30px;
+    }
+    
+    .timeline {
       display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-top: 20px;
+      justify-content: space-between;
+      margin: 40px 0;
     }
-
-    .category {
+    
+    .timeline-item {
+      flex: 1;
       text-align: center;
-      width: 120px;
+      padding: 0 15px;
     }
-
-    .category .circle {
-      width: 80px;
-      height: 80px;
-      background-color: #ececec;
-      border: 3px solid #D454A9;
+    
+    .timeline-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary-color);
+    }
+    
+    .category-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 140px;
+    }
+    
+    .category-circle {
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
+      border: 3px solid var(--primary-color);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 18px;
-      font-weight: bold;
-      color: #D454A9;
-      margin: 0 auto 10px;
-    }
-
-    .steps {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 60px; /* Increased gap to accommodate arrows */
-      padding: 20px;
-      position: relative;
-    }
-
-    .step {
-      text-align: center;
-      width: 200px;
-      padding: 20px;
-      background-color: white;
-      border: 2px solid #D454A9;
-      border-radius: 15px;
-      position: relative;
-    }
-
-    .step::after {
-      content: '→';
-      position: absolute;
-      top: 50%;
-      right: -40px;
-      transform: translate(0, -50%);
-      color: #D454A9;
-      font-size: 24px;
-      z-index: 1;
-    }
-
-    .step:last-child::after {
-      display: none;
-    }
-
-    .step h3 {
+      margin-bottom: 12px;
+      color: var(--primary-color);
+      font-weight: 700;
       font-size: 20px;
-      color: #D454A9;
-      margin-bottom: 15px;
-      position: relative;
-      padding-bottom: 10px;
-    }
-
-    .step p {
-      font-size: 15px;
-      color: #666;
-      line-height: 1.5;
-    }
-
-    .updates {
-      background-color: #fff5f9;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      margin: 20px;
-    }
-
-    .updates h3 {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .update-year {
-      font-size: 20px;
-      font-weight: bold;
-      color: #D454A9;
-      margin-bottom: 10px;
-    }
-
-    .update-details {
-      font-size: 16px;
-      color: #666;
-      margin: 5px 0;
-    }
-
-    .footer {
-        text-align: center;
-        margin: 30px 0;
-    }
-
-    .footer a {
-        color: white;
-        background-color: #D454A9;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 20px;
-        font-size: 14px;
-        transition: background-color 0.3s;
+      background-color: #fdf4f9;
+      transition: all 0.3s ease;
     }
     
-    .footer a:hover {
-        background-color: #b33d74;
+    .category-item:hover .category-circle {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.05);
     }
-
-    .contact-container {
-      max-width: 1200px;
-      margin: 20px auto;
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
+    
+    .process {
+      display: flex;
+      justify-content: space-between;
+      margin: 40px 0;
+      position: relative;
     }
-
-    .contact-container h2 {
-      color: #D454A9;
-      margin-bottom: 15px;
+    
+    .process::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #eee;
+      z-index: 1;
     }
-
-    .contact-container p {
-      margin: 5px 0;
-      font-size: 16px;
+    
+    .process-step {
+      position: relative;
+      background-color: white;
+      border: 2px solid var(--primary-color);
+      border-radius: 15px;
+      padding: 25px 20px;
+      width: 22%;
+      z-index: 2;
+      box-shadow: var(--box-shadow);
     }
-
-    .contact-container a {
-      color: #D454A9;
+    
+    .step-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .step-arrow {
+      position: absolute;
+      top: 50%;
+      right: -12%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+      font-size: 32px;
+      z-index: 3;
+    }
+    
+    .process-step:last-child .step-arrow {
+      display: none;
+    }
+    
+    .updates {
+      background-color: #fff5fa;
+      border-radius: var(--border-radius);
+      padding: 30px;
+      margin-top: 40px;
+    }
+    
+    .update-year {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 20px 0 10px 0;
+    }
+    
+    .update-item {
+      display: flex;
+      margin: 8px 0;
+    }
+    
+    .update-month {
+      font-weight: 600;
+      width: 60px;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-weight: 600;
       text-decoration: none;
-      font-weight: bold;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(212, 84, 169, 0.3);
     }
-
-    /* 페이드인 효과 */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-    @media (max-width: 768px) {
-      .steps {
+    
+    .cta-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(212, 84, 169, 0.4);
+    }
+    
+    /* 문의 및 연락 섹션 수정 */
+    .contact {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 40px;
+      margin: 30px auto;
+      max-width: 1200px;
+    }
+    
+    .contact-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 12px;
+    }
+    
+    .contact-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .contact-link {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+    
+    .center-cta {
+      text-align: center;
+      margin: 30px 0;
+    }
+    
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 900px) {
+      .process {
         flex-direction: column;
         align-items: center;
-        gap: 40px;
+        gap: 50px;
       }
-
-      .step {
-        width: 100%;
-        max-width: 280px;
+      
+      .process::before {
+        height: 100%;
+        width: 2px;
+        top: 0;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
       }
-
-      .step::after {
-        content: '↓';
-        top: auto;
-        right: 50%;
-        bottom: -32px;
-        transform: translateX(50%);
+      
+      .process-step {
+        width: 80%;
+        max-width: 350px;
+      }
+      
+      .step-arrow {
+        top: 100%;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+        margin-top: 15px;
+      }
+      
+      .hero-content {
+        left: 30px;
+        right: 30px;
+      }
+      
+      .hero-title {
+        font-size: 40px;
+      }
+      
+      .section, .contact {
+        padding: 30px 20px;
+        margin: 20px 15px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .timeline {
+        flex-direction: column;
+        gap: 30px;
+      }
+      
+      .category-container {
+        gap: 15px;
+      }
+      
+      .category-item {
+        width: 110px;
+      }
+      
+      .category-circle {
+        width: 75px;
+        height: 75px;
+        font-size: 18px;
+      }
+      
+      .hero-title {
+        font-size: 36px;
+      }
+      
+      .hero-subtitle {
+        font-size: 18px;
+      }
+      
+      .process-step {
+        width: 90%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="top-nav">
-    <div class="top-nav-content">
-      <a href="https://mytwice.github.io/DIMAART/" class="logo">DIMA ARTIST</a>
+  <header class="header">
+    <div class="header-container">
+      <a href="#" class="logo">DIMA ARTIST</a>
     </div>
-  </div>
+  </header>
 
-  <div class="container">
-    <img src="설명상단.png" alt="">
-    <div class="image-overlay"></div>
-    <div class="banner-text">
-      <h1>DIMA ART</h1>
-      <p1>과거와 현재, 그리고 미래를 잇는 예술의 기록<br>
-        아티스트의 창작 콘텐츠 아카이브 프로젝트</p1>
+  <section class="hero">
+    <img src="/api/placeholder/1200/500" alt="DIMA ART 배너 이미지" class="hero-image">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">DIMA ART</h1>
+      <p class="hero-subtitle">과거와 현재, 그리고 미래를 잇는 예술의 기록<br>아티스트의 창작 콘텐츠 아카이브 프로젝트</p>
     </div>
-  </div>
+  </section>
 
-  <div class="container fade-in">
-    <div class="section">
-      <h2>소개</h2>
-      <p>DIMA를 넘어 방송 예술현장을 이끌어 갈 창작물을 아카이브하는 사이트입니다.</p>
-      <br>
-      <p>과거 | 앞서 제작된 작품을 통해 예술적 영감을 얻습니다.</p>
-      <p>현재 | 우리의 작품을 널리 알리고 미래를 위해 기록합니다.</p>
-      <p>미래 | 콘텐츠를 공유하고 의견을 나누며 되돌아봅니다.</p>
-    </div>
-  </div>
-
-  <div class="container fade-in">
-    <div class="section">
-      <h2>지원하는 창작물</h2>
-      <h3>공연 예정이거나, 방영된 과거의 콘텐츠 모두 접수 가능합니다</h3>
-      <div class="categories">
-        <div class="category">
-          <div class="circle">공연</div>
-          <p>공연</p>
-        </div>
-        <div class="category">
-          <div class="circle">전시</div>
-          <p>전시</p>
-        </div>
-        <div class="category">
-          <div class="circle">중계</div>
-          <p>중계</p>
-        </div>
-        <div class="category">
-          <div class="circle">영상</div>
-          <p>영상</p>
-        </div>
-        <div class="category">
-          <div class="circle">...</div>
-          <p>기타</p>
-        </div>
+  <section class="section fade-in">
+    <h2 class="section-title">소개</h2>
+    <p class="intro-text">DIMA를 넘어 방송 예술현장을 이끌어 갈 창작물을 아카이브하는 사이트입니다.</p>
+    
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3 class="timeline-title">과거</h3>
+        <p>앞서 제작된 작품을 통해 예술적 영감을 얻습니다.</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h3 class="timeline-title">현재</h3>
+        <p>우리의 작품을 널리 알리고 미래를 위해 기록합니다.</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h3 class="timeline-title">미래</h3>
+        <p>콘텐츠를 공유하고 의견을 나누며 되돌아봅니다.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-    <div class="container fade-in">
-    <div class="section">
-        <h2>작품 등록 방법</h2>
-        <div class="steps">
-          <div class="step">
-            <h3>1. 접수</h3>
-            <p>forms.gle/n285JPvDRxT1zS126</p>
-          </div>
-          <div class="step">
-            <h3>2. 검토</h3>
-            <p>적합성에 따라 공개여부 결정</p>
-          </div>
-          <div class="step">
-            <h3>3. 공개</h3>
-            <p>페이지 공개</p>
-          </div>
-          <div class="step">
-            <h3>4. 업데이트 </h3>
-            <p>접수 폼을 통한 수정 / 비공개 반영</p>
-          </div>
+  <section class="section fade-in">
+    <h2 class="section-title">지원하는 창작물</h2>
+    <p class="section-subtitle">공연 예정이거나, 방영된 과거의 콘텐츠 모두 접수 가능합니다</p>
+    
+    <div class="category-container">
+      <div class="category-item">
+        <div class="category-circle">공연</div>
+        <p>공연</p>
       </div>
-      <div class="footer">
-        <a href="https://forms.gle/n285JPvDRxT1zS126" target="_blank">접수 폼으로 이동하기</a>
-    </div>
-  </div>
-</div>
-
-    <div class="container fade-in">
-    <div class="container updates">
-      <h3>업데이트 기록</h3>
-      <div>
-        <div class="update-year">2024년</div>
-        <div class="update-details">10월 : 1차 기능 제작</div>
-        <div class="update-details">12월 : 데이터베이스 구축 및 디자인 리뉴얼</div>
-        <div class="update-year">2025년</div>
-        <div class="update-details">3월 : 최초 공개</div>
+      
+      <div class="category-item">
+        <div class="category-circle">전시</div>
+        <p>전시</p>
+      </div>
+      
+      <div class="category-item">
+        <div class="category-circle">중계</div>
+        <p>중계</p>
+      </div>
+      
+      <div class="category-item">
+        <div class="category-circle">영상</div>
+        <p>영상</p>
+      </div>
+      
+      <div class="category-item">
+        <div class="category-circle">...</div>
+        <p>기타</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="container contact-container">
-  <h2>문의 및 연락</h2>
-  <p>문의사항은 아래의 연락처를 이용해 주세요</p>
-  <p><strong>카카오톡 :</strong> <a href="https://open.kakao.com/o/sQ5O8Zfg" target="_blank">https://open.kakao.com/o/sQ5O8Zfg</a></p>
-</div>
-</body>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const fadeInElements = document.querySelectorAll('.fade-in');
+  <section class="section fade-in">
+    <h2 class="section-title">작품 등록 방법</h2>
+    
+    <div class="process">
+      <div class="process-step">
+        <h3 class="step-number">01</h3>
+        <h4>접수</h4>
+        <p>forms.gle/n285JPvDRxT1zS126</p>
+        <span class="step-arrow">→</span>
+      </div>
+      
+      <div class="process-step">
+        <h3 class="step-number">02</h3>
+        <h4>검토</h4>
+        <p>적합성에 따라 공개여부 결정</p>
+        <span class="step-arrow">→</span>
+      </div>
+      
+      <div class="process-step">
+        <h3 class="step-number">03</h3>
+        <h4>공개</h4>
+        <p>페이지 공개</p>
+        <span class="step-arrow">→</span>
+      </div>
+      
+      <div class="process-step">
+        <h3 class="step-number">04</h3>
+        <h4>업데이트</h4>
+        <p>접수 폼을 통한 수정 / 비공개 반영</p>
+      </div>
+    </div>
+    
+    <div class="center-cta">
+      <a href="https://forms.gle/n285JPvDRxT1zS126" target="_blank" class="cta-button">접수 폼으로 이동하기</a>
+    </div>
+  </section>
 
-    const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target); // Once visible, no need to observe again
-        }
+  <section class="section fade-in">
+    <h2 class="section-title">업데이트 기록</h2>
+    
+    <div class="updates">
+      <div class="update-year">2024년</div>
+      <div class="update-item">
+        <span class="update-month">10월</span>
+        <span>1차 기능 제작</span>
+      </div>
+      <div class="update-item">
+        <span class="update-month">12월</span>
+        <span>데이터베이스 구축 및 디자인 리뉴얼</span>
+      </div>
+      
+      <div class="update-year">2025년</div>
+      <div class="update-item">
+        <span class="update-month">3월</span>
+        <span>최초 공개</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact fade-in">
+    <h2 class="contact-title">문의 및 연락</h2>
+    <p>문의사항은 아래의 연락처를 이용해 주세요</p>
+    <p><strong>카카오톡:</strong> <a href="https://open.kakao.com/o/sQ5O8Zfg" target="_blank" class="contact-link">https://open.kakao.com/o/sQ5O8Zfg</a></p>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
       });
-    }, {
-      threshold: 0.5  // 화면에 20%가 보일 때 페이드인
+      
+      fadeElements.forEach(element => {
+        observer.observe(element);
+      });
     });
-
-    fadeInElements.forEach(el => observer.observe(el));
-  });
-</script>
+  </script>
+</body>
 </html>
