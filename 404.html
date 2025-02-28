@@ -7,7 +7,8 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-Z36W3EPHYF');
+
+  gtag('config', 'G-4Z0ZMF9GQY');
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">    
 </script>
@@ -867,6 +868,14 @@ function updatePerformanceLayout(showInfo) {
         venueLink.style.color = '#3366cc';  // 링크 색상
         venueLink.style.textDecoration = 'none';  // 밑줄 제거
         
+        // 'showDescription' 요소 선택
+        const descriptionElement = document.getElementById('showDescription');
+        // 텍스트의 줄바꿈 문자를 <br> 태그로 대체하여 HTML로 설정
+        descriptionElement.innerHTML = showInfo.description.replace(/\n/g, '<br>');
+        // 스타일 적용: padding과 단어 단위 줄바꿈 설정
+        descriptionElement.style.padding = '8px';
+        descriptionElement.style.wordBreak = 'keep-all';
+
         // 호버 효과 추가
         venueLink.onmouseover = function() {
             this.style.backgroundColor = '#f0f5ff';  // 호버 시 배경색 변경
