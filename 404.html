@@ -496,6 +496,7 @@ color: #b33d74; /* 호버 시 하이퍼링크 색상 */
                     <p><strong>러닝타임ㅣ</strong> <span id="showDuration"></span></p>
                     <p><strong>주최ㅣ</strong> <span id="showOrganizer"></span></p>
                     <p><strong>협업기관ㅣ</strong> <span id="showWithorganizer"></span></p>
+                    <p><strong>예매 링크ㅣ</strong> <a id="bookingLink" href="#" target="_blank"></a></p>
                     <p><strong>관련 링크ㅣ</strong> <a id="showLink" href="#" target="_blank"></a></p>
                     <p>주최측 사정에 따라 변경될 수 있습니다.</p>
                 </div>
@@ -671,6 +672,7 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
                         rec: row['촬영녹음여부'] || '',
                         note: row['유의사항'] || '',
                         videolink: row['영상 링크'] || '',
+                        bookinglink: row['예매 링크'] || '',
                         link: row['관련 링크'] || '',
                         image: row['메인포스터'] || '',
                         gallery: [
@@ -690,7 +692,7 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
             });
 
         // 쇼이름설정 window.location.pathname.split('/').pop();
-        const urlPath = window.location.pathname.split('/').pop();
+        const urlPath = '뮤지컬 공연'
         const showKey = decodeURIComponent(urlPath);
         const showInfo = shows[showKey];
 
@@ -744,6 +746,16 @@ google.charts.load("current", { packages: ["corechart"] }).then(() => {
 
                 // 초기 이미지와 점 설정
                 updateGalleryImage();
+
+            // 예매 링크 처리
+                const bookingLinkElement = document.getElementById('bookingLink');
+                if (showInfo.bookinglink) {
+                    bookingLinkElement.textContent = showInfo.bookinglink;
+                    bookingLinkElement.href = showInfo.bookinglink;
+                    bookingLinkElement.parentElement.style.display = 'block';
+                } else {
+                    bookingLinkElement.parentElement.style.display = 'none';
+                }
 
             // 링크 처리
                 const linkElement = document.getElementById('showLink');
